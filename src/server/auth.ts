@@ -55,6 +55,13 @@ export const authOptions: NextAuthOptions = {
         id: token.sub,
       },
     }),
+    async signIn({ profile }) {
+      const allowdEmails = ["jedborseth@gmail.com", "mcborseth@gmail.com"];
+      const email = profile?.email ?? "";
+      if (allowdEmails.includes(email) || email.endsWith("@rlpackaging.ca"))
+        return true;
+      return false;
+    },
   },
   adapter: DrizzleAdapter(db, {
     usersTable: users,
