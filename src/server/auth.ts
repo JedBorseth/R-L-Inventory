@@ -45,14 +45,14 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   session: {
-    strategy: "jwt",
+    strategy: "database",
   },
   callbacks: {
-    session: ({ session, token }) => ({
+    session: ({ session, user }) => ({
       ...session,
       user: {
         ...session.user,
-        id: token.sub,
+        id: user.id,
       },
     }),
     async signIn({ profile }) {
@@ -61,6 +61,9 @@ export const authOptions: NextAuthOptions = {
       if (allowdEmails.includes(email) || email.endsWith("@rlpackaging.ca"))
         return true;
       return false;
+    },
+    async redirect({ url, baseUrl }) {
+      return `${baseUrl}/dashboard`;
     },
   },
   adapter: DrizzleAdapter(db, {
@@ -91,9 +94,4 @@ export const authOptions: NextAuthOptions = {
  *
  * @see https://next-auth.js.org/configuration/nextjs
  */
-export const getServerAuthSession = (ctx: {
-  req: GetServerSidePropsContext["req"];
-  res: GetServerSidePropsContext["res"];
-}) => {
-  return getServerSession(ctx.req, ctx.res, authOptions);
-};
+export const getServerAuthSession = () => getServerSession(authOptions);

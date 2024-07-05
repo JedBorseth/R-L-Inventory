@@ -27,6 +27,9 @@ const config = {
         port: "",
         pathname: "/a/**",
       },
+      {
+        hostname: "dummyimage.com",
+      },
     ],
   },
 };
