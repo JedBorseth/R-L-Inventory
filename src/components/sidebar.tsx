@@ -1,11 +1,11 @@
 import {
   Factory,
+  Forklift,
   Home,
   LineChart,
   Package,
   Package2,
   Settings,
-  ShoppingCart,
   Users2,
 } from "lucide-react";
 import Link from "next/link";
@@ -44,7 +44,7 @@ const Sidebar = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="#"
+                href="../../dashboard/scrap"
                 className="flex h-9 w-9 items-center justify-center rounded-lg  transition-colors hover:text-foreground md:h-8 md:w-8"
               >
                 <Factory className="h-5 w-5" />
@@ -56,7 +56,7 @@ const Sidebar = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="#"
+                href="../../dashboard/stock"
                 className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
               >
                 <Package className="h-5 w-5" />
@@ -68,10 +68,10 @@ const Sidebar = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="#"
+                href="../../dashboard/pallets"
                 className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
               >
-                <Users2 className="h-5 w-5" />
+                <Forklift className="h-5 w-5" />
                 <span className="sr-only">Pallet Stock</span>
               </Link>
             </TooltipTrigger>

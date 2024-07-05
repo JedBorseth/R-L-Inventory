@@ -5,30 +5,32 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
 
 import { usePathname } from "next/navigation";
+import { Fragment } from "react";
 
 const Breadcrumbs = () => {
   const pathname = usePathname();
   const paths = pathname.split("/").filter(Boolean);
+  let test = "";
   return (
     <Breadcrumb className="hidden md:flex">
       <BreadcrumbList>
         {paths.map((path, index) => {
+          test += path + "/";
           return (
-            <>
+            <Fragment key={index}>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href="#">
+                  <Link href={`../../${test}`}>
                     {path.charAt(0).toUpperCase() + path.slice(1)}
                   </Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               {index === paths.length - 1 ? null : <BreadcrumbSeparator />}
-            </>
+            </Fragment>
           );
         })}
       </BreadcrumbList>

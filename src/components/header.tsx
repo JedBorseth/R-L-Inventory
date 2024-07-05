@@ -105,7 +105,10 @@ const header = async () => {
             className="overflow-hidden rounded-full"
           >
             <Image
-              src={session?.user?.image ?? "https://placehold.co/36x36"}
+              src={
+                session?.user?.image ??
+                "https://dummyimage.com/36x36/c9c9c9/fff.png&text=profile"
+              }
               width={36}
               height={36}
               alt="Avatar"
@@ -119,9 +122,7 @@ const header = async () => {
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <LogOut />
-          </DropdownMenuItem>
+          <LogOut />
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
