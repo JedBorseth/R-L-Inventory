@@ -1,7 +1,7 @@
 import React from "react";
 
 const hey = () => {
-  return <div>hey</div>;
+  return <div>settings are not finished</div>;
 };
 
 export default hey;

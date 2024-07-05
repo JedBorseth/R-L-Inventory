@@ -30,6 +30,7 @@ const config = {
       {
         hostname: "dummyimage.com",
       },
+      { hostname: "placehold.co" },
     ],
   },
 };

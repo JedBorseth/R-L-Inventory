@@ -8,12 +8,5 @@ export default async function Dashboard() {
         <p>Hey Man this is the home page</p>
       </main>
     );
-  else
-    return (
-      <div className="grid h-screen place-items-center text-center text-3xl">
-        <a href="../">
-          You are not logged in. <br /> Return?
-        </a>
-      </div>
-    );
+  return null;
 }
