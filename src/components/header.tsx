@@ -2,14 +2,11 @@ import {
   Factory,
   Forklift,
   Home,
-  LineChart,
   Package,
   Package2,
   PanelLeft,
   Search,
   Settings,
-  ShoppingCart,
-  Users2,
 } from "lucide-react";
 import React from "react";
 import { SheetContent, SheetTrigger, Sheet } from "~/components/ui/sheet";
@@ -24,13 +21,12 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import Image from "next/image";
-import { getServerAuthSession } from "~/server/auth";
 import Link from "next/link";
-import LogOut from "~/components/logOut";
 import Breadcrumbs from "~/components/breadCrumbs";
 
+import { SignOutButton, UserProfile, UserButton } from "@clerk/nextjs";
+
 const header = async () => {
-  const session = await getServerAuthSession();
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <Sheet>
@@ -96,35 +92,7 @@ const header = async () => {
           className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
         />
       </div>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            className="overflow-hidden rounded-full"
-          >
-            <Image
-              src={
-                session?.user?.image ??
-                "https://dummyimage.com/36x36/c9c9c9/fff.png&text=profile"
-              }
-              width={36}
-              height={36}
-              alt="Avatar"
-              className="overflow-hidden rounded-full"
-            />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>{session?.user.name}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <LogOut />
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <UserButton />
     </header>
   );
 };

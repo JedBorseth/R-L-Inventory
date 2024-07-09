@@ -1,22 +1,34 @@
 import type { ReactNode } from "react";
 import Sidebar from "~/components/sidebar";
 import Header from "~/components/header";
-import { redirect } from "next/navigation";
-import { getServerAuthSession } from "~/server/auth";
+import { currentUser, type User } from "@clerk/nextjs/server";
+import Link from "next/link";
 
 export default async function Layout({ children }: { children: ReactNode }) {
-  const session = await getServerAuthSession();
-  if (!session) redirect("../../../");
-  if (session)
+  const user = await currentUser();
+  const allowedEmails = ["jedborseth@gmail.com", "jedborseth@outlook.com"];
+  if (
+    !user?.primaryEmailAddress?.emailAddress.endsWith("@rlpackaging.ca") &&
+    !allowedEmails.includes(user?.primaryEmailAddress?.emailAddress ?? "")
+  ) {
     return (
-      <>
-        <main className="flex min-h-screen w-full flex-col bg-muted/40">
-          <Sidebar />
-          <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-            <Header />
-            {children}
-          </div>
-        </main>
-      </>
+      <main className="grid min-h-screen place-items-center bg-black text-center text-primary-foreground">
+        <div className="flex flex-col gap-5 border-l pl-5">
+          <h1>Please use an @rlpackaging.ca email</h1>
+          <Link href="/"> Go Back</Link>
+        </div>
+      </main>
     );
+  }
+  return (
+    <>
+      <main className="flex min-h-screen w-full flex-col bg-muted/40">
+        <Sidebar />
+        <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+          <Header />
+          {children}
+        </div>
+      </main>
+    </>
+  );
 }

@@ -14,17 +14,17 @@ import { Fragment } from "react";
 const Breadcrumbs = () => {
   const pathname = usePathname();
   const paths = pathname.split("/").filter(Boolean);
-  let test = "";
+  let combinedUrl = "";
   return (
     <Breadcrumb className="hidden md:flex">
       <BreadcrumbList>
         {paths.map((path, index) => {
-          test += path + "/";
+          combinedUrl += path + "/";
           return (
             <Fragment key={index}>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href={`../../${test}`}>
+                  <Link href={`../../${combinedUrl}`}>
                     {path.charAt(0).toUpperCase() + path.slice(1)}
                   </Link>
                 </BreadcrumbLink>
