@@ -10,11 +10,11 @@ import {
 import Link from "next/link";
 import { motion } from "framer-motion";
 import React from "react";
-import { AuroraBackground } from "~/components/ui/aurora-background";
 
 export default function Page() {
   return (
-    <AuroraBackground>
+    <main className="grid min-h-screen place-items-center">
+      {/* <AuroraBackground> */}
       <motion.div
         initial={{ opacity: 0.0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -59,6 +59,7 @@ export default function Page() {
           </ClerkLoaded>
         </div>
       </motion.div>
-    </AuroraBackground>
+      {/* </AuroraBackground> */}
+    </main>
   );
 }
