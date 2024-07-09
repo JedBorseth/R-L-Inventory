@@ -17,3 +17,7 @@ track pallets
 
 - get deployment done on correct domain
   (change redirect uri in azure and gcc)
+
+## Known Bugs
+
+- first sign in from a new user will not go to right page issue with clerk

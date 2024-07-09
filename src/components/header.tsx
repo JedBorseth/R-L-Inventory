@@ -5,26 +5,16 @@ import {
   Package,
   Package2,
   PanelLeft,
-  Search,
   Settings,
 } from "lucide-react";
 import React from "react";
 import { SheetContent, SheetTrigger, Sheet } from "~/components/ui/sheet";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { DropdownMenu } from "~/components/ui/dropdown-menu";
-import {
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import Image from "next/image";
 import Link from "next/link";
 import Breadcrumbs from "~/components/breadCrumbs";
-
-import { SignOutButton, UserProfile, UserButton } from "@clerk/nextjs";
+import Search from "~/components/search";
+import { UserButton } from "@clerk/nextjs";
+import { SearchBox } from "react-instantsearch";
 
 const header = async () => {
   return (
@@ -84,13 +74,13 @@ const header = async () => {
         </SheetContent>
       </Sheet>
       <Breadcrumbs />
-      <div className="relative ml-auto flex-1 md:grow-0">
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-        <Input
+      <div className="relative ml-auto flex-1 text-muted-foreground md:grow-0">
+        {/* <Input
           type="search"
           placeholder="Search..."
           className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-        />
+          /> */}
+        <Search />
       </div>
       <UserButton />
     </header>
