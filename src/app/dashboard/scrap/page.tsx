@@ -116,7 +116,7 @@ export default function Dashboard() {
                             alt="Product image"
                             className="aspect-square rounded-md object-cover"
                             height="64"
-                            src="/placeholder.svg"
+                            src="https://dummyimage.com/640x4:3"
                             width="64"
                           />
                         </TableCell>
@@ -159,7 +159,7 @@ export default function Dashboard() {
                             alt="Product image"
                             className="aspect-square rounded-md object-cover"
                             height="64"
-                            src="/placeholder.svg"
+                            src="https://dummyimage.com/640x4:3"
                             width="64"
                           />
                         </TableCell>
@@ -202,7 +202,7 @@ export default function Dashboard() {
                             alt="Product image"
                             className="aspect-square rounded-md object-cover"
                             height="64"
-                            src="/placeholder.svg"
+                            src="https://dummyimage.com/640x4:3"
                             width="64"
                           />
                         </TableCell>
@@ -245,7 +245,7 @@ export default function Dashboard() {
                             alt="Product image"
                             className="aspect-square rounded-md object-cover"
                             height="64"
-                            src="/placeholder.svg"
+                            src="https://dummyimage.com/640x4:3"
                             width="64"
                           />
                         </TableCell>
@@ -288,7 +288,7 @@ export default function Dashboard() {
                             alt="Product image"
                             className="aspect-square rounded-md object-cover"
                             height="64"
-                            src="/placeholder.svg"
+                            src="https://dummyimage.com/640x4:3"
                             width="64"
                           />
                         </TableCell>
@@ -331,7 +331,7 @@ export default function Dashboard() {
                             alt="Product image"
                             className="aspect-square rounded-md object-cover"
                             height="64"
-                            src="/placeholder.svg"
+                            src="https://dummyimage.com/640x4:3"
                             width="64"
                           />
                         </TableCell>

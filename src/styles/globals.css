@@ -54,3 +54,10 @@
     grid-row: 3;
   }
 }
+
+li.ais-Hits-item:hover {
+  background-color: hsl(var(--muted));
+}
+li.ais-Hits-item {
+  @apply bg-card p-2;
+}

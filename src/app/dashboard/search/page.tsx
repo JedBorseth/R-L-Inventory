@@ -1,12 +1,7 @@
-import React from "react";
-import Search from "~/components/search";
+import { Search } from "~/components/search";
 
-const Page = () => {
-  return (
-    <div>
-      <Search />
-    </div>
-  );
-};
+export const dynamic = "force-dynamic";
 
-export default Page;
+export default function Page() {
+  return <Search />;
+}

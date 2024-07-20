@@ -7,16 +7,16 @@ import {
   PanelLeft,
   Settings,
 } from "lucide-react";
-import React from "react";
 import { SheetContent, SheetTrigger, Sheet } from "~/components/ui/sheet";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import Breadcrumbs from "~/components/breadCrumbs";
-import Search from "~/components/search";
-import { UserButton } from "@clerk/nextjs";
-import { SearchBox } from "react-instantsearch";
 
-const header = async () => {
+import { UserButton } from "@clerk/nextjs";
+import { Search } from "~/components/search";
+
+import "@algolia/autocomplete-theme-classic";
+const Header = async () => {
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <Sheet>
@@ -75,11 +75,6 @@ const header = async () => {
       </Sheet>
       <Breadcrumbs />
       <div className="relative ml-auto flex-1 text-muted-foreground md:grow-0">
-        {/* <Input
-          type="search"
-          placeholder="Search..."
-          className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-          /> */}
         <Search />
       </div>
       <UserButton />
@@ -87,4 +82,4 @@ const header = async () => {
   );
 };
 
-export default header;
+export default Header;

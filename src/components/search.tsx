@@ -1,49 +1,43 @@
-// TODO: Make a search component
 "use client";
 
-import algoliasearch from "algoliasearch";
-import "instantsearch.css/themes/satellite.css";
-import { Hits, InstantSearch, SearchBox, Configure } from "react-instantsearch";
-import { Hit } from "~/components/hit";
+import algoliasearch from "algoliasearch/lite";
+import { Hits, SearchBox, Configure } from "react-instantsearch";
+import { InstantSearchNext } from "react-instantsearch-nextjs";
+import { Hit } from "./hit";
+import { Input } from "./ui/input";
+import { useState } from "react";
 
 const searchClient = algoliasearch(
   "KH60NZV6Q6",
   "2c44fcbda3712ff9731a7d9037c95f32",
 );
 
-export const Search = () => {
+export function Search() {
+  const [query, setQuery] = useState("");
   return (
-    <InstantSearch
-      searchClient={searchClient}
+    <InstantSearchNext
       indexName="your_index_name"
+      searchClient={searchClient}
       future={{ preserveSharedStateOnUnmount: true }}
-      initialUiState={{ UiState: { query: "empty" } }}
     >
-      <Configure hitsPerPage={2} />
-      <div className="ais-InstantSearch">
-        <SearchBox className="border-red-500 focus:active:border-red-500" />
-      </div>
-      <div className="absolute left-0 top-10 h-48 w-48 border">
-        <Hits hitComponent={Hit} />
-      </div>
-    </InstantSearch>
+      <form
+        onSubmit={(e) => {
+          setQuery(e.target[0].value);
+          e.preventDefault();
+        }}
+      >
+        <Input
+          type="search"
+          placeholder="Search Movies..."
+          className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+        />
+      </form>
+      <Configure hitsPerPage={3} query={query} />
+      {query && (
+        <div className="absolute left-0 top-10 border">
+          <Hits hitComponent={Hit} />
+        </div>
+      )}
+    </InstantSearchNext>
   );
-};
-export default Search;
-
-//   const data = await fetch(
-//     "https://dashboard.algolia.com/sample_datasets/movie.json",
-//   );
-
-//   const records: unknown = await data.json();
-
-//   const client = algoliasearch(
-//     "KH60NZV6Q6",
-//     "c93619cf68b636ae5b51487b751f2e81",
-//   );
-
-//   const index = client.initIndex("your_index_name");
-
-//   await index.saveObjects(records, { autoGenerateObjectIDIfNotExist: true });
-
-// ^^^^^^ THIS CODE ADDS STUFF TO THE SEARCHER
+}
