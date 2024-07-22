@@ -30,12 +30,10 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { db } from "~/server/db";
-import { pallets } from "~/server/db/schema";
+import { api } from "~/utils/api";
 
 export default async function Dashboard() {
-  const results = await db.query.pallets.findMany();
-  console.log(results);
+  const results = api.pallet.getAllPallets.useQuery();
   // const newPallet = await db.insert(pallets).values({
   //   amount: 100,
   //   width: 48,
@@ -125,7 +123,7 @@ export default async function Dashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {results.map((result) => (
+                      {results?.data?.map((result) => (
                         <TableRow key={result.id}>
                           <TableCell className="hidden sm:table-cell">
                             <Image
@@ -176,7 +174,7 @@ export default async function Dashboard() {
                 <CardFooter>
                   <div className="text-xs text-muted-foreground">
                     Showing <strong>1-10</strong> of{" "}
-                    <strong>{results.length}</strong> products
+                    <strong>{results?.data?.length}</strong> products
                   </div>
                 </CardFooter>
               </Card>

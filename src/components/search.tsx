@@ -22,7 +22,6 @@ export function Search() {
     >
       <form
         onSubmit={(e) => {
-          setQuery(e.target[0].value);
           e.preventDefault();
         }}
       >
