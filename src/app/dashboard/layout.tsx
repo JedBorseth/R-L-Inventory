@@ -3,7 +3,7 @@ import Sidebar from "~/components/sidebar";
 import Header from "~/components/header";
 import { currentUser, type User } from "@clerk/nextjs/server";
 import Link from "next/link";
-
+import { Toaster } from "~/components/ui/toaster";
 export default async function Layout({ children }: { children: ReactNode }) {
   const user = await currentUser();
   const allowedEmails = ["jedborseth@gmail.com", "jedborseth@outlook.com"];
@@ -12,23 +12,24 @@ export default async function Layout({ children }: { children: ReactNode }) {
     !allowedEmails.includes(user?.primaryEmailAddress?.emailAddress ?? "")
   ) {
     return (
-      <main className="grid min-h-screen place-items-center bg-black text-center text-primary-foreground">
+      <div className="grid min-h-screen place-items-center bg-black text-center text-primary-foreground">
         <div className="flex flex-col gap-5 border-l pl-5">
           <h1>Please use an @rlpackaging.ca email</h1>
           <Link href="/"> Go Back</Link>
         </div>
-      </main>
+      </div>
     );
   }
   return (
     <>
-      <main className="flex min-h-screen w-full flex-col bg-muted/40">
+      <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <Sidebar />
         <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
           <Header />
           {children}
         </div>
-      </main>
+        <Toaster />
+      </div>
     </>
   );
 }

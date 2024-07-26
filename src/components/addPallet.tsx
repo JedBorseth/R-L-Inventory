@@ -2,7 +2,6 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -11,10 +10,23 @@ import { PlusCircle } from "lucide-react";
 import React from "react";
 import { type FieldValues, useForm } from "react-hook-form";
 import { Input } from "~/components/ui/input";
+import { toast } from "./ui/use-toast";
+import { Button } from "./ui/button";
 
 const AddPallet = () => {
-  const { register, handleSubmit, formState } = useForm();
-  const onSubmit = (data: FieldValues) => console.log(data);
+  const { register, handleSubmit } = useForm();
+  const onSubmit = (data: FieldValues) => {
+    if (data.amount <= data.inventoryThreshold) {
+      toast({
+        variant: "destructive",
+        title: "Error Adding Pallet",
+        description:
+          "Your inventory amount must be greater than the threshold.",
+      });
+      return;
+    }
+    console.log(data);
+  };
   return (
     <Dialog>
       <DialogTrigger className="inline-flex h-7 items-center justify-center gap-1 whitespace-nowrap rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
@@ -26,19 +38,19 @@ const AddPallet = () => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add New Pallet Type</DialogTitle>
-          <DialogDescription>
+          <div>
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col gap-5 pt-5"
             >
               <Input
                 type="number"
-                placeholder="Width"
+                placeholder="Width (inches)"
                 {...register("width", { required: true, min: 0 })}
               />
               <Input
                 type="number"
-                placeholder="Length"
+                placeholder="Length (inches)"
                 {...register("length", { required: true, min: 0 })}
               />
               <Input
@@ -49,7 +61,7 @@ const AddPallet = () => {
               <Input
                 type="number"
                 placeholder="Min Inventory Amount"
-                {...register("inventoryThreshold", {})}
+                {...register("inventoryThreshold", { required: true, min: 0 })}
               />
 
               <div className="flex items-center text-center">
@@ -81,12 +93,9 @@ const AddPallet = () => {
                 {...register("desc", {})}
               />
 
-              <Input
-                type="submit"
-                className="bg-secondary hover:bg-secondary/20"
-              />
+              <Button type="submit">Submit</Button>
             </form>
-          </DialogDescription>
+          </div>
         </DialogHeader>
       </DialogContent>
     </Dialog>

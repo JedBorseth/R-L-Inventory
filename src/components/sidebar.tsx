@@ -6,7 +6,6 @@ import {
   Package,
   Package2,
   Settings,
-  Users2,
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -80,7 +79,7 @@ const Sidebar = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="#"
+                href="../../dashboard/analytics"
                 className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
               >
                 <LineChart className="h-5 w-5" />

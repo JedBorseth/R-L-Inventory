@@ -30,20 +30,21 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { db } from "~/server/db";
 import AddPallet from "~/components/addPallet";
+import { getPallets } from "~/server/queries";
+import DeletePallet from "~/components/deletePallet";
 
 export default async function Dashboard() {
-  const results = await db.query.pallets.findMany();
+  const results = await getPallets();
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
       <Tabs defaultValue="all">
         <div className="flex items-center">
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="dw">DW</TabsTrigger>
-            <TabsTrigger value="c">C Flute</TabsTrigger>
-            <TabsTrigger value="b">B Flute</TabsTrigger>
+            <TabsTrigger value="dw">Block</TabsTrigger>
+            <TabsTrigger value="c">Heat Treated</TabsTrigger>
+            <TabsTrigger value="b">New</TabsTrigger>
           </TabsList>
           <div className="ml-auto flex items-center gap-2">
             <DropdownMenu>
@@ -152,7 +153,7 @@ export default async function Dashboard() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                            <DeletePallet />
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
