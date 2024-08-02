@@ -66,12 +66,12 @@ const AddPallet = () => {
           <div>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-5 pt-5 text-base"
+              className="flex flex-col gap-5 pt-5 max-sm:text-base"
             >
               <label htmlFor="width">Dimensions</label>
               <Input
                 id="width"
-                className="text-base"
+                className="max-sm:text-base"
                 type="number"
                 inputMode="numeric"
                 placeholder="Width (inches)"
@@ -79,7 +79,7 @@ const AddPallet = () => {
               />
               <Input
                 id="length"
-                className="text-base"
+                className="max-sm:text-base"
                 type="number"
                 inputMode="numeric"
                 placeholder="Length (inches)"
@@ -89,12 +89,14 @@ const AddPallet = () => {
               <Input
                 id="amount"
                 type="number"
+                className="max-sm:text-base"
                 inputMode="numeric"
                 placeholder="Current Amount"
                 {...register("amount", { required: true, min: 0 })}
               />
               <Input
                 type="number"
+                className="max-sm:text-base"
                 inputMode="numeric"
                 placeholder="Low Inventory Threshold"
                 {...register("inventoryThreshold", { required: true, min: 0 })}
@@ -102,6 +104,7 @@ const AddPallet = () => {
               <label htmlFor="desc">Description</label>
               <Input
                 type="text"
+                className="max-sm:text-base"
                 id="desc"
                 placeholder="Extra Notes Go Here"
                 {...register("desc", {})}
