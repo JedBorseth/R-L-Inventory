@@ -14,6 +14,7 @@ import { toast } from "./ui/use-toast";
 import { Button } from "./ui/button";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
+import { Checkbox } from "./ui/checkbox";
 
 const AddPallet = () => {
   const { register, handleSubmit } = useForm();
@@ -59,12 +60,13 @@ const AddPallet = () => {
           <div>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-5 pt-5"
+              className="flex flex-col gap-5 pt-5 text-base"
             >
               <label htmlFor="width">Dimensions</label>
               <Input
                 id="width"
                 type="number"
+                inputMode="numeric"
                 placeholder="Width (inches)"
                 {...register("width", { required: true, min: 0 })}
               />
@@ -87,28 +89,23 @@ const AddPallet = () => {
                 {...register("inventoryThreshold", { required: true, min: 0 })}
               />
 
-              <div className="flex items-center text-center text-sm">
-                <label htmlFor="block">Block Pallet</label>
-                <Input
-                  type="checkbox"
-                  id="block"
-                  placeholder="block"
-                  {...register("block", {})}
-                />
-                <label htmlFor="used">Used</label>
-                <Input
-                  type="checkbox"
-                  id="used"
-                  placeholder="used"
-                  {...register("used", {})}
-                />
-                <label htmlFor="heatTreated">Heat Treated Pallet</label>
-                <Input
-                  type="checkbox"
-                  id="heatTreated"
-                  placeholder="Heat Treated Pallet"
-                  {...register("heatTreated", {})}
-                />
+              <div className="flex items-center justify-between gap-10 text-center text-sm">
+                <div className="flex flex-col items-center">
+                  <label htmlFor="block">Block Pallet</label>
+                  <Checkbox id="block" {...register("block", {})} />
+                </div>
+                <div className="flex flex-col items-center">
+                  <label htmlFor="used">Used</label>
+                  <Checkbox type="button" id="used" {...register("used", {})} />
+                </div>
+                <div className="flex flex-col items-center">
+                  <label htmlFor="heatTreated">Heat Treated Pallet</label>
+                  <Checkbox
+                    type="button"
+                    id="heatTreated"
+                    {...register("heatTreated", {})}
+                  />
+                </div>
               </div>
               <label htmlFor="desc">Description</label>
               <Input
