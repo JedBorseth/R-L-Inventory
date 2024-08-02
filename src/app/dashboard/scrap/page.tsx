@@ -38,7 +38,7 @@ export default async function Dashboard() {
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
       <Tabs defaultValue="all">
         <div className="flex items-center">
-          <TabsList>
+          <TabsList className="max-md:hidden">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="dw">DW</TabsTrigger>
             <TabsTrigger value="c">C Flute</TabsTrigger>
@@ -88,7 +88,7 @@ export default async function Dashboard() {
                 Manage scrap material inventory and track usage.
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0 md:p-6">
               <Table>
                 <TableHeader>
                   <TableRow>

@@ -1,6 +1,7 @@
 "use client";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -17,12 +18,16 @@ import { useRouter } from "next/navigation";
 import { Checkbox } from "./ui/checkbox";
 
 const AddPallet = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const router = useRouter();
   const createPallet = api.pallet.create.useMutation({
     onSuccess: () => {
-      console.log("pog");
       router.refresh();
+      reset();
+      toast({
+        title: "Pallet Added",
+        description: "Pallet has been added successfully.",
+      });
     },
   });
   const onSubmit = async (data: FieldValues) => {
@@ -35,6 +40,7 @@ const AddPallet = () => {
       });
       return;
     }
+
     createPallet.mutate({
       length: Number(data.length),
       width: Number(data.width),
@@ -85,28 +91,9 @@ const AddPallet = () => {
               />
               <Input
                 type="number"
-                placeholder="Will email alert when inventory is below"
+                placeholder="Low Inventory Threshold"
                 {...register("inventoryThreshold", { required: true, min: 0 })}
               />
-
-              <div className="flex items-center justify-between gap-10 text-center text-sm">
-                <div className="flex flex-col items-center">
-                  <label htmlFor="block">Block Pallet</label>
-                  <Checkbox id="block" {...register("block", {})} />
-                </div>
-                <div className="flex flex-col items-center">
-                  <label htmlFor="used">Used</label>
-                  <Checkbox type="button" id="used" {...register("used", {})} />
-                </div>
-                <div className="flex flex-col items-center">
-                  <label htmlFor="heatTreated">Heat Treated Pallet</label>
-                  <Checkbox
-                    type="button"
-                    id="heatTreated"
-                    {...register("heatTreated", {})}
-                  />
-                </div>
-              </div>
               <label htmlFor="desc">Description</label>
               <Input
                 type="text"
@@ -115,7 +102,38 @@ const AddPallet = () => {
                 {...register("desc", {})}
               />
 
-              <Button type="submit">Submit</Button>
+              <div className="flex items-center justify-between gap-10 text-center text-sm">
+                <div className="flex flex-col items-center">
+                  <label htmlFor="block">Block Pallet</label>
+                  <Checkbox
+                    id="block"
+                    {...register("block", {})}
+                    className="h-6 w-6"
+                  />
+                </div>
+                <div className="flex flex-col items-center">
+                  <label htmlFor="used">Used</label>
+                  <Checkbox
+                    type="button"
+                    id="used"
+                    {...register("used", {})}
+                    className="h-6 w-6"
+                  />
+                </div>
+                <div className="flex flex-col items-center">
+                  <label htmlFor="heatTreated">Heat Treated Pallet</label>
+                  <Checkbox
+                    type="button"
+                    id="heatTreated"
+                    className="h-6 w-6"
+                    {...register("heatTreated", {})}
+                  />
+                </div>
+              </div>
+
+              <DialogClose asChild>
+                <Button type="submit">Submit</Button>
+              </DialogClose>
             </form>
           </div>
         </DialogHeader>
