@@ -42,6 +42,7 @@ const AddPallet = () => {
       used: Boolean(data.used),
       heatTreated: Boolean(data.heatTreated),
       inventoryThreshold: Number(data.inventoryThreshold),
+      description: String(data.desc),
     });
   };
   return (

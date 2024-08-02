@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { File, ListFilter, MoreHorizontal, PlusCircle } from "lucide-react";
+import { File, ListFilter, MoreHorizontal } from "lucide-react";
 
 import { Badge } from "~/components/ui/badge";
 
