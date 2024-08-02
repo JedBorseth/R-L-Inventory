@@ -71,6 +71,7 @@ const AddPallet = () => {
               <label htmlFor="width">Dimensions</label>
               <Input
                 id="width"
+                className="text-base"
                 type="number"
                 inputMode="numeric"
                 placeholder="Width (inches)"
@@ -78,7 +79,9 @@ const AddPallet = () => {
               />
               <Input
                 id="length"
+                className="text-base"
                 type="number"
+                inputMode="numeric"
                 placeholder="Length (inches)"
                 {...register("length", { required: true, min: 0 })}
               />
@@ -86,11 +89,13 @@ const AddPallet = () => {
               <Input
                 id="amount"
                 type="number"
+                inputMode="numeric"
                 placeholder="Current Amount"
                 {...register("amount", { required: true, min: 0 })}
               />
               <Input
                 type="number"
+                inputMode="numeric"
                 placeholder="Low Inventory Threshold"
                 {...register("inventoryThreshold", { required: true, min: 0 })}
               />

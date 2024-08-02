@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import Sidebar from "~/components/sidebar";
 import Header from "~/components/header";
 import { currentUser } from "@clerk/nextjs/server";

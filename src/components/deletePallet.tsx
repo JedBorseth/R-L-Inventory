@@ -38,7 +38,7 @@ const DeletePallet = ({ id }: { id: number }) => {
             >
               <h1>Are You Sure?</h1>
               <DialogClose asChild>
-                <Button type="submit" variant="secondary">
+                <Button type="submit" variant="destructive">
                   Yes, Im Sure!
                 </Button>
               </DialogClose>
