@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 import { ClerkProvider } from "@clerk/nextjs";
+import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata = {
   title: "R&L Inventory App",
@@ -16,7 +17,9 @@ export default async function RootLayout({
   return (
     <ClerkProvider appearance={{ layout: { shimmer: false } }}>
       <html lang="en" className={`${GeistSans.variable}`}>
-        <body>{children}</body>
+        <body>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </body>
       </html>
     </ClerkProvider>
   );

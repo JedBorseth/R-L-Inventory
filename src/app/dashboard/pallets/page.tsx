@@ -153,7 +153,7 @@ export default async function Dashboard() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DeletePallet />
+                            <DeletePallet id={result.id} />
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>

@@ -12,10 +12,19 @@ import { type FieldValues, useForm } from "react-hook-form";
 import { Input } from "~/components/ui/input";
 import { toast } from "./ui/use-toast";
 import { Button } from "./ui/button";
+import { api } from "~/trpc/react";
+import { useRouter } from "next/navigation";
 
 const AddPallet = () => {
   const { register, handleSubmit } = useForm();
-  const onSubmit = (data: FieldValues) => {
+  const router = useRouter();
+  const createPallet = api.pallet.create.useMutation({
+    onSuccess: () => {
+      console.log("pog");
+      router.refresh();
+    },
+  });
+  const onSubmit = async (data: FieldValues) => {
     if (data.amount <= data.inventoryThreshold) {
       toast({
         variant: "destructive",
@@ -25,7 +34,15 @@ const AddPallet = () => {
       });
       return;
     }
-    console.log(data);
+    createPallet.mutate({
+      length: Number(data.length),
+      width: Number(data.width),
+      amount: Number(data.amount),
+      block: Boolean(data.block),
+      used: Boolean(data.used),
+      heatTreated: Boolean(data.heatTreated),
+      inventoryThreshold: Number(data.inventoryThreshold),
+    });
   };
   return (
     <Dialog>
@@ -43,28 +60,33 @@ const AddPallet = () => {
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col gap-5 pt-5"
             >
+              <label htmlFor="width">Dimensions</label>
               <Input
+                id="width"
                 type="number"
                 placeholder="Width (inches)"
                 {...register("width", { required: true, min: 0 })}
               />
               <Input
+                id="length"
                 type="number"
                 placeholder="Length (inches)"
                 {...register("length", { required: true, min: 0 })}
               />
+              <label htmlFor="amount">Inventory</label>
               <Input
+                id="amount"
                 type="number"
-                placeholder="Current Inventory Count"
+                placeholder="Current Amount"
                 {...register("amount", { required: true, min: 0 })}
               />
               <Input
                 type="number"
-                placeholder="Min Inventory Amount"
+                placeholder="Will email alert when inventory is below"
                 {...register("inventoryThreshold", { required: true, min: 0 })}
               />
 
-              <div className="flex items-center text-center">
+              <div className="flex items-center text-center text-sm">
                 <label htmlFor="block">Block Pallet</label>
                 <Input
                   type="checkbox"
@@ -87,9 +109,11 @@ const AddPallet = () => {
                   {...register("heatTreated", {})}
                 />
               </div>
+              <label htmlFor="desc">Description</label>
               <Input
                 type="text"
-                placeholder="Description"
+                id="desc"
+                placeholder="Extra Notes Go Here"
                 {...register("desc", {})}
               />
 

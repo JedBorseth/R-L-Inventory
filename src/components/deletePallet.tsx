@@ -1,21 +1,26 @@
 "use client";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { PlusCircle } from "lucide-react";
 import React from "react";
-import { type FieldValues, useForm } from "react-hook-form";
-import { Input } from "~/components/ui/input";
-import { toast } from "./ui/use-toast";
+import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
-import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import { api } from "~/trpc/react";
+import { useRouter } from "next/navigation";
 
-const DeletePallet = () => {
-  const { register, handleSubmit } = useForm();
+const DeletePallet = ({ id }: { id: number }) => {
+  const { handleSubmit } = useForm();
+  const router = useRouter();
+  const remove = api.pallet.delete.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+  });
   return (
     <Dialog>
       <DialogTrigger className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
@@ -27,12 +32,16 @@ const DeletePallet = () => {
           <div>
             <form
               onSubmit={handleSubmit(() => {
-                alert("no");
+                remove.mutate(id);
               })}
               className="flex flex-col gap-5 pt-5"
             >
               <h1>Are You Sure?</h1>
-              <Button type="submit">Yes, I am sure!</Button>
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Yes, Im Sure!
+                </Button>
+              </DialogClose>
             </form>
           </div>
         </DialogHeader>

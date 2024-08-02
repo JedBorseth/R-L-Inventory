@@ -35,23 +35,19 @@ export const pallets = sqliteTable("pallets", {
 
 export const stockSheet = sqliteTable("stock_sheet", {
   id: integer("id").primaryKey().notNull().unique(),
-  amount: integer("amount"),
-  width: integer("width"),
-  length: integer("length"),
-  // id
-  // count: number
-  // width
-  // length
-  // usedFor: []string (company name)
-  // color: kraft or white (default kraft)
-  // flute:  B, C, E, F, BC, pt
-  // strength: number
-  // notes: string (optional)
-  // dated added
-  // dated modified
-  // sageId (optional)
-  // inventoryThreshold: number
-  // maxInventoryThreshold: number
+  amount: integer("amount").notNull().default(0),
+  inventoryThreshold: integer("inventoryThreshold").notNull(),
+  maxInventoryThreshold: integer("maxInventoryThreshold"),
+  width: integer("width").notNull(),
+  length: integer("length").notNull(),
+  CompanyUsedFor: text("CompanyUsedFor").$type<string[]>(),
+  color: text("color", { enum: ["kraft", "white"] }),
+  flute: text("flute", { enum: ["B", "C", "E", "F", "BC", "pt"] }),
+  strength: integer("strength"),
+  notes: text("notes"),
+  dateAdded: text("dateAdded").default(sql`(CURRENT_TIMESTAMP)`),
+  dateModified: text("dateModified").default(sql`(CURRENT_TIMESTAMP)`),
+  sageId: text("sageId"),
 });
 
 export const scrapMaterial = sqliteTable("scrap_material", {
@@ -59,12 +55,12 @@ export const scrapMaterial = sqliteTable("scrap_material", {
   amount: integer("amount", { mode: "number" }).notNull(),
   width: integer("width").notNull(),
   length: integer("length").notNull(),
-  CompanyUsedFor: text("CompanyUsedFor"),
+  CompanyUsedFor: text("CompanyUsedFor").$type<string[]>(),
   color: text("color", { enum: ["kraft", "white"] }),
   flute: text("flute", { enum: ["B", "C", "E", "F", "BC", "pt"] }),
   strength: integer("strength"),
   scored: integer("scored", { mode: "boolean" }),
-  scoredAt: text("text", { mode: "json" }).$type<number[]>(),
+  scoredAt: text("scoredAt", { mode: "json" }).$type<number[]>(),
   notes: text("notes"),
   dateAdded: text("dateAdded").default(sql`(CURRENT_TIMESTAMP)`),
   dateModified: text("dateModified").default(sql`(CURRENT_TIMESTAMP)`),
