@@ -18,7 +18,7 @@ const palletZod = z.object({
   inventoryThreshold: z.number(),
   description: z.string(),
 });
-export const palletRouter = createTRPCRouter({
+export const stockRouter = createTRPCRouter({
   create: protectedProcedure
     .input(palletZod)
     .mutation(async ({ ctx, input }) => {

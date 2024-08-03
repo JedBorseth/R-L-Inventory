@@ -30,10 +30,12 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { getScrapMaterial } from "~/server/queries";
+import { api } from "~/trpc/server";
+import { Suspense } from "react";
+import AddScrap from "~/components/addScrap";
+import DeleteItem from "~/components/deleteItem";
 
 export default async function Dashboard() {
-  const results = await getScrapMaterial();
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
       <Tabs defaultValue="all">
@@ -72,12 +74,7 @@ export default async function Dashboard() {
                 Export
               </span>
             </Button>
-            <Button size="sm" className="h-7 gap-1">
-              <PlusCircle className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Add Product
-              </span>
-            </Button>
+            <AddScrap />
           </div>
         </div>
         <TabsContent value="all">
@@ -99,7 +96,7 @@ export default async function Dashboard() {
                     <TableHead>Flute</TableHead>
                     <TableHead>Amount</TableHead>
                     <TableHead className="hidden md:table-cell">
-                      Total S/FT
+                      Scored
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
                       Last Modified
@@ -110,56 +107,15 @@ export default async function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {results.map((result) => (
-                    <TableRow key={result.id}>
-                      <TableCell className="hidden sm:table-cell">
-                        <Image
-                          alt="Product image"
-                          className="aspect-square rounded-md object-cover"
-                          height="64"
-                          src={`https://dummyimage.com/${result.width}x${result.length}`}
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {result.width}x{result.length}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">C</Badge>
-                      </TableCell>
-                      <TableCell>{result.amount}</TableCell>
-                      <TableCell className="hidden md:table-cell">25</TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {result.dateModified}
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <ScrapResults />
+                  </Suspense>
                 </TableBody>
               </Table>
             </CardContent>
             <CardFooter>
               <div className="text-xs text-muted-foreground">
-                Showing <strong>1-10</strong> of{" "}
-                <strong>{results?.length}</strong> products
+                Showing <strong>1-10</strong> of <strong>{1}</strong> products
               </div>
             </CardFooter>
           </Card>
@@ -168,3 +124,57 @@ export default async function Dashboard() {
     </main>
   );
 }
+
+const ScrapResults = async () => {
+  const results = await api.scrap.getLatest();
+  return (
+    <>
+      {results
+        ? results.map((result) => (
+            <TableRow key={result.id}>
+              <TableCell className="hidden sm:table-cell">
+                <Image
+                  alt="Product image"
+                  className={`aspect-square rounded-md object-cover`}
+                  height="50"
+                  src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}`}
+                  width="50"
+                />
+              </TableCell>
+              <TableCell className="font-medium">
+                {result.CompanyUsedFor} {" | "}
+                {result.width}x{result.length}
+              </TableCell>
+              <TableCell>
+                <Badge variant="outline">{result.flute}</Badge>
+              </TableCell>
+              <TableCell>{result.amount}</TableCell>
+              <TableCell className="hidden md:table-cell">
+                <Badge variant="outline">
+                  {result.scoredAt ? "Yes" : "No"}
+                </Badge>
+              </TableCell>
+              <TableCell className="hidden md:table-cell">
+                {new Date(result.dateModified ?? "").toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button aria-haspopup="true" size="icon" variant="ghost">
+                      <MoreHorizontal className="h-4 w-4" />
+                      <span className="sr-only">Toggle menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                    <DeleteItem id={result.id} type="scrap" />
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))
+        : null}
+    </>
+  );
+};

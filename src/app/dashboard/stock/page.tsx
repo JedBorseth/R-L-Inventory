@@ -30,11 +30,11 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { getScrapMaterial } from "~/server/queries";
 import { Suspense } from "react";
+import { api } from "~/trpc/server";
 
 export default async function Dashboard() {
-  const results = await getScrapMaterial();
+  const results = await api.scrap.getLatest();
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
       <Tabs defaultValue="all">
@@ -117,10 +117,10 @@ export default async function Dashboard() {
                         <TableCell className="hidden sm:table-cell">
                           <Image
                             alt="Product image"
-                            className="aspect-square rounded-md object-cover"
-                            height="64"
-                            src={`https://dummyimage.com/${result.width}x${result.length}`}
-                            width="64"
+                            className={`aspect-square rounded-md object-cover`}
+                            height="50"
+                            src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}`}
+                            width="50"
                           />
                         </TableCell>
                         <TableCell className="font-medium">

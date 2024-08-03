@@ -31,14 +31,14 @@ import {
 } from "~/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import AddPallet from "~/components/addPallet";
-import { getPallets } from "~/server/queries";
-import DeletePallet from "~/components/deletePallet";
 import { Suspense } from "react";
+import { api } from "~/trpc/server";
+import DeleteItem from "~/components/deleteItem";
 
 export default async function Dashboard() {
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-      <div className="flex items-center ">
+      <div className="flex items-center">
         <Tabs>
           <TabsList className="max-sm:hidden">
             <TabsTrigger value="all">All</TabsTrigger>
@@ -120,50 +120,54 @@ export default async function Dashboard() {
 }
 
 const PalletResults = async () => {
-  const results = await getPallets();
+  const results = await api.pallet.getLatest();
   return (
     <>
-      {results.map((result) => (
-        <TableRow key={result.id}>
-          <TableCell className="hidden sm:table-cell">
-            <Image
-              alt="Product image"
-              className={`aspect-square rounded-md object-cover ${result.inventoryThreshold > result.amount ? "border border-destructive" : ""}`}
-              height="50"
-              src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}`}
-              width="50"
-            />
-          </TableCell>
-          <TableCell className="font-medium">
-            {result.width}x{result.length} {result.block ? "Block" : ""}
-          </TableCell>
-          <TableCell>
-            <Badge variant="outline">{result.used ? "Yes" : "No"}</Badge>
-          </TableCell>
-          <TableCell>{result.amount}</TableCell>
-          <TableCell className="hidden md:table-cell">
-            <Badge variant="outline">{result.heatTreated ? "Yes" : "No"}</Badge>
-          </TableCell>
-          <TableCell className="hidden md:table-cell">
-            {new Date(result.dateModified ?? "").toLocaleDateString()}
-          </TableCell>
-          <TableCell>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button aria-haspopup="true" size="icon" variant="ghost">
-                  <MoreHorizontal className="h-4 w-4" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-                <DeletePallet id={result.id} />
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </TableCell>
-        </TableRow>
-      ))}
+      {results
+        ? results.map((result) => (
+            <TableRow key={result.id}>
+              <TableCell className="hidden sm:table-cell">
+                <Image
+                  alt="Product image"
+                  className={`aspect-square rounded-md object-cover ${result.inventoryThreshold > result.amount ? "border border-destructive" : ""}`}
+                  height="50"
+                  src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}`}
+                  width="50"
+                />
+              </TableCell>
+              <TableCell className="font-medium">
+                {result.width}x{result.length} {result.block ? "Block" : ""}
+              </TableCell>
+              <TableCell>
+                <Badge variant="outline">{result.used ? "Yes" : "No"}</Badge>
+              </TableCell>
+              <TableCell>{result.amount}</TableCell>
+              <TableCell className="hidden md:table-cell">
+                <Badge variant="outline">
+                  {result.heatTreated ? "Yes" : "No"}
+                </Badge>
+              </TableCell>
+              <TableCell className="hidden md:table-cell">
+                {new Date(result.dateModified ?? "").toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button aria-haspopup="true" size="icon" variant="ghost">
+                      <MoreHorizontal className="h-4 w-4" />
+                      <span className="sr-only">Toggle menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                    <DeleteItem id={result.id} type="pallet" />
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))
+        : null}
     </>
   );
 };

@@ -13,10 +13,26 @@ import { Button } from "./ui/button";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 
-const DeletePallet = ({ id }: { id: number }) => {
+const DeleteItem = ({
+  id,
+  type,
+}: {
+  id: number;
+  type: "pallet" | "scrap" | "stock";
+}) => {
   const { handleSubmit } = useForm();
   const router = useRouter();
-  const remove = api.pallet.delete.useMutation({
+  const removePallet = api.pallet.delete.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+  });
+  const removeScrap = api.scrap.delete.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+  });
+  const removeStock = api.stock.delete.useMutation({
     onSuccess: () => {
       router.refresh();
     },
@@ -32,7 +48,9 @@ const DeletePallet = ({ id }: { id: number }) => {
           <div>
             <form
               onSubmit={handleSubmit(() => {
-                remove.mutate(id);
+                if (type === "pallet") removePallet.mutate(id);
+                if (type === "scrap") removeScrap.mutate(id);
+                if (type === "stock") removeStock.mutate(id);
               })}
               className="flex flex-col gap-5 pt-5"
             >
@@ -50,4 +68,4 @@ const DeletePallet = ({ id }: { id: number }) => {
   );
 };
 
-export default DeletePallet;
+export default DeleteItem;
