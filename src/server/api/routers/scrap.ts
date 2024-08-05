@@ -38,7 +38,7 @@ export const scrapRouter = createTRPCRouter({
       await ctx.db.delete(scrapMaterial).where(eq(scrapMaterial.id, input));
     }),
 
-  getLatest: publicProcedure.query(({ ctx }) => {
+  getLatest: publicProcedure.query(async ({ ctx }) => {
     return ctx.db.query.scrapMaterial.findMany({
       orderBy: (pallets, { desc }) => [desc(pallets.dateModified)],
     });

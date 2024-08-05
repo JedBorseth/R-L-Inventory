@@ -34,6 +34,7 @@ import { api } from "~/trpc/server";
 import { Suspense } from "react";
 import AddScrap from "~/components/addScrap";
 import DeleteItem from "~/components/deleteItem";
+import { Skeleton } from "~/components/ui/skeleton";
 
 export default async function Dashboard() {
   return (
@@ -107,7 +108,28 @@ export default async function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <Suspense fallback={<div>Loading...</div>}>
+                  <Suspense
+                    fallback={
+                      <TableRow>
+                        <TableCell></TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-[100px]" />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-[100px]" />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-[100px]" />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-[100px]" />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-[100px]" />
+                        </TableCell>
+                      </TableRow>
+                    }
+                  >
                     <ScrapResults />
                   </Suspense>
                 </TableBody>

@@ -8,20 +8,22 @@ import {
   ClerkLoaded,
 } from "@clerk/nextjs";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useAnimate } from "framer-motion";
 import React from "react";
 
 export default function Page() {
+  const [scope, animate] = useAnimate();
+
   return (
-    <main className="grid min-h-screen place-items-center">
-      {/* <AuroraBackground> */}
+    <main className="grid min-h-screen place-items-center" ref={scope}>
       <motion.div
-        initial={{ opacity: 0.0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 40, scale: 0.9 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
         transition={{
           delay: 0.3,
           duration: 0.8,
           ease: "easeInOut",
+          bounce: 0.5,
         }}
         className="relative flex flex-col items-center justify-center gap-4 px-4"
       >
@@ -48,6 +50,13 @@ export default function Page() {
               <div className="flex flex-col gap-6">
                 <Link
                   href={"../dashboard"}
+                  onClick={async () => {
+                    await animate("div", {
+                      opacity: 0,
+                      y: 40,
+                      scale: 0.5,
+                    });
+                  }}
                   className="w-fit rounded-full bg-black px-6 py-4 text-white dark:bg-white dark:text-black"
                 >
                   {" "}
@@ -59,7 +68,6 @@ export default function Page() {
           </ClerkLoaded>
         </div>
       </motion.div>
-      {/* </AuroraBackground> */}
     </main>
   );
 }
