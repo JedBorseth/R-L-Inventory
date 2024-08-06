@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { Checkbox } from "./ui/checkbox";
 
 const AddPallet = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, formState } = useForm();
   const router = useRouter();
   const createPallet = api.pallet.create.useMutation({
     onSuccess: () => {
@@ -139,7 +139,7 @@ const AddPallet = () => {
                 </div>
               </div>
 
-              <DialogClose asChild>
+              <DialogClose asChild disabled={formState.isValid ? false : true}>
                 <Button type="submit">Submit</Button>
               </DialogClose>
             </form>

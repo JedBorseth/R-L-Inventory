@@ -16,10 +16,26 @@ import { Button } from "./ui/button";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import { Checkbox } from "./ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { Label } from "./ui/label";
 
 const AddScrap = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, formState } = useForm<FormValues>();
   const router = useRouter();
+
+  type FormValues = {
+    amount: number;
+    width: number;
+    length: number;
+    CompanyUsedFor: string[];
+    color: "kraft" | "white";
+    flute: "B" | "C" | "E" | "F" | "BC" | "pt";
+    strength: number;
+    scored: boolean;
+    scoredAt: number[];
+    description: string;
+  };
+
   const createScrap = api.scrap.create.useMutation({
     onSuccess: () => {
       router.refresh();
@@ -31,16 +47,18 @@ const AddScrap = () => {
     },
   });
   const onSubmit = async (data: FieldValues) => {
-    if (data.amount <= data.inventoryThreshold) {
+    if (data.width <= 0 || data.length <= 0 || data.amount <= 0) {
       toast({
         variant: "destructive",
         title: "Error Adding Pallet",
-        description:
-          "Your inventory amount must be greater than the threshold.",
+        description: "Your values must be greater than 0.",
       });
       return;
     }
+    // Other client side validation can go here
+    createScrap.mutate(data as FormValues);
   };
+
   return (
     <Dialog>
       <DialogTrigger className="inline-flex h-7 items-center justify-center gap-1 whitespace-nowrap rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
@@ -51,7 +69,7 @@ const AddScrap = () => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Pallet Type</DialogTitle>
+          <DialogTitle>Add New Scrap Material</DialogTitle>
           <div>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -74,61 +92,53 @@ const AddScrap = () => {
                 placeholder="Length (inches)"
                 {...register("length", { required: true, min: 0 })}
               />
-              <label htmlFor="amount">Inventory</label>
               <Input
-                id="amount"
                 type="number"
                 className="max-sm:text-base"
                 inputMode="numeric"
-                placeholder="Current Amount"
+                placeholder="Sheet Count"
                 {...register("amount", { required: true, min: 0 })}
               />
-              <Input
-                type="number"
-                className="max-sm:text-base"
-                inputMode="numeric"
-                placeholder="Low Inventory Threshold"
-                {...register("inventoryThreshold", { required: true, min: 0 })}
-              />
+              <label>Flute</label>
+              <RadioGroup
+                defaultValue="bc"
+                id="color"
+                className="justify-items-between grid-cols-2"
+              >
+                <div className="flex items-center space-x-2 max-sm:justify-center">
+                  <RadioGroupItem value="b" id="b" />
+                  <Label htmlFor="b">B</Label>
+                </div>
+                <div className="flex items-center space-x-2 max-sm:justify-center">
+                  <RadioGroupItem value="c" id="c" />
+                  <Label htmlFor="c">C</Label>
+                </div>
+                <div className="flex items-center space-x-2 max-sm:justify-center">
+                  <RadioGroupItem value="e" id="e" />
+                  <Label htmlFor="e">E</Label>
+                </div>
+                <div className="flex items-center space-x-2 max-sm:justify-center">
+                  <RadioGroupItem value="f" id="f" />
+                  <Label htmlFor="f">F</Label>
+                </div>
+                <div className="flex items-center space-x-2 max-sm:justify-center">
+                  <RadioGroupItem value="bc" id="bc" />
+                  <Label htmlFor="bc">BC</Label>
+                </div>
+                <div className="flex items-center space-x-2 max-sm:justify-center">
+                  <RadioGroupItem value="pt" id="pt" />
+                  <Label htmlFor="pt">PT</Label>
+                </div>
+              </RadioGroup>
               <label htmlFor="desc">Description</label>
               <Input
                 type="text"
                 className="max-sm:text-base"
                 id="desc"
                 placeholder="Extra Notes Go Here"
-                {...register("desc", {})}
+                {...register("description", {})}
               />
-
-              <div className="flex items-center justify-between gap-10 text-center text-sm">
-                <div className="flex flex-col items-center">
-                  <label htmlFor="block">Block Pallet</label>
-                  <Checkbox
-                    id="block"
-                    {...register("block", {})}
-                    className="h-6 w-6"
-                  />
-                </div>
-                <div className="flex flex-col items-center">
-                  <label htmlFor="used">Used</label>
-                  <Checkbox
-                    type="button"
-                    id="used"
-                    {...register("used", {})}
-                    className="h-6 w-6"
-                  />
-                </div>
-                <div className="flex flex-col items-center">
-                  <label htmlFor="heatTreated">Heat Treated Pallet</label>
-                  <Checkbox
-                    type="button"
-                    id="heatTreated"
-                    className="h-6 w-6"
-                    {...register("heatTreated", {})}
-                  />
-                </div>
-              </div>
-
-              <DialogClose asChild>
+              <DialogClose asChild disabled={formState.isValid ? false : true}>
                 <Button type="submit">Submit</Button>
               </DialogClose>
             </form>

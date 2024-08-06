@@ -14,9 +14,9 @@ const scrapZod = z.object({
   amount: z.number(),
   color: z.string(),
   flute: z.string(),
-  strength: z.string(),
+  strength: z.number(),
   scored: z.boolean(),
-  CompanyUsedFor: z.string(),
+  CompanyUsedFor: z.string().array(),
   description: z.string(),
 });
 
