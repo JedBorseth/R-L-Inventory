@@ -25,9 +25,9 @@ export const scrapRouter = createTRPCRouter({
     .input(scrapZod)
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(scrapMaterial).values({
-        length: input.length,
-        width: input.width,
-        amount: input.amount,
+        length: Number(input.length),
+        width: Number(input.width),
+        amount: Number(input.amount),
         dateAdded: new Date().toISOString(),
         dateModified: new Date().toISOString(),
       });

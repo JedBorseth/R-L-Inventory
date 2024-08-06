@@ -45,6 +45,13 @@ const AddScrap = () => {
         description: "Pallet has been added successfully.",
       });
     },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error Adding Pallet",
+        description: error.message,
+      });
+    },
   });
   const onSubmit = async (data: FieldValues) => {
     if (data.width <= 0 || data.length <= 0 || data.amount <= 0) {
@@ -56,6 +63,7 @@ const AddScrap = () => {
       return;
     }
     // Other client side validation can go here
+    // this'll error every time bc numbers are still strings
     createScrap.mutate(data as FormValues);
   };
 
