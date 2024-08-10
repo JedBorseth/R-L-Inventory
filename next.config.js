@@ -4,8 +4,14 @@
  */
 await import("./src/env.js");
 
+import withPWAInit from "@ducanh2912/next-pwa";
+
+const withPWA = withPWAInit({
+  dest: "public",
+});
+
 /** @type {import("next").NextConfig} */
-const config = {
+const config = withPWA({
   reactStrictMode: true,
 
   /**
@@ -34,6 +40,6 @@ const config = {
       { hostname: "image.tmdb.org" },
     ],
   },
-};
+});
 
 export default config;

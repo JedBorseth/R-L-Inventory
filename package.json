@@ -19,6 +19,7 @@
     "@algolia/autocomplete-theme-classic": "^1.17.4",
     "@auth/drizzle-adapter": "^1.1.0",
     "@clerk/nextjs": "^5.2.2",
+    "@ducanh2912/next-pwa": "^10.2.8",
     "@hookform/resolvers": "^3.9.0",
     "@libsql/client": "^0.6.2",
     "@radix-ui/react-checkbox": "^1.1.1",
@@ -54,7 +55,6 @@
     "react-instantsearch": "^7.12.1",
     "react-instantsearch-nextjs": "^0.3.7",
     "server-only": "^0.0.1",
-    "simplex-noise": "^4.0.1",
     "sonner": "^1.5.0",
     "superjson": "^2.2.1",
     "tailwind-merge": "^2.3.0",
@@ -76,7 +76,8 @@
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.2",
+    "webpack": "^5.93.0"
   },
   "ct3aMetadata": {
     "initVersion": "7.35.0"
