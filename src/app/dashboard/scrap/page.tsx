@@ -36,6 +36,7 @@ import AddScrap from "~/components/addScrap";
 import DeleteItem from "~/components/deleteItem";
 import { Skeleton } from "~/components/ui/skeleton";
 import SkeletonTableRow from "~/components/skeletonTableRow";
+import EditAmount from "~/components/editAmount";
 
 export default async function Dashboard() {
   return (
@@ -130,7 +131,6 @@ export default async function Dashboard() {
 
 const ScrapResults = async () => {
   const results = await api.scrap.getLatest();
-  console.log(results);
   return (
     <>
       {results
@@ -154,7 +154,9 @@ const ScrapResults = async () => {
                   {result.color === "white" ? "White" : "Kraft"}
                 </Badge>
               </TableCell>
-              <TableCell>{result.amount}</TableCell>
+              <TableCell>
+                <EditAmount result={{ ...result, block: null }} type="scrap" />
+              </TableCell>
               <TableCell className="hidden md:table-cell">
                 <Badge variant="outline">{result.scored ? "Yes" : "No"}</Badge>
               </TableCell>

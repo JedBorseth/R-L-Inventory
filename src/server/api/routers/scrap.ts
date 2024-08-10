@@ -54,4 +54,15 @@ export const scrapRouter = createTRPCRouter({
       orderBy: (pallets, { desc }) => [desc(pallets.dateModified)],
     });
   }),
+  updateAmount: protectedProcedure
+    .input(z.object({ id: z.number(), amount: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(scrapMaterial)
+        .set({
+          amount: input.amount,
+          dateModified: new Date().toISOString(),
+        })
+        .where(eq(scrapMaterial.id, input.id));
+    }),
 });

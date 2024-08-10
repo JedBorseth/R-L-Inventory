@@ -35,6 +35,7 @@ import { Suspense } from "react";
 import { api } from "~/trpc/server";
 import DeleteItem from "~/components/deleteItem";
 import SkeletonTableRow from "~/components/skeletonTableRow";
+import EditAmount from "~/components/editAmount";
 
 export default async function Dashboard() {
   return (
@@ -142,7 +143,9 @@ const PalletResults = async () => {
               <TableCell>
                 <Badge variant="outline">{result.used ? "Yes" : "No"}</Badge>
               </TableCell>
-              <TableCell>{result.amount}</TableCell>
+              <TableCell>
+                <EditAmount result={result} type="pallet" />
+              </TableCell>
               <TableCell className="hidden md:table-cell">
                 <Badge variant="outline">
                   {result.heatTreated ? "Yes" : "No"}

@@ -86,7 +86,6 @@ export const ScrapForm = () => {
     },
     resolver: zodResolver(FormSchema),
   });
-  console.log(form.formState.errors);
   const router = useRouter();
   const createScrap = api.scrap.create.useMutation({
     onSuccess: () => {
@@ -208,8 +207,9 @@ export const ScrapForm = () => {
               </FormItem>
             )}
           />
-          <FormItem className="relative space-y-3">
+          <FormItem className="relative border">
             <FormLabel>Associated Companies</FormLabel>
+            <div className="text-xs text-red-500">unfinshed feature ignore</div>
             <Button
               type="button"
               className="absolute right-0 top-0 h-2 w-2 p-2"

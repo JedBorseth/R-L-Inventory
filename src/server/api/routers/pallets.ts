@@ -49,4 +49,15 @@ export const palletRouter = createTRPCRouter({
       orderBy: (pallets, { desc }) => [desc(pallets.dateModified)],
     });
   }),
+  updateAmount: protectedProcedure
+    .input(z.object({ id: z.number(), amount: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(pallets)
+        .set({
+          amount: input.amount,
+          dateModified: new Date().toISOString(),
+        })
+        .where(eq(pallets.id, input.id));
+    }),
 });
