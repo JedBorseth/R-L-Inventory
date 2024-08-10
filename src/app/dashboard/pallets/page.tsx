@@ -34,6 +34,7 @@ import AddPallet from "~/components/addPallet";
 import { Suspense } from "react";
 import { api } from "~/trpc/server";
 import DeleteItem from "~/components/deleteItem";
+import SkeletonTableRow from "~/components/skeletonTableRow";
 
 export default async function Dashboard() {
   return (
@@ -103,7 +104,7 @@ export default async function Dashboard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<SkeletonTableRow rows={3} cols={5} />}>
                 <PalletResults />
               </Suspense>
             </TableBody>
@@ -148,7 +149,7 @@ const PalletResults = async () => {
                 </Badge>
               </TableCell>
               <TableCell className="hidden md:table-cell">
-                {new Date(result.dateModified ?? "").toLocaleDateString()}
+                {new Date(result.dateModified ?? "").toDateString()}
               </TableCell>
               <TableCell>
                 <DropdownMenu>

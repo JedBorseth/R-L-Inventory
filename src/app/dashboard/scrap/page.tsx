@@ -35,6 +35,7 @@ import { Suspense } from "react";
 import AddScrap from "~/components/addScrap";
 import DeleteItem from "~/components/deleteItem";
 import { Skeleton } from "~/components/ui/skeleton";
+import SkeletonTableRow from "~/components/skeletonTableRow";
 
 export default async function Dashboard() {
   return (
@@ -108,28 +109,7 @@ export default async function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <Suspense
-                    fallback={
-                      <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell>
-                          <Skeleton className="h-4 w-[100px]" />
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton className="h-4 w-[100px]" />
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton className="h-4 w-[100px]" />
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton className="h-4 w-[100px]" />
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton className="h-4 w-[100px]" />
-                        </TableCell>
-                      </TableRow>
-                    }
-                  >
+                  <Suspense fallback={<SkeletonTableRow rows={3} cols={4} />}>
                     <ScrapResults />
                   </Suspense>
                 </TableBody>
@@ -137,7 +117,8 @@ export default async function Dashboard() {
             </CardContent>
             <CardFooter>
               <div className="text-xs text-muted-foreground">
-                Showing <strong>1-10</strong> of <strong>{1}</strong> products
+                Showing <strong>all</strong> scrap material of{" "}
+                <strong>all</strong> types.
               </div>
             </CardFooter>
           </Card>
@@ -149,6 +130,7 @@ export default async function Dashboard() {
 
 const ScrapResults = async () => {
   const results = await api.scrap.getLatest();
+  console.log(results);
   return (
     <>
       {results
@@ -164,20 +146,20 @@ const ScrapResults = async () => {
                 />
               </TableCell>
               <TableCell className="font-medium">
-                {result.CompanyUsedFor} {" | "}
-                {result.width}x{result.length}
+                {result.width}x{result.length} | {result.strength}
+                {result.flute}
               </TableCell>
               <TableCell>
-                <Badge variant="outline">{result.flute}</Badge>
+                <Badge variant="outline">
+                  {result.color === "white" ? "White" : "Kraft"}
+                </Badge>
               </TableCell>
               <TableCell>{result.amount}</TableCell>
               <TableCell className="hidden md:table-cell">
-                <Badge variant="outline">
-                  {result.scoredAt ? "Yes" : "No"}
-                </Badge>
+                <Badge variant="outline">{result.scored ? "Yes" : "No"}</Badge>
               </TableCell>
               <TableCell className="hidden md:table-cell">
-                {new Date(result.dateModified ?? "").toLocaleDateString()}
+                {new Date(result.dateModified ?? "").toDateString()}
               </TableCell>
               <TableCell>
                 <DropdownMenu>

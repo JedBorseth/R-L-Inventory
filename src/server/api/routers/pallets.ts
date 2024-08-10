@@ -41,7 +41,10 @@ export const palletRouter = createTRPCRouter({
       await ctx.db.delete(pallets).where(eq(pallets.id, input));
     }),
 
-  getLatest: publicProcedure.query(({ ctx }) => {
+  getLatest: publicProcedure.query(async ({ ctx }) => {
+    const sleep = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
+    await sleep(1000);
     return ctx.db.query.pallets.findMany({
       orderBy: (pallets, { desc }) => [desc(pallets.dateModified)],
     });

@@ -11,7 +11,7 @@ import { PlusCircle } from "lucide-react";
 import React from "react";
 import { type FieldValues, useForm } from "react-hook-form";
 import { Input } from "~/components/ui/input";
-import { toast } from "./ui/use-toast";
+import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
@@ -24,17 +24,14 @@ const AddPallet = () => {
     onSuccess: () => {
       router.refresh();
       reset();
-      toast({
-        title: "Pallet Added",
+      toast.success("Pallet Added", {
         description: "Pallet has been added successfully.",
       });
     },
   });
   const onSubmit = async (data: FieldValues) => {
     if (data.amount <= data.inventoryThreshold) {
-      toast({
-        variant: "destructive",
-        title: "Error Adding Pallet",
+      toast.error("Error Adding Pallet", {
         description:
           "Your inventory amount must be greater than the threshold.",
       });

@@ -21,6 +21,7 @@ import Breadcrumbs from "~/components/breadCrumbs";
 import { UserButton } from "@clerk/nextjs";
 import { Search } from "~/components/search";
 import "@algolia/autocomplete-theme-classic";
+import { Suspense } from "react";
 
 const Header = async () => {
   return (
@@ -91,7 +92,9 @@ const Header = async () => {
           </nav>
         </SheetContent>
       </Sheet>
-      <Breadcrumbs />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Breadcrumbs />
+      </Suspense>
       <div className="relative ml-auto flex-1 text-muted-foreground md:grow-0">
         <Search />
       </div>

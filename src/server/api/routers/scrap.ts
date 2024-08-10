@@ -8,16 +8,17 @@ import {
 } from "~/server/api/trpc";
 import { scrapMaterial } from "~/server/db/schema";
 
-const scrapZod = z.object({
-  length: z.number(),
-  width: z.number(),
-  amount: z.number(),
-  color: z.string(),
-  flute: z.string(),
-  strength: z.number(),
-  scored: z.boolean(),
-  CompanyUsedFor: z.string().array(),
-  description: z.string(),
+export const scrapZod = z.object({
+  length: z.coerce.number(),
+  width: z.coerce.number(),
+  amount: z.coerce.number(),
+  color: z.enum(["kraft", "white"]),
+  flute: z.enum(["B", "C", "E", "F", "BC", "pt"]),
+  strength: z.coerce.number(),
+  scored: z.coerce.boolean(),
+  scoredAt: z.array(z.coerce.number()),
+  CompanyUsedFor: z.coerce.string().array(),
+  description: z.coerce.string(),
 });
 
 export const scrapRouter = createTRPCRouter({
@@ -25,9 +26,16 @@ export const scrapRouter = createTRPCRouter({
     .input(scrapZod)
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(scrapMaterial).values({
-        length: Number(input.length),
-        width: Number(input.width),
-        amount: Number(input.amount),
+        amount: input.amount,
+        width: input.width,
+        length: input.length,
+        CompanyUsedFor: input.CompanyUsedFor,
+        color: input.color,
+        flute: input.flute,
+        strength: input.strength,
+        scored: input.scored,
+        scoredAt: input.scoredAt,
+        notes: input.description,
         dateAdded: new Date().toISOString(),
         dateModified: new Date().toISOString(),
       });
@@ -39,6 +47,9 @@ export const scrapRouter = createTRPCRouter({
     }),
 
   getLatest: publicProcedure.query(async ({ ctx }) => {
+    const sleep = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
+    await sleep(1000);
     return ctx.db.query.scrapMaterial.findMany({
       orderBy: (pallets, { desc }) => [desc(pallets.dateModified)],
     });
