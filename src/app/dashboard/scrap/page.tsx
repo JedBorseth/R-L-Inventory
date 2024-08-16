@@ -146,8 +146,10 @@ const ScrapResults = async () => {
                 />
               </TableCell>
               <TableCell className="font-medium">
-                {result.width}x{result.length} | {result.strength}
-                {result.flute}
+                {result.width}x{result.length} |{" "}
+                {result.CompanyUsedFor
+                  ? String(result.CompanyUsedFor).split(",")[0]
+                  : `${result.strength}${result.flute}`}
               </TableCell>
               <TableCell>
                 <Badge variant="outline">

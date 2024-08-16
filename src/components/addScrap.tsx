@@ -9,13 +9,11 @@ import {
 } from "~/components/ui/dialog";
 import { PlusCircle } from "lucide-react";
 import React from "react";
-import { useForm, useFieldArray, useWatch, Control } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { Input } from "~/components/ui/input";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { Label } from "./ui/label";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -28,6 +26,13 @@ import {
 } from "~/components/ui/form";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 const AddScrap = () => {
   return (
@@ -118,7 +123,7 @@ export const ScrapForm = () => {
             control={form.control}
             name="width"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Width</FormLabel>
                 <FormControl>
                   <Input
@@ -136,7 +141,7 @@ export const ScrapForm = () => {
             control={form.control}
             name="length"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Length</FormLabel>
                 <FormControl>
                   <Input
@@ -151,12 +156,12 @@ export const ScrapForm = () => {
             )}
           />
         </div>
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
+        <div className="flex gap-10">
           <FormField
             control={form.control}
             name="flute"
             render={({ field }) => (
-              <FormItem className="space-y-3 md:max-w-40">
+              <FormItem className="w-full space-y-3">
                 <FormLabel>Flute</FormLabel>
                 <FormControl>
                   <RadioGroup
@@ -207,23 +212,22 @@ export const ScrapForm = () => {
               </FormItem>
             )}
           />
-          <FormItem className="relative border">
+          <FormItem className="relative w-full px-2">
             <FormLabel>Associated Companies</FormLabel>
-            <div className="text-xs text-red-500">unfinshed feature ignore</div>
             <Button
               type="button"
               className="absolute right-0 top-0 h-2 w-2 p-2"
-              onClick={() => fieldArr.append({ value: "" })}
+              onClick={() => fieldArr.append("")}
             >
               +
             </Button>
             <div className="flex max-h-20 flex-col gap-2 overflow-auto p-2 pr-4">
-              {fieldArr.fields.map(({ id }) => (
+              {fieldArr.fields.map(({ id }, index) => (
                 <Input
                   type="text"
                   placeholder="Company Name"
                   key={id}
-                  {...form.register(`CompanyUsedFor.${Number(id)}`)}
+                  {...form.register(`CompanyUsedFor.${index}`)}
                 />
               ))}
             </div>
@@ -233,16 +237,19 @@ export const ScrapForm = () => {
           <FormField
             name="color"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Color</FormLabel>
-                <FormControl>
-                  <Input
-                    style={{ textTransform: "lowercase" }}
-                    onChange={field.onChange}
-                    placeholder="White/Kraft"
-                    type="text"
-                  />
-                </FormControl>
+                <Select onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select kraft of white" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="kraft">Kraft</SelectItem>
+                    <SelectItem value="white">White</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -251,7 +258,7 @@ export const ScrapForm = () => {
             control={form.control}
             name="strength"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Strength</FormLabel>
                 <FormControl>
                   <Input
@@ -304,31 +311,6 @@ export const ScrapForm = () => {
             )}
           />
         </div>
-        {/* <FormItem>
-          <Label htmlFor="scoreInput" className="space-y-2">
-            Scores: {scoreArr.map((score) => `${score}, `)}
-          </Label>
-          <Input
-            id="scoreInput"
-            onChange={(e) => {
-              setScoreArr(
-                e.target.value.split(",").map((score) => parseInt(score)),
-              );
-            }}
-          />
-
-          <input
-            {...form.register("scoredAt")}
-            className="hidden"
-            value={scoreArr.map((score) => score.toString())}
-          />
-          <input
-            {...form.register("scored")}
-            className="hidden"
-            value={scoreArr.length > 0 ? 1 : 0}
-          />
-          <FormMessage />
-        </FormItem> */}
         {form.formState.isValid ? (
           <DialogClose type="submit" asChild>
             <Button type="submit">Submit</Button>

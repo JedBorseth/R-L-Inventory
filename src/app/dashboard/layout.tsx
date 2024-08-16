@@ -1,10 +1,9 @@
-import { Suspense, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import Sidebar from "~/components/sidebar";
 import Header from "~/components/header";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { Toaster } from "~/components/ui/sonner";
-import Head from "next/head";
 export default async function Layout({ children }: { children: ReactNode }) {
   const user = await currentUser();
   const allowedEmails = ["jedborseth@gmail.com", "jedborseth@outlook.com"];
@@ -23,12 +22,6 @@ export default async function Layout({ children }: { children: ReactNode }) {
   }
   return (
     <>
-      <Head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1"
-        ></meta>
-      </Head>
       <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <Sidebar />
 
@@ -36,6 +29,12 @@ export default async function Layout({ children }: { children: ReactNode }) {
           <Header />
           {children}
         </div>
+
+        {/* <Link href="/dashboard/chat">
+          <Button className="fixed bottom-5 right-5">
+            <MessageSquare />
+          </Button>
+        </Link> */}
         <Toaster richColors duration={3000} />
       </div>
     </>

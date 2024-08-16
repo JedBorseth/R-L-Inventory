@@ -9,6 +9,9 @@ import withPWAInit from "@ducanh2912/next-pwa";
 const withPWA = withPWAInit({
   dest: "public",
   sw: "sw.js",
+  workboxOptions: {
+    disableDevLogs: true,
+  },
 });
 
 /** @type {import("next").NextConfig} */
@@ -20,10 +23,10 @@ const config = withPWA({
    *
    * @see https://github.com/vercel/next.js/issues/41980
    */
-  i18n: {
-    locales: ["en"],
-    defaultLocale: "en",
-  },
+  // i18n: {
+  //   locales: ["en"],
+  //   defaultLocale: "en",
+  // },
   transpilePackages: ["geist"],
 
   images: {
