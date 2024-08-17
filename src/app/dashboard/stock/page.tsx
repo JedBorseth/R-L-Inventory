@@ -32,9 +32,14 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Suspense } from "react";
 import { api } from "~/trpc/server";
+import DeleteItem from "~/components/deleteItem";
+import EditAmount from "~/components/editAmount";
+import SkeletonTableRow from "~/components/skeletonTableRow";
+import AddStock from "~/components/addStock";
+import { formatNum } from "~/lib/utils";
+import ViewDetailed from "~/components/viewDetailed";
 
 export default async function Dashboard() {
-  const results = await api.scrap.getLatest();
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
       <Tabs defaultValue="all">
@@ -73,12 +78,7 @@ export default async function Dashboard() {
                 Export
               </span>
             </Button>
-            <Button size="sm" className="h-7 gap-1">
-              <PlusCircle className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Add Product
-              </span>
-            </Button>
+            <AddStock />
           </div>
         </div>
         <TabsContent value="all">
@@ -111,60 +111,15 @@ export default async function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <Suspense fallback={<TableRow>Loading...</TableRow>}>
-                    {results.map((result) => (
-                      <TableRow key={result.id}>
-                        <TableCell className="hidden sm:table-cell">
-                          <Image
-                            alt="Product image"
-                            className={`aspect-square rounded-md object-cover`}
-                            height="50"
-                            src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}`}
-                            width="50"
-                          />
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          {result.width}x{result.length}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">C</Badge>
-                        </TableCell>
-                        <TableCell>{result.amount}</TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          25
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          {result.dateModified}
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>Edit</DropdownMenuItem>
-                              <DropdownMenuItem>Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                  <Suspense fallback={<SkeletonTableRow rows={3} cols={4} />}>
+                    <StockResults />
                   </Suspense>
                 </TableBody>
               </Table>
             </CardContent>
             <CardFooter>
               <div className="text-xs text-muted-foreground">
-                Showing <strong>1-10</strong> of{" "}
-                <strong>{results?.length}</strong> products
+                Showing <strong>all</strong> stock sheets.
               </div>
             </CardFooter>
           </Card>
@@ -173,3 +128,66 @@ export default async function Dashboard() {
     </main>
   );
 }
+
+const StockResults = async () => {
+  const results = await api.stock.getLatest();
+  return (
+    <>
+      {results
+        ? results.map((result) => (
+            <TableRow key={result.id}>
+              <TableCell className="hidden sm:table-cell">
+                <Image
+                  alt="Product image"
+                  className={`aspect-square rounded-md object-cover`}
+                  height="50"
+                  src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}`}
+                  width="50"
+                />
+              </TableCell>
+              <TableCell className="font-medium">
+                <ViewDetailed
+                  title={`${result.width}x${result.length} | ${
+                    result.CompanyUsedFor
+                      ? String(result.CompanyUsedFor).split(",")[0]
+                      : `${result.strength}${result.flute}`
+                  }`}
+                >
+                  <p className="text-wrap text-xs">{JSON.stringify(result)}</p>
+                </ViewDetailed>
+              </TableCell>
+              <TableCell>
+                <Badge variant="outline">{result.flute?.toUpperCase()}</Badge>
+              </TableCell>
+              <TableCell>
+                <EditAmount result={{ ...result, block: null }} type="stock" />
+              </TableCell>
+              <TableCell className="hidden md:table-cell">
+                <Badge variant="outline">
+                  {formatNum(result.amount * result.width * result.length)}
+                </Badge>
+              </TableCell>
+              <TableCell className="hidden md:table-cell">
+                {new Date(result.dateModified ?? "").toDateString()}
+              </TableCell>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button aria-haspopup="true" size="icon" variant="ghost">
+                      <MoreHorizontal className="h-4 w-4" />
+                      <span className="sr-only">Toggle menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                    <DeleteItem id={result.id} type="stock" />
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))
+        : null}
+    </>
+  );
+};

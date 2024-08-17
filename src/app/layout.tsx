@@ -3,6 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCReactProvider } from "~/trpc/react";
 import type { Metadata, Viewport } from "next";
+import { ThemeProvider } from "~/components/theme-provider";
 
 const APP_NAME = "R&L Inventory App";
 const APP_DEFAULT_TITLE = "R&L Inventory";

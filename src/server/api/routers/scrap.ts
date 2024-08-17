@@ -47,9 +47,6 @@ export const scrapRouter = createTRPCRouter({
     }),
 
   getLatest: publicProcedure.query(async ({ ctx }) => {
-    const sleep = (ms: number) =>
-      new Promise((resolve) => setTimeout(resolve, ms));
-    await sleep(1000);
     return ctx.db.query.scrapMaterial.findMany({
       orderBy: (pallets, { desc }) => [desc(pallets.dateModified)],
     });

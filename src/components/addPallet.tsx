@@ -135,10 +135,18 @@ const AddPallet = () => {
                   />
                 </div>
               </div>
-
-              <DialogClose asChild disabled={formState.isValid ? false : true}>
-                <Button type="submit">Submit</Button>
-              </DialogClose>
+              <div className="flex gap-2">
+                {formState.isValid ? (
+                  <DialogClose type="submit" asChild>
+                    <Button type="submit">Submit</Button>
+                  </DialogClose>
+                ) : (
+                  <Button type="submit">Submit</Button>
+                )}
+                <Button type="reset" onClick={() => reset()} variant="outline">
+                  Reset
+                </Button>
+              </div>
             </form>
           </div>
         </DialogHeader>

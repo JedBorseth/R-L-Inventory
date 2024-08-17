@@ -34,7 +34,7 @@ import {
   SelectValue,
 } from "./ui/select";
 
-const AddScrap = () => {
+const AddStock = () => {
   return (
     <Dialog>
       <DialogTrigger className="inline-flex h-7 items-center justify-center gap-1 whitespace-nowrap rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
@@ -43,22 +43,30 @@ const AddScrap = () => {
           Add Product
         </span>
       </DialogTrigger>
-      <DialogContent className="max-md:min-w-full">
+      <DialogContent className="max-h-screen overflow-y-auto max-md:min-w-full">
         <DialogHeader>
-          <DialogTitle>Add New Scrap Material</DialogTitle>
+          <DialogTitle>Add New Stock Sheet</DialogTitle>
         </DialogHeader>
-        <ScrapForm />
+        <StockForm />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default AddScrap;
+export default AddStock;
 
-export const ScrapForm = () => {
+export const StockForm = () => {
   const FormSchema = z.object({
     amount: z.coerce.number({
       required_error: "Please specify amount",
+      invalid_type_error: "Please enter a valid number",
+    }),
+    inventoryThreshold: z.coerce.number({
+      required_error: "Please specify a minimum inventory",
+      invalid_type_error: "Please enter a valid number",
+    }),
+    maxInventoryThreshold: z.coerce.number({
+      required_error: "Please specify a maximum inventory",
       invalid_type_error: "Please enter a valid number",
     }),
     width: z.coerce.number({
@@ -92,7 +100,7 @@ export const ScrapForm = () => {
     resolver: zodResolver(FormSchema),
   });
   const router = useRouter();
-  const createScrap = api.scrap.create.useMutation({
+  const createStock = api.stock.create.useMutation({
     onSuccess: () => {
       router.refresh();
       form.reset();
@@ -108,7 +116,7 @@ export const ScrapForm = () => {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    createScrap.mutate(data);
+    createStock.mutate(data);
   }
   const fieldArr = useFieldArray({
     control: form.control,
@@ -131,7 +139,7 @@ export const ScrapForm = () => {
                 <FormControl>
                   <Input
                     onChange={field.onChange}
-                    placeholder="width"
+                    placeholder="Width"
                     type="number"
                     inputMode="numeric"
                   />
@@ -149,7 +157,7 @@ export const ScrapForm = () => {
                 <FormControl>
                   <Input
                     onChange={field.onChange}
-                    placeholder="length"
+                    placeholder="Length"
                     type="number"
                     inputMode="numeric"
                   />
@@ -281,7 +289,7 @@ export const ScrapForm = () => {
             control={form.control}
             name="amount"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Amount</FormLabel>
                 <FormControl>
                   <Input
@@ -297,15 +305,53 @@ export const ScrapForm = () => {
           />
           <FormField
             control={form.control}
+            name="inventoryThreshold"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Min Inventory</FormLabel>
+                <FormControl>
+                  <Input
+                    onChange={field.onChange}
+                    placeholder="Minimum Inventory"
+                    type="number"
+                    inputMode="numeric"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex gap-10 max-sm:text-base">
+          <FormField
+            control={form.control}
+            name="maxInventoryThreshold"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Max Inventory</FormLabel>
+                <FormControl>
+                  <Input
+                    onChange={field.onChange}
+                    placeholder="Max Amount"
+                    type="number"
+                    inputMode="numeric"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="description"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Description</FormLabel>
                 <FormControl>
                   <Input
                     onChange={field.onChange}
                     required={false}
-                    placeholder="Scrap material description"
+                    placeholder="Stock material description"
                     className=""
                   />
                 </FormControl>

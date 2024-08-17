@@ -8,7 +8,7 @@ import {
 } from "~/server/api/trpc";
 import { pallets } from "~/server/db/schema";
 
-const palletZod = z.object({
+export const palletZod = z.object({
   length: z.number(),
   width: z.number(),
   amount: z.number(),
@@ -42,9 +42,6 @@ export const palletRouter = createTRPCRouter({
     }),
 
   getLatest: publicProcedure.query(async ({ ctx }) => {
-    const sleep = (ms: number) =>
-      new Promise((resolve) => setTimeout(resolve, ms));
-    await sleep(1000);
     return ctx.db.query.pallets.findMany({
       orderBy: (pallets, { desc }) => [desc(pallets.dateModified)],
     });
