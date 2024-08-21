@@ -140,7 +140,7 @@ export const StockForm = () => {
                   <Input
                     onChange={field.onChange}
                     placeholder="Width"
-                    type="number"
+                    type="text"
                     inputMode="numeric"
                   />
                 </FormControl>
@@ -158,7 +158,7 @@ export const StockForm = () => {
                   <Input
                     onChange={field.onChange}
                     placeholder="Length"
-                    type="number"
+                    type="text"
                     inputMode="numeric"
                   />
                 </FormControl>
@@ -361,10 +361,10 @@ export const StockForm = () => {
           />
         </div>
         {form.formState.isValid ? (
-          <DialogClose type="submit" asChild>
-            <Button type="submit">Submit</Button>
-          </DialogClose>
+          // <DialogClose type="submit" asChild>
+          <Button type="submit">Submit</Button>
         ) : (
+          // </DialogClose>
           <Button type="submit">Submit</Button>
         )}
         <Button

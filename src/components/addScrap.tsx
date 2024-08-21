@@ -132,7 +132,7 @@ export const ScrapForm = () => {
                   <Input
                     onChange={field.onChange}
                     placeholder="width"
-                    type="number"
+                    type="text"
                     inputMode="numeric"
                   />
                 </FormControl>
@@ -150,7 +150,7 @@ export const ScrapForm = () => {
                   <Input
                     onChange={field.onChange}
                     placeholder="length"
-                    type="number"
+                    type="text"
                     inputMode="numeric"
                   />
                 </FormControl>

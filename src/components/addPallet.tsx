@@ -69,7 +69,7 @@ const AddPallet = () => {
               <Input
                 id="width"
                 className="max-sm:text-base"
-                type="number"
+                type="text"
                 inputMode="numeric"
                 placeholder="Width (inches)"
                 {...register("width", { required: true, min: 0 })}
@@ -77,7 +77,7 @@ const AddPallet = () => {
               <Input
                 id="length"
                 className="max-sm:text-base"
-                type="number"
+                type="text"
                 inputMode="numeric"
                 placeholder="Length (inches)"
                 {...register("length", { required: true, min: 0 })}

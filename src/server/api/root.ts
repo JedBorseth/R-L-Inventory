@@ -2,6 +2,7 @@ import { palletRouter } from "~/server/api/routers/pallets";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { stockRouter } from "./routers/stock";
 import { scrapRouter } from "./routers/scrap";
+import { allRouter } from "./routers/all";
 
 /**
  * This is the primary router for your server.
@@ -12,6 +13,7 @@ export const appRouter = createTRPCRouter({
   pallet: palletRouter,
   stock: stockRouter,
   scrap: scrapRouter,
+  all: allRouter,
 });
 
 // export type definition of API
