@@ -66,21 +66,8 @@ export default async function Dashboard() {
           </Button>
         </CardFooter>
       </Card>
-      <Component
-        title="Square Footage"
-        desc="SFt of scrap material in the warehouse"
-        amount={scrapSft}
-        max={1000000000}
-        sft
-      />
-      <Component
-        title="Scrap Material"
-        desc="Total number of scrap items in the warehouse"
-        amount={scrapAmount}
-        max={123000}
-      />
 
-      <Card className="grid-row-4 sm:col-span-2">
+      <Card className="grid-row-3 sm:col-span-2">
         <CardHeader className="pb-3">
           <CardTitle>Scrap Material</CardTitle>
           <CardDescription className="max-w-lg text-balance leading-relaxed">
@@ -94,6 +81,19 @@ export default async function Dashboard() {
           </Button>
         </CardFooter>
       </Card>
+      <Component
+        title="Square Footage"
+        desc="SFt of scrap material in the warehouse"
+        amount={scrapSft}
+        max={1000000000}
+        sft
+      />
+      {/* <Component
+        title="Scrap Material"
+        desc="Total number of scrap items in the warehouse"
+        amount={scrapAmount}
+        max={123000}
+      /> */}
     </main>
   );
 }
@@ -116,7 +116,7 @@ const Component = ({
       <CardHeader className="pb-2">
         <CardDescription>{title}</CardDescription>
         <CardTitle className="text-4xl">
-          <Counter value={amount} />
+          {amount ? <Counter value={amount} /> : "0"}
           {sft ? (
             <span className="text-sm">
               ft<span className="align-super">2</span>

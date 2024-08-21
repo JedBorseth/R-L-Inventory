@@ -25,7 +25,7 @@ const ViewDetailed = ({
       </DialogTrigger>
       <DialogContent className="max-w-screen w-auto">
         <DialogHeader>
-          <DialogTitle>Available Data for Item.</DialogTitle>
+          <DialogTitle>All Data for Item</DialogTitle>
         </DialogHeader>
         <div>{children}</div>
         <DialogClose asChild>

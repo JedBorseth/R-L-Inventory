@@ -30,7 +30,7 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import AddPallet from "~/components/addPallet";
+import AddPallet, { Edit } from "~/components/addPallet";
 import { Suspense } from "react";
 import { api } from "~/trpc/server";
 import DeleteItem from "~/components/deleteItem";
@@ -164,7 +164,7 @@ const PalletResults = async () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                    <Edit id={result.id} />
                     <DeleteItem id={result.id} type="pallet" />
                   </DropdownMenuContent>
                 </DropdownMenu>

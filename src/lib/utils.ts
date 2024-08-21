@@ -9,6 +9,9 @@ export function formatNum(input: number) {
   const formatted = new Intl.NumberFormat().format(input);
   return formatted;
 }
+export function capsFirst(input: string) {
+  return input.charAt(0).toUpperCase() + input.slice(1);
+}
 
 export function customCSVOrder({
   type,

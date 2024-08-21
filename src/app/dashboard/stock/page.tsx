@@ -36,7 +36,7 @@ import DeleteItem from "~/components/deleteItem";
 import EditAmount from "~/components/editAmount";
 import SkeletonTableRow from "~/components/skeletonTableRow";
 import AddStock from "~/components/addStock";
-import { formatNum } from "~/lib/utils";
+import { formatNum, capsFirst } from "~/lib/utils";
 import ViewDetailed from "~/components/viewDetailed";
 
 export default async function Dashboard() {
@@ -100,7 +100,7 @@ export default async function Dashboard() {
                     <TableHead>Flute</TableHead>
                     <TableHead>Amount</TableHead>
                     <TableHead className="hidden md:table-cell">
-                      Total S/FT
+                      Color
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
                       Last Modified
@@ -153,7 +153,27 @@ const StockResults = async () => {
                       : `${result.strength}${result.flute}`
                   }`}
                 >
-                  <p className="text-wrap text-xs">{JSON.stringify(result)}</p>
+                  <>
+                    <p className="space-y-2">
+                      {result.width}x{result.length} | {result.strength}
+                      {result.flute} {result.CompanyUsedFor}
+                    </p>
+                    <p className="space-y-2">{capsFirst(result.color)}</p>
+                    <p className="space-y-2">Min:{result.inventoryThreshold}</p>
+                    <p className="space-y-2">
+                      Max:{result.maxInventoryThreshold}
+                    </p>
+
+                    <p className="space-y-2">Current:{result.amount}</p>
+                    <p className="space-y-2">
+                      Addded: {new Date(result.dateAdded ?? "").toDateString()}
+                    </p>
+                    <p className="space-y-2">
+                      Modified Last:{" "}
+                      {new Date(result.dateModified ?? "").toDateString()}
+                    </p>
+                    <p className="space-y-2">{result.description}</p>
+                  </>
                 </ViewDetailed>
               </TableCell>
               <TableCell>
@@ -163,9 +183,7 @@ const StockResults = async () => {
                 <EditAmount result={{ ...result, block: null }} type="stock" />
               </TableCell>
               <TableCell className="hidden md:table-cell">
-                <Badge variant="outline">
-                  {formatNum(result.amount * result.width * result.length)}
-                </Badge>
+                <Badge variant="outline">{capsFirst(result.color)}</Badge>
               </TableCell>
               <TableCell className="hidden md:table-cell">
                 {new Date(result.dateModified ?? "").toDateString()}

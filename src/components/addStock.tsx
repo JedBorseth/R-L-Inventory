@@ -379,3 +379,7 @@ export const StockForm = () => {
     </Form>
   );
 };
+
+export const Edit = () => {
+  return <></>;
+};
