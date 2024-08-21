@@ -31,14 +31,19 @@ export function Search() {
       future={{ preserveSharedStateOnUnmount: true }}
     >
       {/* <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search for products"
-        /> */}
-      <PlaceholdersAndVanishInput
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search for products"
+      /> */}
+      {/* <PlaceholdersAndVanishInput
         placeholders={placeholders}
         onChange={handleChange}
         onSubmit={onSubmit}
+      /> */}
+      <Input
+        type="search"
+        placeholder="Search..."
+        className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
       />
 
       <Configure hitsPerPage={3} query={query} />
