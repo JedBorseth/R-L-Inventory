@@ -361,10 +361,10 @@ export const StockForm = () => {
           />
         </div>
         {form.formState.isValid ? (
-          // <DialogClose type="submit" asChild>
-          <Button type="submit">Submit</Button>
+          <DialogClose type="submit" asChild>
+            <Button type="submit">Submit</Button>
+          </DialogClose>
         ) : (
-          // </DialogClose>
           <Button type="submit">Submit</Button>
         )}
         <Button
