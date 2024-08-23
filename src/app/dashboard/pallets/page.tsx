@@ -40,83 +40,87 @@ import EditAmount from "~/components/editAmount";
 export default async function Dashboard() {
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-      <div className="flex items-center">
-        <Tabs>
+      <Tabs defaultValue="all">
+        <div className="flex items-center">
           <TabsList className="max-sm:hidden">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="dw">Block</TabsTrigger>
             <TabsTrigger value="c">Heat Treated</TabsTrigger>
             <TabsTrigger value="b">New</TabsTrigger>
           </TabsList>
-        </Tabs>
-        <div className="ml-auto flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-7 gap-1">
-                <ListFilter className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Filter
-                </span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuCheckboxItem checked>Kraft</DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem>White</DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem>Other Filters</DropdownMenuCheckboxItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Button size="sm" variant="outline" className="h-7 gap-1">
-            <File className="h-3.5 w-3.5" />
-            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              Export csv
-            </span>
-          </Button>
-          <AddPallet />
-        </div>
-      </div>
-      <Card x-chunk="dashboard-06-chunk-0">
-        <CardHeader>
-          <CardTitle>Pallet Tracker</CardTitle>
-          <CardDescription>
-            Manage pallet inventory and track pallet usage.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-0 md:p-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="hidden w-[100px] sm:table-cell">
-                  <span className="sr-only">Image</span>
-                </TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Used</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Heat Treated
-                </TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Last Modified
-                </TableHead>
-                <TableHead>
-                  <span className="sr-only">Actions</span>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <Suspense fallback={<SkeletonTableRow rows={3} cols={5} />}>
-                <PalletResults />
-              </Suspense>
-            </TableBody>
-          </Table>
-        </CardContent>
-        <CardFooter>
-          <div className="text-xs text-muted-foreground">
-            Showing <strong>1-10</strong> of <strong>{1}</strong> products
+          <div className="ml-auto flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-7 gap-1">
+                  <ListFilter className="h-3.5 w-3.5" />
+                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                    Filter
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuCheckboxItem checked>
+                  Kraft
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem>White</DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem>
+                  Other Filters
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button size="sm" variant="outline" className="h-7 gap-1">
+              <File className="h-3.5 w-3.5" />
+              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                Export csv
+              </span>
+            </Button>
+            <AddPallet />
           </div>
-        </CardFooter>
-      </Card>
+        </div>
+        <Card x-chunk="dashboard-06-chunk-0" className="mt-2">
+          <CardHeader>
+            <CardTitle>Pallet Tracker</CardTitle>
+            <CardDescription>
+              Manage pallet inventory and track pallet usage.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0 md:p-6">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="hidden w-[100px] sm:table-cell">
+                    <span className="sr-only">Image</span>
+                  </TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Used</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    Heat Treated
+                  </TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    Last Modified
+                  </TableHead>
+                  <TableHead>
+                    <span className="sr-only">Actions</span>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <Suspense fallback={<SkeletonTableRow rows={3} cols={5} />}>
+                  <PalletResults />
+                </Suspense>
+              </TableBody>
+            </Table>
+          </CardContent>
+          <CardFooter>
+            <div className="text-xs text-muted-foreground">
+              Showing <strong>1-10</strong> of <strong>{1}</strong> products
+            </div>
+          </CardFooter>
+        </Card>
+      </Tabs>
     </main>
   );
 }

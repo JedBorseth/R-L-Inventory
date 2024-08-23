@@ -181,8 +181,8 @@ const ScrapResults = async () => {
       </CardContent>
       <CardFooter>
         <div className="text-xs text-muted-foreground">
-          Showing <strong>all</strong> scrap material of <strong>all</strong>{" "}
-          types.
+          Showing <strong>{results.length}</strong> scrap material(s) of{" "}
+          <strong>all</strong> types.
         </div>
       </CardFooter>
     </Card>

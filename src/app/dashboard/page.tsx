@@ -1,4 +1,6 @@
+"use client";
 import Link from "next/link";
+import { useEffect } from "react";
 import Counter from "~/components/animatedNum";
 import { Button } from "~/components/ui/button";
 import {
@@ -11,84 +13,83 @@ import {
 } from "~/components/ui/card";
 
 import { Progress } from "~/components/ui/progress";
-import { api } from "~/trpc/server";
+import { api } from "~/trpc/react";
+import { createSwapy } from "swapy";
 
-export default async function Dashboard() {
-  const data = await api.all.getEverything();
-  const stockAmount = data.stock.reduce((acc, obj) => acc + obj.amount, 0);
-  const palletAmount = data.pallets.reduce((acc, obj) => acc + obj.amount, 0);
+export default function Dashboard() {
+  const data = api.all.getEverything.useQuery().data!;
+  // const stockAmount = data.stock.reduce((acc, obj) => acc + obj.amount, 0);
+  // const palletAmount = data.pallets.reduce((acc, obj) => acc + obj.amount, 0);
 
-  const scrapSft = data.scrap.reduce(
-    (acc, obj) => acc + obj.width * obj.length * obj.amount,
-    0,
-  );
-  const scrapAmount = data.scrap.reduce((acc, obj) => acc + obj.amount, 0);
-
+  // const scrapSft = data.scrap.reduce(
+  //   (acc, obj) => acc + obj.width * obj.length * obj.amount,
+  //   0,
+  // );
+  useEffect(() => {
+    const container = document.querySelector("#swapy-container")!;
+    const swapy = createSwapy(container);
+    swapy.onSwap(({ data }) => {
+      localStorage.setItem("slotItem", JSON.stringify(data.object));
+    });
+  }, []);
   return (
-    <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
-      <Card className="sm:col-span-2">
-        <CardHeader className="pb-3">
-          <CardTitle>Cardboard Stock</CardTitle>
-          <CardDescription className="max-w-lg text-balance leading-relaxed">
-            Introducing Our Dynamic Orders Dashboard for Seamless Management and
-            Insightful Analysis.
-          </CardDescription>
-        </CardHeader>
-        <CardFooter>
-          <Button>
-            <Link href="/dashboard/stock">Visit Stock Page</Link>
-          </Button>
-        </CardFooter>
+    <main
+      className="grid flex-1 grid-cols-1 items-start gap-4 p-4 sm:grid-cols-2 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3"
+      id="swapy-container"
+    >
+      <Card data-swapy-slot="one">
+        <BigCard
+          title="Cardboard Stock"
+          desc="Introducing Our Dynamic Orders Dashboard for Seamless Management and
+            Insightful Analysis."
+          link="/dashboard/stock"
+          linkTitle="Visit Stock Page"
+        />
       </Card>
-      <Component
-        title="Stock"
-        desc="Your total amount of cardboard stock in the warehouse"
-        amount={stockAmount}
-        max={10000}
-      />
-      <Component
-        title="Pallets"
-        desc="Estimated number of pallets on hand"
-        amount={palletAmount}
-        max={5000}
-      />
-      <Card className="grid-row-3 sm:col-span-2">
-        <CardHeader className="pb-3">
-          <CardTitle>Pallet Tracker</CardTitle>
-          <CardDescription className="max-w-lg text-balance leading-relaxed">
-            Introducing Our Dynamic Orders Dashboard for Seamless Management and
-            Insightful Analysis.
-          </CardDescription>
-        </CardHeader>
-        <CardFooter>
-          <Button>
-            <Link href="/dashboard/pallets">Visit Pallet Tracker</Link>
-          </Button>
-        </CardFooter>
+      <Card data-swapy-slot="two">
+        <SmallCard
+          title="Stock"
+          desc="Your total amount of cardboard stock in the warehouse"
+          amount={123123}
+          max={10000}
+        />
       </Card>
-
-      <Card className="grid-row-3 sm:col-span-2">
-        <CardHeader className="pb-3">
-          <CardTitle>Scrap Material</CardTitle>
-          <CardDescription className="max-w-lg text-balance leading-relaxed">
-            Introducing Our Dynamic Orders Dashboard for Seamless Management and
-            Insightful Analysis.
-          </CardDescription>
-        </CardHeader>
-        <CardFooter>
-          <Button>
-            <Link href="/dashboard/scrap">Visit Scrap Page</Link>
-          </Button>
-        </CardFooter>
+      <Card data-swapy-slot="three">
+        <SmallCard
+          title="Pallets"
+          desc="Estimated number of pallets on hand"
+          amount={1234}
+          max={5000}
+        />
       </Card>
-      <Component
-        title="Square Footage"
-        desc="SFt of scrap material in the warehouse"
-        amount={scrapSft}
-        max={1000000000}
-        sft
-      />
-      {/* <Component
+      <Card data-swapy-slot="four">
+        <BigCard
+          title="Pallet Tracker"
+          desc=" Introducing Our Dynamic Orders Dashboard for Seamless Management and
+        Insightful Analysis."
+          link="/dashboard/pallets"
+          linkTitle="Visit Pallet Tracker"
+        />
+      </Card>
+      <Card data-swapy-slot="five">
+        <BigCard
+          title="Scrap Material"
+          desc="Introducing Our Dynamic Orders Dashboard for Seamless Management and
+        Insightful Analysis."
+          link="/dashboard/stock"
+          linkTitle="Visit Stock Page"
+        />
+      </Card>
+      <Card data-swapy-slot="six">
+        <SmallCard
+          title="Square Footage"
+          desc="SFt of scrap material in the warehouse"
+          amount={123124123}
+          max={1000000000}
+          sft
+        />
+      </Card>
+      {/* <SmallCard
         title="Scrap Material"
         desc="Total number of scrap items in the warehouse"
         amount={scrapAmount}
@@ -98,7 +99,7 @@ export default async function Dashboard() {
   );
 }
 
-const Component = ({
+const SmallCard = ({
   title,
   amount,
   desc,
@@ -111,12 +112,13 @@ const Component = ({
   max: number;
   sft?: boolean;
 }) => {
+  amount = Math.floor(amount);
   return (
-    <Card>
+    <div className={`${sft ? "col-span-2" : null}`} data-swapy-item={title}>
       <CardHeader className="pb-2">
         <CardDescription>{title}</CardDescription>
         <CardTitle className="text-4xl">
-          {amount ? <Counter value={amount} /> : "0"}
+          {<Counter value={amount} /> ? amount : <Counter value={amount} />}
           {sft ? (
             <span className="text-sm">
               ft<span className="align-super">2</span>
@@ -129,6 +131,34 @@ const Component = ({
       </CardContent>
       <CardFooter>
         <Progress value={(amount / max) * 100} aria-label="" />
+      </CardFooter>
+    </div>
+  );
+};
+
+const BigCard = ({
+  title,
+  desc,
+  link,
+  linkTitle,
+}: {
+  title: string;
+  desc: string;
+  link: string;
+  linkTitle: string;
+}) => {
+  return (
+    <Card className="grid-row-5 max-sm:col-span-2" data-swapy-item={title}>
+      <CardHeader className="pb-3">
+        <CardTitle>{title}</CardTitle>
+        <CardDescription className="max-w-lg text-balance leading-relaxed">
+          {desc}
+        </CardDescription>
+      </CardHeader>
+      <CardFooter>
+        <Button>
+          <Link href={link}>{linkTitle}</Link>
+        </Button>
       </CardFooter>
     </Card>
   );

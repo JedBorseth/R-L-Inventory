@@ -143,6 +143,9 @@ importers:
       superjson:
         specifier: ^2.2.1
         version: 2.2.1
+      swapy:
+        specifier: ^0.1.1
+        version: 0.1.1
       tailwind-merge:
         specifier: ^2.3.0
         version: 2.3.0
@@ -4169,6 +4172,9 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  swapy@0.1.1:
+    resolution: {integrity: sha512-iurSCHQnTgw3Jk663AFx9ZAcu5mFCUJvDBpN2aUn1U6Ec8zo8vlqtXDGLg7GH50zx5SdBf28DepKZMhw3TS1dw==}
 
   swr@2.2.5:
     resolution: {integrity: sha512-QtxqyclFeAsxEUeZIYmsaQ0UjimSq1RZ9Un7I68/0ClKK/U3LoyQunwkQfJZr2fc22DfIXLNDc2wFyTEikCUpg==}
@@ -8808,6 +8814,8 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  swapy@0.1.1: {}
 
   swr@2.2.5(react@18.3.1):
     dependencies:
