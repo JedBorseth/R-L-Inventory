@@ -4,17 +4,18 @@
 import { Highlight } from "react-instantsearch";
 import Image from "next/image";
 
-export const Hit = ({ hit }: any) => {
+type HitProps = {
+  hit: any;
+};
+export const Hit = ({ hit }: HitProps) => {
   return (
-    <article className="flex w-full flex-wrap gap-2">
-      {/* <Image src={hit.poster_path} width={50} height={28} alt="Movie Poster" /> */}
-      <div className="hit-title flex-1">
-        <Highlight attribute="title" hit={hit} />
+    <article className="flex w-full gap-2">
+      <div className="flex-1">
+        <Highlight attribute="width" hit={hit} />
+        x
+        <Highlight attribute="length" hit={hit} />
       </div>
-      <div className="">{`${String(hit.overview).slice(0, 30)}...`}</div>
-      <div className="hit-release_date">
-        {/* <Highlight attribute="release_date" hit={hit} /> */}
-      </div>
+      <div>| Scrap</div>
     </article>
   );
 };

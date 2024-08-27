@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect } from "react";
+import { use, useEffect, useState } from "react";
 import Counter from "~/components/animatedNum";
 import { Button } from "~/components/ui/button";
 import {
@@ -17,20 +17,14 @@ import { api } from "~/trpc/react";
 import { createSwapy } from "swapy";
 
 export default function Dashboard() {
-  const data = api.all.getEverything.useQuery().data!;
-  // const stockAmount = data.stock.reduce((acc, obj) => acc + obj.amount, 0);
-  // const palletAmount = data.pallets.reduce((acc, obj) => acc + obj.amount, 0);
-
-  // const scrapSft = data.scrap.reduce(
-  //   (acc, obj) => acc + obj.width * obj.length * obj.amount,
-  //   0,
-  // );
+  const res = api.all.getTotals.useQuery();
   useEffect(() => {
     const container = document.querySelector("#swapy-container")!;
     const swapy = createSwapy(container);
-    swapy.onSwap(({ data }) => {
-      localStorage.setItem("slotItem", JSON.stringify(data.object));
-    });
+    // swapy.onSwap(({ data }) => {
+    //   localStorage.setItem("slotItem", JSON.stringify(data.object));
+    // });
+    // ------ make swappy persistent
   }, []);
   return (
     <main
@@ -50,16 +44,16 @@ export default function Dashboard() {
         <SmallCard
           title="Stock"
           desc="Your total amount of cardboard stock in the warehouse"
-          amount={123123}
-          max={10000}
+          amount={res.data?.stock ?? 0}
+          max={10}
         />
       </Card>
       <Card data-swapy-slot="three">
         <SmallCard
           title="Pallets"
           desc="Estimated number of pallets on hand"
-          amount={1234}
-          max={5000}
+          amount={res.data?.pallets ?? 0}
+          max={10}
         />
       </Card>
       <Card data-swapy-slot="four">
@@ -82,11 +76,10 @@ export default function Dashboard() {
       </Card>
       <Card data-swapy-slot="six">
         <SmallCard
-          title="Square Footage"
-          desc="SFt of scrap material in the warehouse"
-          amount={123124123}
-          max={1000000000}
-          sft
+          title="Scrap Material"
+          desc="Number of scrap material items  in the warehouse"
+          amount={res.data?.scrap ?? 0}
+          max={10}
         />
       </Card>
       {/* <SmallCard
@@ -118,7 +111,7 @@ const SmallCard = ({
       <CardHeader className="pb-2">
         <CardDescription>{title}</CardDescription>
         <CardTitle className="text-4xl">
-          {<Counter value={amount} /> ? amount : <Counter value={amount} />}
+          {amount}
           {sft ? (
             <span className="text-sm">
               ft<span className="align-super">2</span>
