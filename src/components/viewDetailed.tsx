@@ -23,7 +23,7 @@ const ViewDetailed = ({
       <DialogTrigger>
         <span className="">{title}</span>
       </DialogTrigger>
-      <DialogContent className="max-w-screen w-auto">
+      <DialogContent className="max-md:min-w-full">
         <DialogHeader>
           <DialogTitle>All Data for Item</DialogTitle>
         </DialogHeader>

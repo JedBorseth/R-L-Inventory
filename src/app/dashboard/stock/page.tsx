@@ -35,7 +35,7 @@ import { api } from "~/trpc/server";
 import DeleteItem from "~/components/deleteItem";
 import EditAmount from "~/components/editAmount";
 import SkeletonTableRow from "~/components/skeletonTableRow";
-import AddStock from "~/components/addStock";
+import AddStock, { Edit } from "~/components/addStock";
 import { formatNum, capsFirst } from "~/lib/utils";
 import ViewDetailed from "~/components/viewDetailed";
 
@@ -198,7 +198,7 @@ const StockResults = async () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                    {/* <Edit id={result.id} /> */}
                     <DeleteItem id={result.id} type="stock" />
                   </DropdownMenuContent>
                 </DropdownMenu>

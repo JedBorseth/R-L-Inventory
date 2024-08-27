@@ -70,8 +70,8 @@ export default function Dashboard() {
           title="Scrap Material"
           desc="Introducing Our Dynamic Orders Dashboard for Seamless Management and
         Insightful Analysis."
-          link="/dashboard/stock"
-          linkTitle="Visit Stock Page"
+          link="/dashboard/scrap"
+          linkTitle="Visit Scrap Page"
         />
       </Card>
       <Card data-swapy-slot="six">

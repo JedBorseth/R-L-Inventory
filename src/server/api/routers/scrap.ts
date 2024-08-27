@@ -62,4 +62,44 @@ export const scrapRouter = createTRPCRouter({
         })
         .where(eq(scrapMaterial.id, input.id));
     }),
+  getById: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.query.scrapMaterial.findFirst({
+        where: eq(scrapMaterial.id, input.id),
+      });
+    }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.coerce.number(),
+        length: z.coerce.number(),
+        width: z.coerce.number(),
+        amount: z.coerce.number(),
+        color: z.enum(["kraft", "white"]),
+        flute: z.enum(["B", "C", "E", "F", "BC", "pt"]),
+        strength: z.coerce.number(),
+        scored: z.coerce.boolean(),
+        scoredAt: z.array(z.coerce.number()),
+        CompanyUsedFor: z.coerce.string().array(),
+        description: z.coerce.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(scrapMaterial)
+        .set({
+          length: input.length,
+          width: input.width,
+          color: input.color,
+          flute: input.flute,
+          strength: input.strength,
+          CompanyUsedFor: input.CompanyUsedFor,
+          notes: input.description,
+          scored: input.scored,
+          amount: input.amount,
+          dateModified: new Date().toISOString(),
+        })
+        .where(eq(scrapMaterial.id, input.id));
+    }),
 });

@@ -113,9 +113,6 @@ importers:
       instantsearch.css:
         specifier: ^8.3.0
         version: 8.3.0
-      instantsearch.js:
-        specifier: ^4.74.0
-        version: 4.74.0(algoliasearch@4.24.0)
       lucide-react:
         specifier: ^0.400.0
         version: 0.400.0(react@18.3.1)
@@ -1984,9 +1981,6 @@ packages:
   '@types/google.maps@3.55.11':
     resolution: {integrity: sha512-F3VuPtjKj4UGuyym75pqmgPBOHbT/i7I6/D+4DdtSzbeu2aWZG1ENwpbZOd46uO+PSAz9flJEhxxi+b4MVb4gQ==}
 
-  '@types/google.maps@3.55.12':
-    resolution: {integrity: sha512-Q8MsLE+YYIrE1H8wdN69YHHAF8h7ApvF5MiMXh/zeCpP9Ut745mV9M0F4X4eobZ2WJe9k8tW2ryYjLa87IO2Sg==}
-
   '@types/hogan.js@3.0.5':
     resolution: {integrity: sha512-/uRaY3HGPWyLqOyhgvW9Aa43BNnLZrNeQxl2p8wqId4UHMfPKolSB+U7BlZyO1ng7MkLnyEAItsBzCG0SDhqrA==}
 
@@ -2194,11 +2188,6 @@ packages:
 
   algoliasearch-helper@3.22.2:
     resolution: {integrity: sha512-3YQ6eo7uYOCHeQ2ZpD+OoT3aJJwMNKEnwtu8WMzm81XmBOSCwRjQditH9CeSOQ38qhHkuGw23pbq+kULkIJLcw==}
-    peerDependencies:
-      algoliasearch: '>= 3.1 < 6'
-
-  algoliasearch-helper@3.22.4:
-    resolution: {integrity: sha512-fvBCywguW9f+939S6awvRMstqMF1XXcd2qs1r1aGqL/PJ1go/DqN06tWmDVmhCDqBJanm++imletrQWf0G2S1g==}
     peerDependencies:
       algoliasearch: '>= 3.1 < 6'
 
@@ -3137,19 +3126,11 @@ packages:
   instantsearch-ui-components@0.7.0:
     resolution: {integrity: sha512-4dHmCFbKWap5iSR2VmF5pSBECGQbAa8sPMoazMihYY2/0ahVzdHrOOtT8/hferG1A/xTT8nzfU7PIg+8lomNsA==}
 
-  instantsearch-ui-components@0.9.0:
-    resolution: {integrity: sha512-ugQ+XdPx3i3Sxu+woRo6tPE0Fz/kWd4KblTUfZD1TZZBsm/8qFvcbg5dVBDvXX9v7ntoyugXCzC/XCZMzrSkig==}
-
   instantsearch.css@8.3.0:
     resolution: {integrity: sha512-mdrfA4pw+6YNvoimibCMJWDgrxOreCzKSUjyQgyvZljFzqpCxcKF5ZApIt/L//3804C55NvXncX2zsZezAS8kA==}
 
   instantsearch.js@4.73.1:
     resolution: {integrity: sha512-sO+eck5STiHiDFaNNoYzd62RDJwINgoi3yyOcEBi7PCs0rrpcj4hw0lTuw30cqloNjcM63exGdcRXX5r7Hl49g==}
-    peerDependencies:
-      algoliasearch: '>= 3.1 < 6'
-
-  instantsearch.js@4.74.0:
-    resolution: {integrity: sha512-IbKAvnQ03cxb1Ni1OpLv6Yuu1W7Cu1zGru77rvgzYyPsurknpjQHdBicszSZlKaK/zND7D5vhSNZoliiz9nuEQ==}
     peerDependencies:
       algoliasearch: '>= 3.1 < 6'
 
@@ -6436,8 +6417,6 @@ snapshots:
 
   '@types/google.maps@3.55.11': {}
 
-  '@types/google.maps@3.55.12': {}
-
   '@types/hogan.js@3.0.5': {}
 
   '@types/json-schema@7.0.15': {}
@@ -6703,11 +6682,6 @@ snapshots:
       require-from-string: 2.0.2
 
   algoliasearch-helper@3.22.2(algoliasearch@4.24.0):
-    dependencies:
-      '@algolia/events': 4.0.1
-      algoliasearch: 4.24.0
-
-  algoliasearch-helper@3.22.4(algoliasearch@4.24.0):
     dependencies:
       '@algolia/events': 4.0.1
       algoliasearch: 4.24.0
@@ -7850,10 +7824,6 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.24.7
 
-  instantsearch-ui-components@0.9.0:
-    dependencies:
-      '@babel/runtime': 7.24.7
-
   instantsearch.css@8.3.0: {}
 
   instantsearch.js@4.73.1(algoliasearch@4.24.0):
@@ -7869,22 +7839,6 @@ snapshots:
       htm: 3.1.1
       instantsearch-ui-components: 0.7.0
       preact: 10.11.3
-      qs: 6.9.7
-      search-insights: 2.15.0
-
-  instantsearch.js@4.74.0(algoliasearch@4.24.0):
-    dependencies:
-      '@algolia/events': 4.0.1
-      '@types/dom-speech-recognition': 0.0.1
-      '@types/google.maps': 3.55.12
-      '@types/hogan.js': 3.0.5
-      '@types/qs': 6.9.15
-      algoliasearch: 4.24.0
-      algoliasearch-helper: 3.22.4(algoliasearch@4.24.0)
-      hogan.js: 3.0.2
-      htm: 3.1.1
-      instantsearch-ui-components: 0.9.0
-      preact: 10.22.1
       qs: 6.9.7
       search-insights: 2.15.0
 

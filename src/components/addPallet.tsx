@@ -38,15 +38,13 @@ const AddPallet = () => {
       });
       return;
     }
-    // console.log(data);
-    // return;
     createPallet.mutate({
       length: Number(data.length),
       width: Number(data.width),
       amount: Number(data.amount),
-      block: data.block === "on" ? true : false,
-      used: data.used == "on" ? true : false,
-      heatTreated: data.heatTreated === "on" ? true : false,
+      block: data.block ? true : false,
+      used: data.used ? true : false,
+      heatTreated: data.heatTreated ? true : false,
       inventoryThreshold: Number(data.inventoryThreshold),
       description: String(data.desc),
     });
@@ -192,7 +190,6 @@ export default AddPallet;
 
 export const Edit = ({ id }: { id: number }) => {
   const data = api.pallet.getById.useQuery({ id: id });
-  console.log(data);
   const form = useForm({
     values: {
       desc: data.data?.description,
@@ -207,24 +204,23 @@ export const Edit = ({ id }: { id: number }) => {
   });
   const router = useRouter();
   const createPallet = api.pallet.update.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       router.refresh();
       form.reset();
-      toast.success("Pallet Added", {
-        description: "Pallet has been added successfully.",
+      toast.success("Edit Success", {
+        description: "Pallet has been edited successfully.",
       });
+      await data.refetch();
     },
   });
   const onSubmit = async (data: FieldValues) => {
     if (data.amount <= data.inventoryThreshold) {
-      toast.error("Error Adding Pallet", {
+      toast.error("Error Editing Pallet", {
         description:
           "Your inventory amount must be greater than the threshold.",
       });
       return;
     }
-    console.log(data);
-    return;
 
     createPallet.mutate({
       id: id,
@@ -245,7 +241,7 @@ export const Edit = ({ id }: { id: number }) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Pallet Type</DialogTitle>
+          <DialogTitle>Edit Pallet Data</DialogTitle>
           <div>
             <Form {...form}>
               <form
@@ -302,10 +298,14 @@ export const Edit = ({ id }: { id: number }) => {
                     <FormField
                       control={form.control}
                       name="block"
+                      defaultValue={data.data?.block}
                       render={({ field }) => (
                         <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
                           <FormControl>
-                            <Checkbox onCheckedChange={field.onChange} />
+                            <Checkbox
+                              onCheckedChange={field.onChange}
+                              defaultChecked={data.data?.block ? true : false}
+                            />
                           </FormControl>
                           <div className="space-y-1 leading-none">
                             <FormLabel>Block</FormLabel>
@@ -321,7 +321,10 @@ export const Edit = ({ id }: { id: number }) => {
                       render={({ field }) => (
                         <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
                           <FormControl>
-                            <Checkbox onCheckedChange={field.onChange} />
+                            <Checkbox
+                              onCheckedChange={field.onChange}
+                              defaultChecked={data.data?.used ? true : false}
+                            />
                           </FormControl>
                           <div className="space-y-1 leading-none">
                             <FormLabel>Used</FormLabel>
@@ -333,11 +336,17 @@ export const Edit = ({ id }: { id: number }) => {
                   <div className="flex flex-col items-center">
                     <FormField
                       control={form.control}
+                      defaultValue={data.data?.heatTreated}
                       name="heatTreated"
                       render={({ field }) => (
                         <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
                           <FormControl>
-                            <Checkbox onCheckedChange={field.onChange} />
+                            <Checkbox
+                              onCheckedChange={field.onChange}
+                              defaultChecked={
+                                data.data?.heatTreated ? true : false
+                              }
+                            />
                           </FormControl>
                           <div className="space-y-1 leading-none">
                             <FormLabel>Heat Treated</FormLabel>
