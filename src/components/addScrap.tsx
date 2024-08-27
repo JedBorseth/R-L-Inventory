@@ -395,12 +395,13 @@ export const Edit = ({ id }: { id: number }) => {
   });
   const router = useRouter();
   const createScrap = api.scrap.update.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       router.refresh();
       form.reset();
       toast.success("Pallet Added", {
         description: "Pallet has been added successfully.",
       });
+      await data.refetch();
     },
     onError: (error) => {
       toast.error("Error Adding Pallet", {
@@ -417,12 +418,14 @@ export const Edit = ({ id }: { id: number }) => {
     name: "CompanyUsedFor" as never,
   });
   useEffect(() => {
-    if (data.data?.CompanyUsedFor)
+    if (data.data?.CompanyUsedFor) {
+      fieldArr.remove();
       String(data.data?.CompanyUsedFor)
         .split(",")
         .forEach((company) => {
           fieldArr.append(company);
         });
+    }
   }, [data.data?.CompanyUsedFor]);
 
   return (
@@ -546,6 +549,7 @@ export const Edit = ({ id }: { id: number }) => {
                   {fieldArr.fields.map(({ id }, index) => (
                     <Input
                       type="text"
+                      onDoubleClick={() => fieldArr.remove(index)}
                       defaultValue={fieldArr.fields.at(index)?.id}
                       placeholder="Company Name"
                       key={id}
