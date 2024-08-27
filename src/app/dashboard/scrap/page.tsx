@@ -31,7 +31,7 @@ import {
 } from "~/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { api } from "~/trpc/server";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import AddScrap, { Edit } from "~/components/addScrap";
 import DeleteItem from "~/components/deleteItem";
 import SkeletonTableRow from "~/components/skeletonTableRow";
@@ -99,6 +99,7 @@ const ScrapResults = async () => {
       if (tab === "b") return b;
       else return all;
     };
+
     return (
       <TabsContent value={tab}>
         <Card x-chunk="dashboard-06-chunk-0">

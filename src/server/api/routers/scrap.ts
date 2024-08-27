@@ -70,21 +70,7 @@ export const scrapRouter = createTRPCRouter({
       });
     }),
   update: protectedProcedure
-    .input(
-      z.object({
-        id: z.coerce.number(),
-        length: z.coerce.number(),
-        width: z.coerce.number(),
-        amount: z.coerce.number(),
-        color: z.enum(["kraft", "white"]),
-        flute: z.enum(["B", "C", "E", "F", "BC", "pt"]),
-        strength: z.coerce.number(),
-        scored: z.coerce.boolean(),
-        scoredAt: z.array(z.coerce.number()),
-        CompanyUsedFor: z.coerce.string().array(),
-        description: z.coerce.string(),
-      }),
-    )
+    .input(scrapZod.extend({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db
         .update(scrapMaterial)

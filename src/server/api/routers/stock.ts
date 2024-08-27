@@ -61,4 +61,31 @@ export const stockRouter = createTRPCRouter({
         })
         .where(eq(stockSheet.id, input.id));
     }),
+  getById: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.query.stockSheet.findFirst({
+        where: eq(stockSheet.id, input.id),
+      });
+    }),
+  update: protectedProcedure
+    .input(stockZod.extend({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(stockSheet)
+        .set({
+          length: input.length,
+          width: input.width,
+          color: input.color,
+          flute: input.flute,
+          strength: input.strength,
+          CompanyUsedFor: input.CompanyUsedFor,
+          description: input.description,
+          inventoryThreshold: input.inventoryThreshold,
+          maxInventoryThreshold: input.maxInventoryThreshold,
+          amount: input.amount,
+          dateModified: new Date().toISOString(),
+        })
+        .where(eq(stockSheet.id, input.id));
+    }),
 });

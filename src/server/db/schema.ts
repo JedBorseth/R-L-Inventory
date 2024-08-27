@@ -1,5 +1,7 @@
 import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { blob } from "stream/consumers";
+import { v4 as uuidv4 } from "uuid";
 
 // export const countries = sqliteTable(
 //   "countries",
@@ -69,7 +71,6 @@ export const scrapMaterial = sqliteTable("scrap_material", {
 
 export const finishedItems = sqliteTable("finished_items", {
   id: integer("id").primaryKey().notNull().unique(),
-  amount: integer("amount"),
   width: integer("width"),
   length: integer("length"),
   // id
@@ -91,5 +92,9 @@ export const finishedItems = sqliteTable("finished_items", {
   // inventoryThreshold: number
   // maxInventoryThreshold: number
 });
-
-// store sft of every item in db, update every day, and store in db, seperate b c e bc and also stock and scrap
+export const all = sqliteTable("all", {
+  id: integer("id").primaryKey().notNull().unique(),
+  scrapId: integer("scrap").references(() => scrapMaterial.id),
+  stockId: integer("stock").references(() => stockSheet.id),
+  palletId: integer("pallet").references(() => pallets.id),
+});
