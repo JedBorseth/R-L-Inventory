@@ -1,5 +1,11 @@
 import Image from "next/image";
-import { File, ListFilter, MoreHorizontal, PlusCircle } from "lucide-react";
+import {
+  File,
+  ListFilter,
+  MoreHorizontal,
+  PlusCircle,
+  RocketIcon,
+} from "lucide-react";
 
 import { Badge } from "~/components/ui/badge";
 
@@ -39,6 +45,8 @@ import EditAmount from "~/components/editAmount";
 import DownloadCSV from "~/components/downloadCSV";
 import ViewDetailed from "~/components/viewDetailed";
 import { capsFirst } from "~/lib/utils";
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
+import Link from "next/link";
 
 export default async function Dashboard() {
   return (
@@ -77,9 +85,21 @@ export default async function Dashboard() {
             <AddScrap />
           </div>
         </div>
+
         <Suspense fallback={<ScrapSkeleton />}>
           <ScrapResults />
         </Suspense>
+        <Alert variant="destructive" className="my-2">
+          <RocketIcon className="h-4 w-4" />
+          <AlertTitle>Looking for scrap?</AlertTitle>
+          <AlertDescription>
+            Try the <strong>new</strong>{" "}
+            <Link href="/dashboard/wasteCalculator" className="underline">
+              waste calculator
+            </Link>{" "}
+            feature today.
+          </AlertDescription>
+        </Alert>
       </Tabs>
     </main>
   );

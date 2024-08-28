@@ -3,7 +3,6 @@ import { GeistSans } from "geist/font/sans";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCReactProvider } from "~/trpc/react";
 import type { Metadata, Viewport } from "next";
-import { Analytics } from "@vercel/analytics/react";
 const APP_NAME = "R&L Inventory App";
 const APP_DEFAULT_TITLE = "R&L Inventory";
 const APP_TITLE_TEMPLATE = "%s - R&L Inventory";
@@ -70,7 +69,6 @@ export default async function RootLayout({
           <TRPCReactProvider>{children}</TRPCReactProvider>
         </body>
       </html>
-      <Analytics />
     </ClerkProvider>
   );
 }

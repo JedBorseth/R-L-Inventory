@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Highlight } from "react-instantsearch";
+import { Highlight, Snippet } from "react-instantsearch";
 import Image from "next/image";
 
 type HitProps = {
@@ -14,6 +14,7 @@ export const Hit = ({ hit }: HitProps) => {
         <Highlight attribute="width" hit={hit} />
         x
         <Highlight attribute="length" hit={hit} />
+        <Snippet attribute="description" hit={hit} />
       </div>
       <div>| Scrap</div>
     </article>

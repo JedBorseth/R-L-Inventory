@@ -29,7 +29,7 @@ export default function Page() {
       >
         <div className="text-center text-3xl font-bold dark:text-white md:text-7xl">
           R&L <span className="underline decoration-red-500">Packaging</span>{" "}
-          Dashboard
+          Infinity
         </div>
         <div className="py-4 text-base font-extralight dark:text-neutral-200 md:text-4xl">
           <ClerkLoading>Loading...</ClerkLoading>

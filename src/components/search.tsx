@@ -110,14 +110,18 @@ export function Search() {
     >
       <div className="relative">
         <SearchBox />
-        <div className="absolute w-48 border">
+        <div className="absolute w-full border bg-card">
           <EmptyQueryBoundary fallback={null}>
             <Hits hitComponent={Hit} />
           </EmptyQueryBoundary>
         </div>
       </div>
 
-      <Configure hitsPerPage={3} />
+      <Configure
+        hitsPerPage={3}
+        attributesToHighlight={["width", "length"]}
+        attributesToSnippet={["description"]}
+      />
     </InstantSearchNext>
   );
 }
