@@ -47,6 +47,7 @@ import ViewDetailed from "~/components/viewDetailed";
 import { capsFirst } from "~/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import Link from "next/link";
+import { CustomAlert } from "~/components/alertClosable";
 
 export default async function Dashboard() {
   return (
@@ -85,21 +86,10 @@ export default async function Dashboard() {
             <AddScrap />
           </div>
         </div>
-
+        <CustomAlert />
         <Suspense fallback={<ScrapSkeleton />}>
           <ScrapResults />
         </Suspense>
-        <Alert variant="destructive" className="my-2">
-          <RocketIcon className="h-4 w-4" />
-          <AlertTitle>Looking for scrap?</AlertTitle>
-          <AlertDescription>
-            Try the <strong>new</strong>{" "}
-            <Link href="/dashboard/wasteCalculator" className="underline">
-              waste calculator
-            </Link>{" "}
-            feature today.
-          </AlertDescription>
-        </Alert>
       </Tabs>
     </main>
   );

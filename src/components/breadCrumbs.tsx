@@ -19,6 +19,7 @@ const Breadcrumbs = () => {
     <Breadcrumb className="hidden md:flex">
       <BreadcrumbList>
         {paths.map((path, index) => {
+          path === "wasteCalculator" ? (path = "Waste Calculator") : null;
           combinedUrl += path + "/";
           return (
             <Fragment key={index}>
