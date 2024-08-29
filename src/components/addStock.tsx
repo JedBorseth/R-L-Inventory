@@ -606,7 +606,7 @@ export const Edit = ({ id }: { id: number }) => {
                     <FormLabel>Color</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={data.data?.color}
+                      defaultValue={data.data?.color ?? ""}
                     >
                       <FormControl>
                         <SelectTrigger>
