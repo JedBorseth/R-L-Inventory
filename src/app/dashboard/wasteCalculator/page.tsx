@@ -52,7 +52,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Undo2 } from "lucide-react";
 import { Edit } from "~/components/addScrap";
 import DeleteItem from "~/components/deleteItem";
 
@@ -84,32 +84,43 @@ const Req = () => {
 };
 
 export default function WasteCalc() {
-  type ScrapDataExcludingNull = Exclude<typeof scrap.data, null | undefined>;
-  type ScrapDataWithWaste = ScrapDataExcludingNull;
+  type ScrapDataWithWaste = Array<
+    Exclude<typeof scrap.data, null | undefined>[number] & {
+      waste: { percent: number; materialNeeded: number; amountOut: number };
+    }
+  >;
   const [items, setItems] = useState<ScrapDataWithWaste>([]);
   const scrap = api.scrap.getLatest.useQuery();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    const arr: SetStateAction<typeof scrap.data> = [];
-    scrap.data?.forEach((scrap) => {
-      if (data.width > scrap.width || data.length > scrap.length) return;
-      if (data.flute && data.flute !== scrap.flute) return;
-      const wOut = scrap.width / data.width;
-      const lOut = scrap.length / data.length;
-      const wWaste = scrap.width - Math.floor(wOut) * data.width;
-      const lWaste = scrap.length - Math.floor(lOut) * data.length;
-      const sheetsNeeded = Math.ceil(data.amount / (wOut * lOut));
-      if (sheetsNeeded > scrap.amount) return;
-      console.log(
-        scrap,
-        `For this box, you will waste ${wWaste * lWaste * data.amount}sft of material. you will also need ${sheetsNeeded} sheets of material.`,
-      );
-      arr.push({ ...scrap });
+  function onSubmit(input: z.infer<typeof FormSchema>) {
+    const arr: ScrapDataWithWaste = [];
+    scrap.data?.forEach((savedItem) => {
+      if (input.width > savedItem.width || input.length > savedItem.length)
+        return;
+      if (input.flute && input.flute !== savedItem.flute) return;
+      const wOut = savedItem.width / input.width;
+      const lOut = savedItem.length / input.length;
+      const wWaste = Math.floor(wOut) * input.width - savedItem.width;
+      const lWaste = Math.floor(lOut) * input.length - savedItem.length;
+      const sheetsNeeded = Math.ceil(input.amount / (wOut * lOut));
+
+      const percent = ((wWaste * lWaste) / (input.width * input.length)) * 100;
+      arr.push({
+        ...savedItem,
+        waste: {
+          percent: percent,
+          materialNeeded: sheetsNeeded,
+          amountOut: Math.floor(wOut) * Math.floor(lOut),
+        },
+      });
     });
     setItems(arr);
+    if (arr.length === 0) {
+      toast.error("No items found that match the criteria");
+    }
   }
 
   return (
@@ -290,7 +301,7 @@ export default function WasteCalc() {
                         Waste %
                       </TableHead>
                       <TableHead className="hidden md:table-cell">
-                        Material Needed
+                        Sheets Needed
                       </TableHead>
                       <TableHead>
                         <span className="sr-only">Actions</span>
@@ -368,10 +379,16 @@ export default function WasteCalc() {
                           />
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                          <Badge variant="outline">10%</Badge>
+                          <Badge variant="outline">
+                            {String(result.waste.percent).substring(0, 4)}%
+                          </Badge>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                          {new Date(result.dateModified ?? "").toDateString()}{" "}
+                          {result.waste.materialNeeded} (+5%){" "}
+                          {String(result.waste.materialNeeded * 1.05).substring(
+                            0,
+                            3,
+                          )}
                         </TableCell>
                         <TableCell className="px-0 md:px-4">
                           <DropdownMenu>
@@ -404,6 +421,14 @@ export default function WasteCalc() {
                 </div>
               </CardFooter>
             </Card>
+            <Button
+              className="mt-4"
+              onClick={() => {
+                setItems([]);
+              }}
+            >
+              <Undo2 /> Back
+            </Button>
           </>
         )}
       </div>
