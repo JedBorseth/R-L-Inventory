@@ -84,8 +84,9 @@ const Req = () => {
 };
 
 export default function WasteCalc() {
-  type StateType = Exclude<typeof scrap.data, null | undefined>;
-  const [items, setItems] = useState<StateType>([]);
+  type ScrapDataExcludingNull = Exclude<typeof scrap.data, null | undefined>;
+  type ScrapDataWithWaste = ScrapDataExcludingNull;
+  const [items, setItems] = useState<ScrapDataWithWaste>([]);
   const scrap = api.scrap.getLatest.useQuery();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -106,7 +107,7 @@ export default function WasteCalc() {
         scrap,
         `For this box, you will waste ${wWaste * lWaste * data.amount}sft of material. you will also need ${sheetsNeeded} sheets of material.`,
       );
-      arr.push({ ...scrap, waste: "test" });
+      arr.push({ ...scrap });
     });
     setItems(arr);
   }
