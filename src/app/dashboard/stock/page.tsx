@@ -164,7 +164,7 @@ const StockResults = async () => {
                                 {result.flute} {result.CompanyUsedFor}
                               </p>
                               <p className="space-y-2">
-                                {capsFirst(result.color)}
+                                {capsFirst(result.color ?? "")}
                               </p>
                               <p className="space-y-2">
                                 Min:{result.inventoryThreshold}
@@ -205,7 +205,7 @@ const StockResults = async () => {
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
                           <Badge variant="outline">
-                            {capsFirst(result.color)}
+                            {capsFirst(result.color ?? "")}
                           </Badge>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
