@@ -1,7 +1,5 @@
 import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
-import { blob } from "stream/consumers";
-import { v4 as uuidv4 } from "uuid";
 
 // export const countries = sqliteTable(
 //   "countries",
@@ -71,30 +69,20 @@ export const scrapMaterial = sqliteTable("scrap_material", {
 
 export const finishedItems = sqliteTable("finished_items", {
   id: integer("id").primaryKey().notNull().unique(),
-  width: integer("width"),
-  length: integer("length"),
-  // id
-  // count
-  // width
-  // length
-  // depth
-  // description
-  // itemNum: string
-  // companyId: string
-  // sageId (optional)
-  // inventoryThreshold: number
-  // amountPerPallet: number (optional)
-  // strength: number
-  // flute:  B, C, E, F, BC, pt
-  // color: kraft or white (default kraft)
-  // dated added
-  // dated modified
-  // inventoryThreshold: number
-  // maxInventoryThreshold: number
-});
-export const all = sqliteTable("all", {
-  id: integer("id").primaryKey().notNull().unique(),
-  scrapId: integer("scrap").references(() => scrapMaterial.id),
-  stockId: integer("stock").references(() => stockSheet.id),
-  palletId: integer("pallet").references(() => pallets.id),
+  width: integer("width").notNull(),
+  length: integer("length").notNull(),
+  depth: integer("length").notNull(),
+  amount: integer("amount", { mode: "number" }).notNull(),
+  amountPerPallet: integer("amountPerPallet"),
+  description: text("description"),
+  itemNum: text("itemNum"),
+  inventoryThreshold: integer("inventoryThreshold").notNull(),
+  maxInventoryThreshold: integer("maxInventoryThreshold").notNull(),
+  companyId: text("companyId"),
+  sageId: text("sageId"),
+  color: text("color", { enum: ["kraft", "white"] }),
+  flute: text("flute", { enum: ["B", "C", "E", "F", "BC", "pt"] }),
+  strength: integer("strength"),
+  dateAdded: text("dateAdded").default(sql`(CURRENT_TIMESTAMP)`),
+  dateModified: text("dateModified").default(sql`(CURRENT_TIMESTAMP)`),
 });

@@ -1,4 +1,5 @@
 import {
+  BookCheck,
   Factory,
   Forklift,
   Home,
@@ -78,6 +79,15 @@ const Header = async () => {
               >
                 <Forklift className="h-5 w-5" />
                 Pallet Stock
+              </Link>
+            </SheetClose>
+            <SheetClose asChild>
+              <Link
+                href="../../dashboard/finishedItems"
+                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+              >
+                <BookCheck className="h-5 w-5" />
+                Finished Items
               </Link>
             </SheetClose>
             <SheetClose asChild>
