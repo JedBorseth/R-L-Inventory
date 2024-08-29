@@ -266,8 +266,8 @@ export default function WasteCalc() {
                 <Button
                   variant="outline"
                   className="w-1/2"
-                  onClick={(e) => {
-                    e.preventDefault();
+                  type="reset"
+                  onClick={() => {
                     form.reset();
                   }}
                 >
