@@ -12,13 +12,13 @@ import { InstantSearchNext } from "react-instantsearch-nextjs";
 import { Hit } from "./hit";
 import { Input } from "./ui/input";
 import { PlaceholdersAndVanishInput } from "./inputAnimation";
+import React, { useState, useRef } from "react";
+import { Card, CardContent } from "./ui/card";
+import { Table, TableBody } from "./ui/table";
 const searchClient = algoliasearch(
   "KH60NZV6Q6",
   "2c44fcbda3712ff9731a7d9037c95f32",
 );
-import React, { useState, useRef } from "react";
-import { Card, CardContent } from "./ui/card";
-import { Table, TableBody } from "./ui/table";
 
 function SearchBox(props: UseSearchBoxProps) {
   const { query, refine } = useSearchBox(props);

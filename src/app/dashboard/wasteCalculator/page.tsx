@@ -55,6 +55,12 @@ import {
 import { MoreHorizontal, Undo2 } from "lucide-react";
 import { Edit } from "~/components/addScrap";
 import DeleteItem from "~/components/deleteItem";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 
 const FormSchema = z.object({
   flute: z.enum(["B", "C", "E", "F", "BC", "pt"]).nullable().optional(),
@@ -85,12 +91,14 @@ const Req = () => {
 
 export default function WasteCalc() {
   type ScrapDataWithWaste = Array<
-    Exclude<typeof scrap.data, null | undefined>[number] & {
+    Exclude<typeof scrap.data & typeof stock.data, null | undefined>[number] & {
       waste: { percent: number; materialNeeded: number; amountOut: number };
+      type: string;
     }
   >;
   const [items, setItems] = useState<ScrapDataWithWaste>([]);
   const scrap = api.scrap.getLatest.useQuery();
+  const stock = api.stock.getLatest.useQuery();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -115,6 +123,34 @@ export default function WasteCalc() {
           materialNeeded: sheetsNeeded,
           amountOut: Math.floor(wOut) * Math.floor(lOut),
         },
+        type: "scrap",
+        description: "",
+        inventoryThreshold: 0,
+        maxInventoryThreshold: 0,
+      });
+    });
+    stock.data?.forEach((savedItem) => {
+      if (input.width > savedItem.width || input.length > savedItem.length)
+        return;
+      if (input.flute && input.flute !== savedItem.flute) return;
+      const wOut = savedItem.width / input.width;
+      const lOut = savedItem.length / input.length;
+      const wWaste = Math.floor(wOut) * input.width - savedItem.width;
+      const lWaste = Math.floor(lOut) * input.length - savedItem.length;
+      const sheetsNeeded = Math.ceil(input.amount / (wOut * lOut));
+
+      const percent = ((wWaste * lWaste) / (input.width * input.length)) * 100;
+      arr.push({
+        ...savedItem,
+        waste: {
+          percent: percent,
+          materialNeeded: sheetsNeeded,
+          amountOut: Math.floor(wOut) * Math.floor(lOut),
+        },
+        type: "stock",
+        scored: null,
+        scoredAt: null,
+        notes: null,
       });
     });
     setItems(arr);
@@ -267,7 +303,7 @@ export default function WasteCalc() {
                   variant="outline"
                   className="w-1/2"
                   type="reset"
-                  onClick={() => {
+                  onClick={(e) => {
                     form.reset();
                   }}
                 >
@@ -282,7 +318,7 @@ export default function WasteCalc() {
           <>
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>
-                <CardTitle>Scrap Material</CardTitle>
+                <CardTitle>Material Lookup</CardTitle>
                 <CardDescription>
                   Manage scrap material inventory and track usage.
                 </CardDescription>
@@ -295,7 +331,7 @@ export default function WasteCalc() {
                         <span className="sr-only">Image</span>
                       </TableHead>
                       <TableHead>Name</TableHead>
-                      <TableHead>Type</TableHead>
+                      <TableHead>Per Sheet</TableHead>
                       <TableHead>Amount</TableHead>
                       <TableHead className="hidden md:table-cell">
                         Waste %
@@ -309,108 +345,117 @@ export default function WasteCalc() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {items.map((result) => (
-                      <TableRow key={result.id}>
-                        <TableCell className="hidden sm:table-cell">
-                          <Image
-                            alt="Product image"
-                            className={`aspect-square rounded-md object-cover`}
-                            height="50"
-                            src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}`}
-                            width="50"
-                          />
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          <ViewDetailed
-                            title={`${result.width}x${result.length} |${" "}
+                    {items
+                      .sort((a, b) => a.waste.percent - b.waste.percent)
+                      .map((result) => (
+                        <TableRow key={result.id + result.type}>
+                          <TableCell className="hidden sm:table-cell">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <Image
+                                    alt="Product image"
+                                    className={`aspect-square rounded-md object-cover`}
+                                    height="50"
+                                    src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}`}
+                                    width="50"
+                                  />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>{capsFirst(result.type)}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            <ViewDetailed
+                              title={`${result.width}x${result.length} |${" "}
                     ${
                       result.CompanyUsedFor
                         ? String(result.CompanyUsedFor).split(",")[0]
                         : `${result.strength}${result.flute}`
                     }`}
-                          >
-                            <>
-                              <p className="space-y-2">
-                                {result.width}x{result.length} |{" "}
-                                {result.strength}
-                                {result.flute} {result.CompanyUsedFor}
-                              </p>
-                              <p className="space-y-2">
-                                {capsFirst(result.color ?? "")}
-                              </p>
-                              <p className="space-y-2">
-                                Scored: {result.scored ? "Yes" : "No"}
-                              </p>
+                            >
+                              <>
+                                <p className="space-y-2">
+                                  {result.width}x{result.length} |{" "}
+                                  {result.strength}
+                                  {result.flute} {result.CompanyUsedFor}
+                                </p>
+                                <p className="space-y-2">
+                                  {capsFirst(result.color ?? "")}
+                                </p>
+                                <p className="space-y-2">
+                                  Scored: {result.scored ? "Yes" : "No"}
+                                </p>
 
-                              <p className="space-y-2">
-                                Amount :{result.amount}
-                              </p>
-                              <p className="space-y-2">
-                                Addded:{" "}
-                                {new Date(
-                                  result.dateAdded ?? "",
-                                ).toDateString()}
-                              </p>
-                              <p className="space-y-2">
-                                Modified Last:{" "}
-                                {new Date(
-                                  result.dateModified ?? "",
-                                ).toDateString()}
-                              </p>
-                              <p className="space-y-2">
-                                Description: {result.notes}
-                              </p>
-                            </>
-                          </ViewDetailed>
-                        </TableCell>
-                        <TableCell>
-                          <Badge
-                            variant="outline"
-                            className="text-center text-sm"
-                          >
-                            {result.strength}
-                            {result.flute} - {capsFirst(result.color ?? "")}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="px-0 md:px-4">
-                          <EditAmount
-                            result={{ ...result, block: null }}
-                            type="scrap"
-                          />
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          <Badge variant="outline">
-                            {String(result.waste.percent).substring(0, 4)}%
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          {result.waste.materialNeeded} (+5%){" "}
-                          {String(result.waste.materialNeeded * 1.05).substring(
-                            0,
-                            3,
-                          )}
-                        </TableCell>
-                        <TableCell className="px-0 md:px-4">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <Edit id={result.id} />
-                              <DeleteItem id={result.id} type="scrap" />
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                                <p className="space-y-2">
+                                  Amount :{result.amount}
+                                </p>
+                                <p className="space-y-2">
+                                  Addded:{" "}
+                                  {new Date(
+                                    result.dateAdded ?? "",
+                                  ).toDateString()}
+                                </p>
+                                <p className="space-y-2">
+                                  Modified Last:{" "}
+                                  {new Date(
+                                    result.dateModified ?? "",
+                                  ).toDateString()}
+                                </p>
+                                <p className="space-y-2">
+                                  Description: {result.notes}
+                                </p>
+                              </>
+                            </ViewDetailed>
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              variant="outline"
+                              className="text-center text-sm"
+                            >
+                              {result.waste.amountOut}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="px-0 md:px-4">
+                            <EditAmount
+                              result={{ ...result, block: null }}
+                              type="scrap"
+                            />
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            <Badge variant="outline">
+                              {String(result.waste.percent).substring(0, 4)}%
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {result.waste.materialNeeded} (+5%){" "}
+                            {String(
+                              result.waste.materialNeeded * 1.05,
+                            ).substring(0, 3)}
+                          </TableCell>
+                          <TableCell className="px-0 md:px-4">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  aria-haspopup="true"
+                                  size="icon"
+                                  variant="ghost"
+                                >
+                                  <MoreHorizontal className="h-4 w-4" />
+                                  <span className="sr-only">Toggle menu</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <Edit id={result.id} />
+                                <DeleteItem id={result.id} type="scrap" />
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
                 </Table>
               </CardContent>
@@ -422,7 +467,7 @@ export default function WasteCalc() {
               </CardFooter>
             </Card>
             <Button
-              className="mt-4"
+              className="my-4"
               onClick={() => {
                 setItems([]);
               }}
