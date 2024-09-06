@@ -164,7 +164,7 @@ const FinishedItemResults = async () => {
                             alt="Product image"
                             className={`aspect-square rounded-md object-cover`}
                             height="50"
-                            src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}`}
+                            src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}x${result.depth}`}
                             width="50"
                           />
                         </TableCell>
@@ -185,6 +185,10 @@ const FinishedItemResults = async () => {
                               <p className="space-y-2">
                                 Item Number:{result.itemNum}
                               </p>
+                              <p className="space-y-2">
+                                {result.amountPerPallet} per pallet
+                              </p>
+
                               <p className="space-y-2">
                                 {capsFirst(result.color ?? "")}
                               </p>
@@ -222,7 +226,7 @@ const FinishedItemResults = async () => {
                         <TableCell>
                           <EditAmount
                             result={{ ...result, block: null }}
-                            type="stock"
+                            type="finishedItem"
                           />
                         </TableCell>
                         <TableCell className="hidden md:table-cell">

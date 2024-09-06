@@ -12,6 +12,8 @@ import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
+import { capsFirst } from "~/lib/utils";
+import { toast } from "sonner";
 
 const DeleteItem = ({
   id,
@@ -25,21 +27,33 @@ const DeleteItem = ({
   const removePallet = api.pallet.delete.useMutation({
     onSuccess: () => {
       router.refresh();
+      toast.success("Pallet Deleted", {
+        description: "The pallet has been deleted.",
+      });
     },
   });
   const removeScrap = api.scrap.delete.useMutation({
     onSuccess: () => {
       router.refresh();
+      toast.success("Scrap Material Deleted", {
+        description: "The scrap material has been deleted.",
+      });
     },
   });
   const removeStock = api.stock.delete.useMutation({
     onSuccess: () => {
       router.refresh();
+      toast.success("Stock Deleted", {
+        description: "The stock has been deleted.",
+      });
     },
   });
   const removeFinishedItem = api.finishedItems.delete.useMutation({
     onSuccess: () => {
       router.refresh();
+      toast.success("Finished Item Deleted", {
+        description: "The finished item has been deleted.",
+      });
     },
   });
   return (
@@ -49,7 +63,10 @@ const DeleteItem = ({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Pallet Type</DialogTitle>
+          <DialogTitle>
+            Delete {type === "finishedItem" ? "Finished Item" : capsFirst(type)}{" "}
+            Type
+          </DialogTitle>
           <div>
             <form
               onSubmit={handleSubmit(() => {

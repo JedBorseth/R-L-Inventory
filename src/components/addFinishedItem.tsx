@@ -33,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { Textarea } from "./ui/textarea";
 
 export const AddFinishedItem = () => {
   const FormSchema = z.object({
@@ -44,12 +45,46 @@ export const AddFinishedItem = () => {
       required_error: "Please specify a length",
       invalid_type_error: "Please enter a valid number",
     }),
+    depth: z.coerce.number({
+      required_error: "Please specify a depth",
+      invalid_type_error: "Please enter a valid number",
+    }),
+    amount: z.coerce.number({
+      required_error: "Please specify an amount",
+      invalid_type_error: "Please enter a valid number",
+    }),
+    description: z.string().nullable().optional(),
+    flute: z.enum(["B", "C", "E", "F", "BC", "pt"]),
+    color: z.enum(["kraft", "white"], {
+      required_error: "Please select a color",
+      invalid_type_error: "Please select a color",
+    }),
+    strength: z.coerce.number({
+      required_error: "Please specify a strength",
+      invalid_type_error: "Please enter a valid number",
+    }),
+    inventoryThreshold: z.coerce.number({
+      required_error: "Please specify a min inventory",
+      invalid_type_error: "Please enter a valid number",
+    }),
+    maxInventoryThreshold: z.coerce.number({
+      required_error: "Please specify a max inventory",
+      invalid_type_error: "Please enter a valid number",
+    }),
+    itemNum: z.string({
+      required_error: "Please specify an item number",
+      invalid_type_error: "Please enter a valid item number",
+    }),
+    amountPerPallet: z.coerce.number({
+      required_error: "Please specify amount per pallet",
+      invalid_type_error: "Please enter a valid number",
+    }),
   });
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
   const router = useRouter();
-  const createStock = api.stock.create.useMutation({
+  const createFinishedItem = api.finishedItems.create.useMutation({
     onSuccess: () => {
       router.refresh();
       form.reset();
@@ -66,7 +101,7 @@ export const AddFinishedItem = () => {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
-    // createStock.mutate(data);
+    createFinishedItem.mutate(data);
   }
   const fieldArr = useFieldArray({
     control: form.control,
@@ -110,6 +145,215 @@ export const AddFinishedItem = () => {
                     placeholder="Length"
                     type="text"
                     inputMode="numeric"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="depth"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Depth</FormLabel>
+                <FormControl>
+                  <Input
+                    onChange={field.onChange}
+                    placeholder="Depth"
+                    type="text"
+                    inputMode="numeric"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex gap-10 max-sm:text-base">
+          <FormField
+            control={form.control}
+            name="strength"
+            render={({ field }) => (
+              <FormItem className="w-1/3">
+                <FormLabel>Strength</FormLabel>
+                <FormControl>
+                  <Input
+                    onChange={field.onChange}
+                    placeholder="Strength"
+                    type="text"
+                    inputMode="numeric"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="flute"
+            render={({ field }) => (
+              <FormItem className="w-2/3">
+                <FormLabel>Flute</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ""}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder="Pick flute type"
+                        defaultValue={field.value ?? ""}
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="BC">DW</SelectItem>
+                    <SelectItem value="B">B</SelectItem>
+                    <SelectItem value="C">C</SelectItem>
+                    <SelectItem value="E">E</SelectItem>
+                    <SelectItem value="F">F</SelectItem>
+                    <SelectItem value="pt">PT</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex gap-10 max-sm:text-base">
+          <FormField
+            control={form.control}
+            name="amount"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Amount</FormLabel>
+                <FormControl>
+                  <Input
+                    onChange={field.onChange}
+                    placeholder="Amount"
+                    type="text"
+                    inputMode="numeric"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="inventoryThreshold"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Min Inventory</FormLabel>
+                <FormControl>
+                  <Input
+                    onChange={field.onChange}
+                    placeholder="Low Inventory Threshold"
+                    type="text"
+                    inputMode="numeric"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="maxInventoryThreshold"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Max Inventory</FormLabel>
+                <FormControl>
+                  <Input
+                    onChange={field.onChange}
+                    placeholder="Max Inventory Threshold"
+                    type="text"
+                    inputMode="numeric"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex gap-10 max-sm:text-base">
+          <FormField
+            control={form.control}
+            name="itemNum"
+            render={({ field }) => (
+              <FormItem className="w-1/2">
+                <FormLabel>Item No.</FormLabel>
+                <FormControl>
+                  <Input
+                    onChange={field.onChange}
+                    placeholder="Item Number"
+                    type="text"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="amountPerPallet"
+            render={({ field }) => (
+              <FormItem className="w-1/2">
+                <FormLabel>Per Pallet</FormLabel>
+                <FormControl>
+                  <Input
+                    onChange={field.onChange}
+                    placeholder="Total Amount Per Pallet"
+                    type="text"
+                    inputMode="numeric"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex gap-10 max-sm:text-base">
+          <FormField
+            control={form.control}
+            name="color"
+            render={({ field }) => (
+              <FormItem className="w-1/3">
+                <FormLabel>Color</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ""}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder="Kraft or White"
+                        defaultValue={field.value ?? ""}
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="kraft">Kraft</SelectItem>
+                    <SelectItem value="white">White</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem className="h-min w-2/3">
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Enter description"
+                    className="resize-none"
+                    onChange={field.onChange}
+                    value={field.value ?? ""}
                   />
                 </FormControl>
                 <FormMessage />

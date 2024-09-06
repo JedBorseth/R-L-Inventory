@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
 import { Button } from "./ui/button";
@@ -12,13 +15,34 @@ const DownloadCSV = ({ type }: { type: string }) => {
       useKeysAsHeaders: true,
       filename: `${type}-export-${new Date().toLocaleDateString()}`,
     });
-    const builtArray = data.data?.map((item) => {
-      item.type = type;
-      return item;
-    });
-    console.log(builtArray);
+    const builtArray = () => {
+      const filteredArr = data.data
+        ?.map((item) => {
+          if (item.type === type) {
+            return Object.values(item);
+          }
+        })
+        ?.filter(Boolean)[0];
+      console.log(filteredArr);
 
-    const csv = generateCsv(csvConfig)([{ test: "test" }]);
+      return filteredArr;
+    };
+
+    const csv = generateCsv(csvConfig)(
+      builtArray()?.map((item: any) => {
+        return {
+          id: item.id,
+          width: item.width ?? "",
+          length: item.length ?? "",
+          color: item.color ?? "",
+          strength: item.strength ?? "",
+          flute: item.flute ?? "",
+          amount: item.amount ?? "",
+          description: item.description ?? "",
+          date: item.dateModified,
+        };
+      }) ?? [],
+    );
     return { csv, csvConfig };
   };
 

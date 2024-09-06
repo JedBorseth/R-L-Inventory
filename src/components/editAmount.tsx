@@ -91,6 +91,19 @@ const EditAmount = ({
       });
     },
   });
+  const mutateFinishedItem = api.finishedItems.updateAmount.useMutation({
+    onSuccess: () => {
+      router.refresh();
+      toast.success("Scrap Amount Updated", {
+        description: `The scrap material amount has been updated from ${result.amount} to ${form.getValues("amount")}`,
+      });
+    },
+    onError: (error) => {
+      toast.error("Error updating pallet amount", {
+        description: error.message,
+      });
+    },
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (values.amount === 0) {
@@ -111,6 +124,12 @@ const EditAmount = ({
     }
     if (type === "stock") {
       mutateStock.mutate({
+        id: result.id,
+        amount: values.amount,
+      });
+    }
+    if (type === "finishedItem") {
+      mutateFinishedItem.mutate({
         id: result.id,
         amount: values.amount,
       });

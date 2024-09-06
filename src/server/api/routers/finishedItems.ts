@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 
 import {
@@ -9,21 +9,30 @@ import {
 import { finishedItems } from "~/server/db/schema";
 
 export const finishedItemsRouter = createTRPCRouter({
-  //   create: protectedProcedure
-  //     .input(
-  //       z.object({
-  //         length: z.number(),
-  //         width: z.number(),
-  //         amount: z.number(),
-  //       }),
-  //     )
-  //     .mutation(async ({ ctx, input }) => {
-  //       await ctx.db.insert(finishedItems).values({
-  //         ...input,
-  //         dateAdded: new Date().toISOString(),
-  //         dateModified: new Date().toISOString(),
-  //       });
-  //     }),
+  create: protectedProcedure
+    .input(
+      z.object({
+        length: z.number(),
+        width: z.number(),
+        depth: z.number(),
+        amount: z.number(),
+        itemNum: z.string(),
+        amountPerPallet: z.number(),
+        description: z.string().nullable().optional(),
+        flute: z.enum(["B", "C", "E", "F", "BC", "pt"]),
+        color: z.enum(["kraft", "white"]),
+        strength: z.number(),
+        inventoryThreshold: z.number(),
+        maxInventoryThreshold: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.insert(finishedItems).values({
+        ...input,
+        dateAdded: new Date().toISOString(),
+        dateModified: new Date().toISOString(),
+      });
+    }),
   delete: protectedProcedure
     .input(z.number())
     .mutation(async ({ ctx, input }) => {
