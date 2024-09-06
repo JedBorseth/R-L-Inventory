@@ -45,7 +45,7 @@ export default function Dashboard() {
           title="Stock"
           desc="Your total amount of cardboard stock in the warehouse"
           amount={res.data?.stock ?? 0}
-          max={10}
+          max={25}
         />
       </Card>
       <Card data-swapy-slot="three">

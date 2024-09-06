@@ -1,34 +1,24 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
 import { Button } from "./ui/button";
 import { File } from "lucide-react";
 import { mkConfig, generateCsv, download } from "export-to-csv";
-import { customCSVOrder } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
-const DownloadCSV = () => {
-  // I am making a new db call here and I don't like it
-  // react query should be caching this data so it should be fine but its yucky
-  const data = api.scrap.getLatest.useQuery();
+const DownloadCSV = ({ type }: { type: string }) => {
+  const data = api.all.queryEverything.useQuery();
   const generateCSV = () => {
     const csvConfig = mkConfig({
       useKeysAsHeaders: true,
-      filename: `scrap-export-${new Date().toLocaleDateString()}`,
+      filename: `${type}-export-${new Date().toLocaleDateString()}`,
     });
-    const csv = generateCsv(csvConfig)(
-      data.data?.map((item) => {
-        return customCSVOrder({
-          color: item.color ?? "",
-          ect: item.strength?.toString() ?? "",
-          flute: item.flute ?? "",
-          length: item.length,
-          type: "Stock",
-          width: item.width,
-          date: item.dateModified ?? "",
-        });
-      }) ?? [],
-    );
+    const builtArray = data.data?.map((item) => {
+      item.type = type;
+      return item;
+    });
+    console.log(builtArray);
+
+    const csv = generateCsv(csvConfig)([{ test: "test" }]);
     return { csv, csvConfig };
   };
 

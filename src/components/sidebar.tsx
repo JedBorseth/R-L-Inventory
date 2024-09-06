@@ -7,6 +7,7 @@ import {
   Package,
   Package2,
   Settings,
+  StickyNote,
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -59,7 +60,7 @@ const Sidebar = () => {
                 href="../../dashboard/stock"
                 className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
               >
-                <Package className="h-5 w-5" />
+                <StickyNote className="h-5 w-5" />
                 <span className="sr-only">Stock Sheets</span>
               </Link>
             </TooltipTrigger>
@@ -83,7 +84,7 @@ const Sidebar = () => {
                 href="../../dashboard/finishedItems"
                 className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
               >
-                <BookCheck className="h-5 w-5" />
+                <Package className="h-5 w-5" />
                 <span className="sr-only">Finished Items</span>
               </Link>
             </TooltipTrigger>

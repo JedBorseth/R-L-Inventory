@@ -38,6 +38,7 @@ import SkeletonTableRow from "~/components/skeletonTableRow";
 import AddStock, { Edit } from "~/components/addStock";
 import { formatNum, capsFirst } from "~/lib/utils";
 import ViewDetailed from "~/components/viewDetailed";
+import DownloadCSV from "~/components/downloadCSV";
 
 export default async function Dashboard() {
   return (
@@ -73,12 +74,13 @@ export default async function Dashboard() {
                 </DropdownMenuCheckboxItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button size="sm" variant="outline" className="h-7 gap-1">
+            {/* <Button size="sm" variant="outline" className="h-7 gap-1">
               <File className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                 Export
               </span>
-            </Button>
+            </Button> */}
+            <DownloadCSV type="stock" />
             <AddStock />
           </div>
         </div>

@@ -16,7 +16,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -35,9 +34,16 @@ import { api } from "~/trpc/server";
 import DeleteItem from "~/components/deleteItem";
 import EditAmount from "~/components/editAmount";
 import SkeletonTableRow from "~/components/skeletonTableRow";
-import AddStock, { Edit } from "~/components/addStock";
 import { formatNum, capsFirst } from "~/lib/utils";
 import ViewDetailed from "~/components/viewDetailed";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+import { AddFinishedItem } from "~/components/addFinishedItem";
 
 export default async function Dashboard() {
   return (
@@ -79,7 +85,20 @@ export default async function Dashboard() {
                 Export
               </span>
             </Button>
-            <AddStock />
+            <Dialog>
+              <DialogTrigger className="inline-flex h-7 items-center justify-center gap-1 whitespace-nowrap rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+                <PlusCircle className="h-3.5 w-3.5" />
+                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                  Add Product
+                </span>
+              </DialogTrigger>
+              <DialogContent className="max-h-screen overflow-y-auto max-md:min-w-full">
+                <DialogHeader>
+                  <DialogTitle>Add New Finished Item</DialogTitle>
+                </DialogHeader>
+                <AddFinishedItem />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
         <Suspense fallback={<SkeletonTableRow rows={3} cols={4} />}>
@@ -92,7 +111,6 @@ export default async function Dashboard() {
 
 const FinishedItemResults = async () => {
   const all = await api.finishedItems.getLatest();
-  console.log(typeof all);
   const TabData = ({ tab }: { tab: string }) => {
     const getTabItems = () => {
       const bc = all.filter((item) => item.flute === "BC");
@@ -152,7 +170,7 @@ const FinishedItemResults = async () => {
                         </TableCell>
                         <TableCell className="font-medium">
                           <ViewDetailed
-                            title={`${result.width}x${result.length} | ${
+                            title={`${result.width}x${result.length}x${result.depth} | ${
                               result.companyId
                                 ? String(result.companyId).split(",")[0]
                                 : `${result.strength}${result.flute}`
@@ -160,9 +178,12 @@ const FinishedItemResults = async () => {
                           >
                             <>
                               <p className="space-y-2">
-                                {result.width}x{result.length} |{" "}
+                                {result.width}x{result.length}x{result.depth} |{" "}
                                 {result.strength}
                                 {result.flute} {result.companyId}
+                              </p>
+                              <p className="space-y-2">
+                                Item Number:{result.itemNum}
                               </p>
                               <p className="space-y-2">
                                 {capsFirst(result.color ?? "")}
@@ -226,8 +247,8 @@ const FinishedItemResults = async () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <Edit id={result.id} />
-                              <DeleteItem id={result.id} type="stock" />
+                              {/* <Edit id={result.id} /> */}
+                              <DeleteItem id={result.id} type="finishedItem" />
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>

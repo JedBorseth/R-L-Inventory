@@ -18,7 +18,7 @@
     "@algolia/autocomplete-js": "^1.17.4",
     "@algolia/autocomplete-theme-classic": "^1.17.4",
     "@auth/drizzle-adapter": "^1.1.0",
-    "@clerk/nextjs": "^5.2.2",
+    "@clerk/nextjs": "^5.4.1",
     "@ducanh2912/next-pwa": "^10.2.8",
     "@hookform/resolvers": "^3.9.0",
     "@libsql/client": "^0.6.2",

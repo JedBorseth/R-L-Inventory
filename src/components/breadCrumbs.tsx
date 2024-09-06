@@ -21,7 +21,6 @@ const Breadcrumbs = () => {
         {paths.map((path, index) => {
           combinedUrl += path + "/";
           path === "wasteCalculator" ? (path = "Waste Calculator") : null;
-          path === "finishedItems" ? (path = "Finished Materials") : null;
 
           return (
             <Fragment key={index}>

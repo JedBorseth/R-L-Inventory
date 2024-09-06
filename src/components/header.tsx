@@ -7,6 +7,7 @@ import {
   Package2,
   PanelLeft,
   Settings,
+  StickyNote,
 } from "lucide-react";
 import {
   SheetContent,
@@ -68,7 +69,7 @@ const Header = async () => {
                 href="../../dashboard/stock"
                 className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
               >
-                <Package className="h-5 w-5" />
+                <StickyNote className="h-5 w-5" />
                 Stock Sheets
               </Link>
             </SheetClose>
@@ -86,7 +87,7 @@ const Header = async () => {
                 href="../../dashboard/finishedItems"
                 className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
               >
-                <BookCheck className="h-5 w-5" />
+                <Package className="h-5 w-5" />
                 Finished Items
               </Link>
             </SheetClose>

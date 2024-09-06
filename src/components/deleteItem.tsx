@@ -18,7 +18,7 @@ const DeleteItem = ({
   type,
 }: {
   id: number;
-  type: "pallet" | "scrap" | "stock";
+  type: "pallet" | "scrap" | "stock" | "finishedItem";
 }) => {
   const { handleSubmit } = useForm();
   const router = useRouter();
@@ -37,6 +37,11 @@ const DeleteItem = ({
       router.refresh();
     },
   });
+  const removeFinishedItem = api.finishedItems.delete.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+  });
   return (
     <Dialog>
       <DialogTrigger className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
@@ -51,6 +56,7 @@ const DeleteItem = ({
                 if (type === "pallet") removePallet.mutate(id);
                 if (type === "scrap") removeScrap.mutate(id);
                 if (type === "stock") removeStock.mutate(id);
+                if (type === "finishedItem") removeFinishedItem.mutate(id);
               })}
               className="flex flex-col gap-5 pt-5"
             >

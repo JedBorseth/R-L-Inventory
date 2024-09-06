@@ -24,7 +24,7 @@ import {
 import { toast } from "sonner";
 import { Input } from "~/components/ui/input";
 import { api } from "~/trpc/react";
-import { type SetStateAction, useState } from "react";
+import { type SetStateAction, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -177,17 +177,39 @@ export default function WasteCalc() {
               <div className="flex gap-2">
                 <FormField
                   control={form.control}
+                  name="strength"
+                  render={({ field }) => (
+                    <FormItem className="w-1/3">
+                      <FormLabel>Strength</FormLabel>
+                      <FormControl>
+                        <Input
+                          onChange={field.onChange}
+                          defaultValue={field.value ?? ""}
+                          placeholder="Enter strength"
+                          type="number"
+                          inputMode="numeric"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="flute"
                   render={({ field }) => (
                     <FormItem className="w-3/12">
                       <FormLabel>Flute</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value ?? ""}
+                        value={field.value ?? ""}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Pick flute type" />
+                            <SelectValue
+                              placeholder="Pick flute type"
+                              defaultValue={field.value ?? ""}
+                            />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -199,25 +221,6 @@ export default function WasteCalc() {
                           <SelectItem value="pt">PT</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="strength"
-                  render={({ field }) => (
-                    <FormItem className="w-1/2">
-                      <FormLabel>Strength</FormLabel>
-                      <FormControl>
-                        <Input
-                          onChange={field.onChange}
-                          defaultValue={field.value ?? ""}
-                          placeholder="Enter strength"
-                          type="number"
-                          inputMode="numeric"
-                        />
-                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -251,7 +254,7 @@ export default function WasteCalc() {
                   control={form.control}
                   name="length"
                   render={({ field }) => (
-                    <FormItem className="w-2/3">
+                    <FormItem className="w-1/3">
                       <FormLabel>
                         Length
                         <Req />
@@ -275,6 +278,7 @@ export default function WasteCalc() {
                 <FormField
                   control={form.control}
                   name="amount"
+                  defaultValue={1}
                   render={({ field }) => (
                     <FormItem className="w-1/2">
                       <FormLabel>
@@ -303,7 +307,7 @@ export default function WasteCalc() {
                   variant="outline"
                   className="w-1/2"
                   type="reset"
-                  onClick={(e) => {
+                  onClick={() => {
                     form.reset();
                   }}
                 >

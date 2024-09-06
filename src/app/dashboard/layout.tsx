@@ -24,17 +24,10 @@ export default async function Layout({ children }: { children: ReactNode }) {
     <>
       <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <Sidebar />
-
         <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
           <Header />
           {children}
         </div>
-
-        {/* <Link href="/dashboard/chat">
-          <Button className="fixed bottom-5 right-5">
-            <MessageSquare />
-          </Button>
-        </Link> */}
         <Toaster richColors duration={3000} />
       </div>
     </>
