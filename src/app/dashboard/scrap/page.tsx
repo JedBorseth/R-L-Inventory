@@ -82,7 +82,7 @@ export default async function Dashboard() {
                 </DropdownMenuCheckboxItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <DownloadCSV />
+            <DownloadCSV type="scrap" />
             <AddScrap />
           </div>
         </div>
