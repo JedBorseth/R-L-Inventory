@@ -22,9 +22,7 @@ export default function Page({ params }: { params: { id: string } }) {
       process.env.NODE_ENV === "development"
         ? "https://inventory.rlpackaging.ca/dashboard/stock/"
         : "https://inventory.rlpackaging.ca/dashboard/stock/";
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return (await QRCode.toDataURL(`${baseUrl}${params.id}/`)) as string;
-    // types are a little wacky for this library
+    return await QRCode.toDataURL(`${baseUrl}${params.id}/`);
   };
   if (isLoading) return <SkeletonDemo />;
   else
@@ -70,7 +68,7 @@ import { capsFirst } from "~/lib/utils";
 import { QrCode } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export function SkeletonDemo() {
+function SkeletonDemo() {
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
