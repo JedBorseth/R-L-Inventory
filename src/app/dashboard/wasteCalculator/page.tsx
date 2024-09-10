@@ -83,6 +83,7 @@ const FormSchema = z.object({
     required_error: "Please enter a valid number.",
     invalid_type_error: "Please enter a valid number.",
   }),
+  color: z.enum(["kraft", "white"]).nullable().optional(),
 });
 
 const Req = () => {
@@ -109,6 +110,10 @@ export default function WasteCalc() {
       if (input.width > savedItem.width || input.length > savedItem.length)
         return;
       if (input.flute && input.flute !== savedItem.flute) return;
+      if (input.strength && input.strength !== (savedItem.strength ?? 0))
+        return;
+      if (input.color) if (input.color !== (savedItem.color ?? "")) return;
+
       const wOut = savedItem.width / input.width;
       const lOut = savedItem.length / input.length;
       const wWaste = Math.floor(wOut) * input.width - savedItem.width;
@@ -133,6 +138,9 @@ export default function WasteCalc() {
       if (input.width > savedItem.width || input.length > savedItem.length)
         return;
       if (input.flute && input.flute !== savedItem.flute) return;
+      if (input.strength && input.strength !== (savedItem.strength ?? 0))
+        return;
+      if (input.color) if (input.color !== (savedItem.color ?? "")) return;
       const wOut = savedItem.width / input.width;
       const lOut = savedItem.length / input.length;
       const wWaste = Math.floor(wOut) * input.width - savedItem.width;
@@ -219,6 +227,33 @@ export default function WasteCalc() {
                           <SelectItem value="E">E</SelectItem>
                           <SelectItem value="F">F</SelectItem>
                           <SelectItem value="pt">PT</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="color"
+                  render={({ field }) => (
+                    <FormItem className="w-1/3">
+                      <FormLabel>Color</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value ?? ""}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder="Kraft or White"
+                              defaultValue={field.value ?? ""}
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="kraft">Kraft</SelectItem>
+                          <SelectItem value="white">White</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

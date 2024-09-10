@@ -81,14 +81,16 @@ export const ScrapForm = () => {
     strength: z.coerce.number({
       invalid_type_error: "Please enter a valid number",
     }),
-    scored: z.boolean(),
+    scored: z.coerce.boolean(),
     scoredAt: z.array(z.number()),
     description: z.string().default(""),
   });
   const form = useForm<z.infer<typeof FormSchema>>({
     defaultValues: {
       scoredAt: [],
+      scored: false,
     },
+
     resolver: zodResolver(FormSchema),
   });
   const router = useRouter();
@@ -298,6 +300,7 @@ export const ScrapForm = () => {
           <FormField
             control={form.control}
             name="scored"
+            defaultValue={false}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Scored</FormLabel>
@@ -626,6 +629,7 @@ export const Edit = ({ id }: { id: number }) => {
               <FormField
                 control={form.control}
                 name="scored"
+                defaultValue={false}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Scored</FormLabel>
