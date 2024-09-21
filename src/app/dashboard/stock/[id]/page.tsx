@@ -10,6 +10,28 @@ import {
 import { api } from "~/trpc/react";
 import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
+import { Skeleton } from "~/components/ui/skeleton";
+import { capsFirst } from "~/lib/utils";
+import { QrCode } from "lucide-react";
+import { useState } from "react";
+
+function SkeletonDemo() {
+  return (
+    <Card className="mx-auto max-w-sm">
+      <CardHeader>
+        <CardTitle className="text-2xl">
+          <Skeleton className="h-12 w-12 rounded-full" />
+        </CardTitle>
+        <CardDescription>
+          <Skeleton className="h-4 w-[250px]" />
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Skeleton className="h-4 w-[200px]" />
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function Page({ params }: { params: { id: string } }) {
   const { data, isLoading } = api.stock.getById.useQuery({
@@ -61,27 +83,4 @@ export default function Page({ params }: { params: { id: string } }) {
         </CardContent>
       </Card>
     );
-}
-
-import { Skeleton } from "~/components/ui/skeleton";
-import { capsFirst } from "~/lib/utils";
-import { QrCode } from "lucide-react";
-import { useEffect, useState } from "react";
-
-function SkeletonDemo() {
-  return (
-    <Card className="mx-auto max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">
-          <Skeleton className="h-12 w-12 rounded-full" />
-        </CardTitle>
-        <CardDescription>
-          <Skeleton className="h-4 w-[250px]" />
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Skeleton className="h-4 w-[200px]" />
-      </CardContent>
-    </Card>
-  );
 }

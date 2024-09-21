@@ -45,7 +45,7 @@ export default function Dashboard() {
           title="Stock"
           desc="Your total amount of cardboard stock in the warehouse"
           amount={res.data?.stock ?? 0}
-          max={25}
+          max={50}
         />
       </Card>
       <Card data-swapy-slot="three">
@@ -53,7 +53,7 @@ export default function Dashboard() {
           title="Pallets"
           desc="Estimated number of pallets on hand"
           amount={res.data?.pallets ?? 0}
-          max={10}
+          max={50}
         />
       </Card>
       <Card data-swapy-slot="four">
@@ -79,7 +79,7 @@ export default function Dashboard() {
           title="Scrap Material"
           desc="Number of scrap material items  in the warehouse"
           amount={res.data?.scrap ?? 0}
-          max={10}
+          max={50}
         />
       </Card>
       {/* <SmallCard
