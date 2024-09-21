@@ -28,19 +28,36 @@ const DownloadCSV = ({ type }: { type: string }) => {
       return filteredArr;
     };
 
+    // THIS FILE HAS NO TYPESCRIPT
+    // THIS AINT GOOD CODE
+
     const csv = generateCsv(csvConfig)(
       builtArray()?.map((item: any) => {
-        return {
-          id: item.id,
-          width: item.width ?? "",
-          length: item.length ?? "",
-          color: item.color ?? "",
-          strength: item.strength ?? "",
-          flute: item.flute ?? "",
-          amount: item.amount ?? "",
-          description: item.description ?? "",
-          date: item.dateModified,
-        };
+        if (type === "finishedItems")
+          return {
+            id: item.id,
+            width: item.width ?? "",
+            length: item.length ?? "",
+            depth: item.depth ?? "",
+            color: item.color ?? "",
+            strength: item.strength ?? "",
+            flute: item.flute ?? "",
+            amount: item.amount ?? "",
+            description: item.description ?? "",
+            date: item.dateModified,
+          };
+        else
+          return {
+            id: item.id,
+            width: item.width ?? "",
+            length: item.length ?? "",
+            color: item.color ?? "",
+            strength: item.strength ?? "",
+            flute: item.flute ?? "",
+            amount: item.amount ?? "",
+            description: item.description ?? "",
+            date: item.dateModified,
+          };
       }) ?? [],
     );
     return { csv, csvConfig };

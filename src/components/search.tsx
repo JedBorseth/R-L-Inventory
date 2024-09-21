@@ -53,6 +53,7 @@ function SearchBox(props: UseSearchBoxProps) {
           event.stopPropagation();
 
           setQuery("");
+          // this is causing several errors in console when navigating from login page
 
           if (inputRef.current) {
             inputRef.current.focus();

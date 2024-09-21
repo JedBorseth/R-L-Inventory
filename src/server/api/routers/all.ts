@@ -23,10 +23,12 @@ export const allRouter = createTRPCRouter({
     const stock = await ctx.db.query.stockSheet.findMany();
     const scrap = await ctx.db.query.scrapMaterial.findMany();
     const pallets = await ctx.db.query.pallets.findMany();
+    const finishedItems = await ctx.db.query.finishedItems.findMany();
     return [
       { type: "stock", ...stock },
       { type: "scrap", ...scrap },
       { type: "pallets", ...pallets },
+      { type: "finishedItems", ...finishedItems },
     ];
   }),
 });

@@ -45,6 +45,7 @@ import {
 } from "~/components/ui/dialog";
 import { AddFinishedItem, Edit } from "~/components/addFinishedItem";
 import Link from "next/link";
+import DownloadCSV from "~/components/downloadCSV";
 
 export default async function Dashboard() {
   return (
@@ -80,12 +81,13 @@ export default async function Dashboard() {
                 </DropdownMenuCheckboxItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button size="sm" variant="outline" className="h-7 gap-1">
+            {/* <Button size="sm" variant="outline" className="h-7 gap-1">
               <File className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                 Export
               </span>
-            </Button>
+            </Button> */}
+            <DownloadCSV type="finishedItems" />
             <Dialog>
               <DialogTrigger className="inline-flex h-7 items-center justify-center gap-1 whitespace-nowrap rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
                 <PlusCircle className="h-3.5 w-3.5" />
