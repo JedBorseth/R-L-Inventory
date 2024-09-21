@@ -39,6 +39,7 @@ import AddStock, { Edit } from "~/components/addStock";
 import { formatNum, capsFirst } from "~/lib/utils";
 import ViewDetailed from "~/components/viewDetailed";
 import DownloadCSV from "~/components/downloadCSV";
+import Link from "next/link";
 
 export default async function Dashboard() {
   return (
@@ -143,13 +144,15 @@ const StockResults = async () => {
                   ? getTabItems().map((result) => (
                       <TableRow key={result.id}>
                         <TableCell className="hidden sm:table-cell">
-                          <Image
-                            alt="Product image"
-                            className={`aspect-square rounded-md object-cover`}
-                            height="50"
-                            src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}`}
-                            width="50"
-                          />
+                          <Link href={`/dashboard/stock/${result.id}`}>
+                            <Image
+                              alt="Product image"
+                              className={`aspect-square rounded-md object-cover`}
+                              height="50"
+                              src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}`}
+                              width="50"
+                            />
+                          </Link>
                         </TableCell>
                         <TableCell className="font-medium">
                           <ViewDetailed
