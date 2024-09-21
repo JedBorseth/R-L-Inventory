@@ -1,6 +1,6 @@
 # R&L Inventory App
 
-[![License](https://img.shields.io/github/license/R-L-Packaging/R-L-Inventory)](LICENSE)
+[![License](https://img.shields.io/github/license/JedBorseth/R-L-Inventory)](LICENSE)
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/R-L-Packaging/R-L-Inventory)
 
