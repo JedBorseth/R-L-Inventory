@@ -7,13 +7,11 @@ import {
   DialogTrigger,
   DialogClose,
 } from "~/components/ui/dialog";
-import { PlusCircle } from "lucide-react";
-import React, { useEffect } from "react";
+
 import { useForm, useFieldArray } from "react-hook-form";
 import { Input } from "~/components/ui/input";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -381,21 +379,9 @@ export const AddFinishedItem = () => {
   );
 };
 
-export const Edit = ({ id }: { id: number }) => {
+export const Edit = ({ id, button }: { id: number; button?: boolean }) => {
   const data = api.finishedItems.getById.useQuery({ id: id });
   const FormSchema = z.object({
-    amount: z.coerce.number({
-      required_error: "Please specify amount",
-      invalid_type_error: "Please enter a valid number",
-    }),
-    inventoryThreshold: z.coerce.number({
-      required_error: "Please specify a minimum inventory",
-      invalid_type_error: "Please enter a valid number",
-    }),
-    maxInventoryThreshold: z.coerce.number({
-      required_error: "Please specify a maximum inventory",
-      invalid_type_error: "Please enter a valid number",
-    }),
     width: z.coerce.number({
       required_error: "Please specify a width",
       invalid_type_error: "Please enter a valid number",
@@ -404,18 +390,40 @@ export const Edit = ({ id }: { id: number }) => {
       required_error: "Please specify a length",
       invalid_type_error: "Please enter a valid number",
     }),
-    CompanyUsedFor: z.coerce.string().array(),
-    color: z.enum(["kraft", "white"], {
-      invalid_type_error: "Please Enter a valid color",
-      message: "Must be 'Kraft' or 'White'",
-    }),
-    flute: z.enum(["B", "C", "E", "F", "BC", "pt"], {
-      required_error: "Please select a flute",
-    }),
-    strength: z.coerce.number({
+    depth: z.coerce.number({
+      required_error: "Please specify a depth",
       invalid_type_error: "Please enter a valid number",
     }),
-    description: z.string().default(""),
+    amount: z.coerce.number({
+      required_error: "Please specify an amount",
+      invalid_type_error: "Please enter a valid number",
+    }),
+    description: z.string().nullable().optional(),
+    flute: z.enum(["B", "C", "E", "F", "BC", "pt"]),
+    color: z.enum(["kraft", "white"], {
+      required_error: "Please select a color",
+      invalid_type_error: "Please select a color",
+    }),
+    strength: z.coerce.number({
+      required_error: "Please specify a strength",
+      invalid_type_error: "Please enter a valid number",
+    }),
+    inventoryThreshold: z.coerce.number({
+      required_error: "Please specify a min inventory",
+      invalid_type_error: "Please enter a valid number",
+    }),
+    maxInventoryThreshold: z.coerce.number({
+      required_error: "Please specify a max inventory",
+      invalid_type_error: "Please enter a valid number",
+    }),
+    itemNum: z.string({
+      required_error: "Please specify an item number",
+      invalid_type_error: "Please enter a valid item number",
+    }),
+    amountPerPallet: z.coerce.number({
+      required_error: "Please specify amount per pallet",
+      invalid_type_error: "Please enter a valid number",
+    }),
   });
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -425,45 +433,49 @@ export const Edit = ({ id }: { id: number }) => {
       maxInventoryThreshold: data.data?.maxInventoryThreshold ?? 0,
       width: data.data?.width ?? 0,
       length: data.data?.length ?? 0,
-      CompanyUsedFor: [],
+      depth: data.data?.depth ?? 0,
       color: data.data?.color ?? "kraft",
       flute: data.data?.flute ?? "pt",
       strength: data.data?.strength ?? 0,
       description: data.data?.description ?? "",
+      itemNum: data.data?.itemNum ?? "",
+      amountPerPallet: data.data?.amountPerPallet ?? 0,
     },
   });
   const router = useRouter();
-  const createStock = api.stock.update.useMutation({
+  const updateFinishedItem = api.finishedItems.update.useMutation({
     onSuccess: async () => {
       form.reset();
       router.refresh();
-      toast.success("Stock Item Updated", {
-        description: "Stock sheet has been updated successfully.",
+      toast.success("finished Item Updated", {
+        description: "finished Item has been updated successfully.",
       });
       await data.refetch();
     },
     onError: (error) => {
-      toast.error("Error Adding Stock Item", {
+      toast.error("Error Adding finished Item", {
         description: error.message,
       });
     },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    createStock.mutate({ ...data, id });
+    updateFinishedItem.mutate({ ...data, id });
   }
-  const fieldArr = useFieldArray({
-    control: form.control,
-    name: "CompanyUsedFor" as never,
-  });
 
   return (
     <Dialog>
-      <DialogTrigger className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+      <DialogTrigger
+        className={
+          button
+            ? "inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            : "flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+        }
+      >
         Edit
       </DialogTrigger>
       <DialogContent className="max-md:min-w-full">
-        <DialogTitle>Edit Stock Sheet</DialogTitle>
+        <DialogTitle>Edit finishedItem Sheet</DialogTitle>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -479,10 +491,10 @@ export const Edit = ({ id }: { id: number }) => {
                     <FormControl>
                       <Input
                         onChange={field.onChange}
-                        defaultValue={field.value}
                         placeholder="Width"
                         type="text"
                         inputMode="numeric"
+                        defaultValue={field.value}
                       />
                     </FormControl>
                     <FormMessage />
@@ -498,10 +510,29 @@ export const Edit = ({ id }: { id: number }) => {
                     <FormControl>
                       <Input
                         onChange={field.onChange}
-                        defaultValue={field.value}
                         placeholder="Length"
                         type="text"
                         inputMode="numeric"
+                        defaultValue={field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="depth"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Depth</FormLabel>
+                    <FormControl>
+                      <Input
+                        onChange={field.onChange}
+                        placeholder="Depth"
+                        type="text"
+                        inputMode="numeric"
+                        defaultValue={field.value}
                       />
                     </FormControl>
                     <FormMessage />
@@ -510,124 +541,53 @@ export const Edit = ({ id }: { id: number }) => {
               />
             </div>
             <div className="flex gap-10 max-sm:text-base">
-              <FormField
-                control={form.control}
-                name="flute"
-                render={({ field }) => (
-                  <FormItem className="w-full space-y-3">
-                    <FormLabel>Flute</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="grid grid-cols-2 space-y-1"
-                      >
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="B" />
-                          </FormControl>
-                          <FormLabel className="font-normal">B</FormLabel>
-                        </FormItem>
-
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="C" />
-                          </FormControl>
-                          <FormLabel className="font-normal">C</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="E" />
-                          </FormControl>
-                          <FormLabel className="font-normal">E</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="F" />
-                          </FormControl>
-                          <FormLabel className="font-normal">F</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="BC" />
-                          </FormControl>
-                          <FormLabel className="font-normal">BC</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="pt" />
-                          </FormControl>
-                          <FormLabel className="font-normal">PT</FormLabel>
-                        </FormItem>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormItem className="relative w-full px-2">
-                <FormLabel>Associated Companies</FormLabel>
-                <Button
-                  type="button"
-                  className="absolute right-0 top-0 h-2 w-2 p-2"
-                  onClick={() => fieldArr.append("")}
-                >
-                  +
-                </Button>
-                <div className="flex max-h-20 flex-col gap-2 overflow-auto p-2 pr-4">
-                  {fieldArr.fields.map(({ id }, index) => (
-                    <Input
-                      type="text"
-                      required={false}
-                      onDoubleClick={() => fieldArr.remove(index)}
-                      defaultValue={fieldArr.fields.at(index)?.id}
-                      placeholder="Company Name"
-                      key={id}
-                      {...form.register(`CompanyUsedFor.${index}`)}
-                    />
-                  ))}
-                </div>
-              </FormItem>
-            </div>
-            <div className="flex gap-10 max-sm:text-base">
-              <FormField
-                name="color"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Color</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={data.data?.color ?? ""}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select kraft of white" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="kraft">Kraft</SelectItem>
-                        <SelectItem value="white">White</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="strength"
                 render={({ field }) => (
-                  <FormItem className="w-full">
+                  <FormItem className="w-1/3">
                     <FormLabel>Strength</FormLabel>
                     <FormControl>
                       <Input
                         onChange={field.onChange}
-                        defaultValue={field.value}
                         placeholder="Strength"
-                        type="number"
+                        type="text"
                         inputMode="numeric"
+                        defaultValue={field.value}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="flute"
+                render={({ field }) => (
+                  <FormItem className="w-2/3">
+                    <FormLabel>Flute</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value ?? ""}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder="Pick flute type"
+                            defaultValue={field.value ?? ""}
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="BC">DW</SelectItem>
+                        <SelectItem value="B">B</SelectItem>
+                        <SelectItem value="C">C</SelectItem>
+                        <SelectItem value="E">E</SelectItem>
+                        <SelectItem value="F">F</SelectItem>
+                        <SelectItem value="pt">PT</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -643,10 +603,10 @@ export const Edit = ({ id }: { id: number }) => {
                     <FormControl>
                       <Input
                         onChange={field.onChange}
-                        placeholder="Material count"
-                        defaultValue={field.value}
-                        type="number"
+                        placeholder="Amount"
+                        type="text"
                         inputMode="numeric"
+                        defaultValue={field.value}
                       />
                     </FormControl>
                     <FormMessage />
@@ -662,10 +622,29 @@ export const Edit = ({ id }: { id: number }) => {
                     <FormControl>
                       <Input
                         onChange={field.onChange}
-                        placeholder="Minimum Inventory"
-                        defaultValue={field.value}
-                        type="number"
+                        placeholder="Low Inventory Threshold"
+                        type="text"
                         inputMode="numeric"
+                        defaultValue={field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="maxInventoryThreshold"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Max Inventory</FormLabel>
+                    <FormControl>
+                      <Input
+                        onChange={field.onChange}
+                        placeholder="Max Inventory Threshold"
+                        type="text"
+                        inputMode="numeric"
+                        defaultValue={field.value}
                       />
                     </FormControl>
                     <FormMessage />
@@ -676,17 +655,16 @@ export const Edit = ({ id }: { id: number }) => {
             <div className="flex gap-10 max-sm:text-base">
               <FormField
                 control={form.control}
-                name="maxInventoryThreshold"
+                name="itemNum"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Max Inventory</FormLabel>
+                  <FormItem className="w-1/2">
+                    <FormLabel>Item No.</FormLabel>
                     <FormControl>
                       <Input
                         onChange={field.onChange}
-                        placeholder="Max Amount"
+                        placeholder="Item Number"
+                        type="text"
                         defaultValue={field.value}
-                        type="number"
-                        inputMode="numeric"
                       />
                     </FormControl>
                     <FormMessage />
@@ -695,17 +673,65 @@ export const Edit = ({ id }: { id: number }) => {
               />
               <FormField
                 control={form.control}
-                name="description"
+                name="amountPerPallet"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Description</FormLabel>
+                  <FormItem className="w-1/2">
+                    <FormLabel>Per Pallet</FormLabel>
                     <FormControl>
                       <Input
                         onChange={field.onChange}
-                        required={false}
+                        placeholder="Total Amount Per Pallet"
+                        type="text"
+                        inputMode="numeric"
                         defaultValue={field.value}
-                        placeholder="Stock material description"
-                        className=""
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex gap-10 max-sm:text-base">
+              <FormField
+                control={form.control}
+                name="color"
+                render={({ field }) => (
+                  <FormItem className="w-1/3">
+                    <FormLabel>Color</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value ?? ""}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder="Kraft or White"
+                            defaultValue={field.value ?? ""}
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="kraft">Kraft</SelectItem>
+                        <SelectItem value="white">White</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem className="h-min w-2/3">
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Enter description"
+                        className="resize-none"
+                        onChange={field.onChange}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage />

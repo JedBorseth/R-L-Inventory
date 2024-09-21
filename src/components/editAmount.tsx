@@ -42,7 +42,7 @@ const EditAmount = ({
     width: number;
     length: number;
   };
-  type: string;
+  type: "pallet" | "scrap" | "stock" | "finishedItem";
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -94,12 +94,12 @@ const EditAmount = ({
   const mutateFinishedItem = api.finishedItems.updateAmount.useMutation({
     onSuccess: () => {
       router.refresh();
-      toast.success("Scrap Amount Updated", {
-        description: `The scrap material amount has been updated from ${result.amount} to ${form.getValues("amount")}`,
+      toast.success("Finished Item Amount Updated", {
+        description: `The item amount has been updated from ${result.amount} to ${form.getValues("amount")}`,
       });
     },
     onError: (error) => {
-      toast.error("Error updating pallet amount", {
+      toast.error("Error updating product amount", {
         description: error.message,
       });
     },

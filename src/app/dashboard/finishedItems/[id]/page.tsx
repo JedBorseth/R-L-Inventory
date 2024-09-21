@@ -15,7 +15,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { capsFirst } from "~/lib/utils";
 import { QrCode } from "lucide-react";
 import { useState } from "react";
-import { Edit } from "~/components/addStock";
+import { Edit } from "~/components/addFinishedItem";
 import EditAmount from "~/components/editAmount";
 import {
   Form,
@@ -52,7 +52,7 @@ function SkeletonDemo() {
 }
 
 export default function Page({ params }: { params: { id: string } }) {
-  const { data, isLoading, refetch } = api.stock.getById.useQuery({
+  const { data, isLoading, refetch } = api.finishedItems.getById.useQuery({
     id: Number(params.id),
   });
   const [code, setCode] = useState<string | null>(null);
@@ -60,16 +60,17 @@ export default function Page({ params }: { params: { id: string } }) {
   const generateQRCode = async () => {
     const baseUrl =
       process.env.NODE_ENV === "development"
-        ? "https://inventory.rlpackaging.ca/dashboard/stock/"
-        : "https://inventory.rlpackaging.ca/dashboard/stock/";
+        ? "https://inventory.rlpackaging.ca/dashboard/finishedItems/"
+        : "https://inventory.rlpackaging.ca/dashboard/finishedItems/";
     return await QRCode.toDataURL(`${baseUrl}${params.id}/`);
   };
   // Form Stuff
-  const UpdateAmount = api.stock.updateAmount.useMutation({
+  const UpdateAmount = api.finishedItems.updateAmount.useMutation({
     onSuccess: async () => {
       await refetch();
       toast.success("Amount Updated", {
-        description: "Stock Product amount has been updated successfully.",
+        description:
+          "finishedItems Product amount has been updated successfully.",
       });
     },
     onError: (error) => {
@@ -97,7 +98,7 @@ export default function Page({ params }: { params: { id: string } }) {
       <Card className="relative mx-auto max-w-sm max-md:mt-4">
         <CardHeader>
           <CardTitle className="text-2xl">
-            {data?.width}x{data?.length}
+            {data?.width}x{data?.length}x{data?.depth}
             <div className="absolute right-2 top-2 flex flex-col gap-2">
               <Button
                 variant="secondary"
@@ -108,7 +109,7 @@ export default function Page({ params }: { params: { id: string } }) {
                   pdf.setTextColor("#000000");
                   console.log(pdf.getTextColor());
                   pdf.text(
-                    `${data?.width}x${data?.length} | ${data?.strength}${data?.flute}`,
+                    `${data?.width}x${data?.length}x${data?.depth} | ${data?.strength}${data?.flute}`,
                     100,
                     25,
                     {
@@ -118,9 +119,26 @@ export default function Page({ params }: { params: { id: string } }) {
                       baseline: "bottom",
                     },
                   );
+                  pdf.text(
+                    `${data?.itemNum} | Total:${data?.amount}`,
+                    100,
+                    45,
+                    {
+                      align: "center",
+                      renderingMode: "fill",
+                      lineHeightFactor: 1.5,
+                      baseline: "bottom",
+                    },
+                  );
+                  pdf.text(`${data?.amountPerPallet} Per Pallet`, 100, 65, {
+                    align: "center",
+                    renderingMode: "fill",
+                    lineHeightFactor: 1.5,
+                    baseline: "bottom",
+                  });
                   const code = await generateQRCode();
                   pdf.addImage(code, "png", 5, 80, 200, 200, "QR Code", "FAST");
-                  pdf.save(`stock-id-${data?.id}.pdf`);
+                  pdf.save(`finishedItems-id-${data?.id}.pdf`);
                 }}
               >
                 <QrCode />
@@ -132,9 +150,12 @@ export default function Page({ params }: { params: { id: string } }) {
           </CardTitle>
           <CardDescription>
             {data && typeof data.id === "number" && (
-              <EditAmount result={{ ...data, block: null }} type="stock" />
+              <EditAmount
+                result={{ ...data, block: null }}
+                type="finishedItem"
+              />
             )}{" "}
-            in stock
+            in finishedItems
           </CardDescription>
         </CardHeader>
         <CardContent>

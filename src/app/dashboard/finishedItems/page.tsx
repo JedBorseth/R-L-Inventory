@@ -43,7 +43,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { AddFinishedItem } from "~/components/addFinishedItem";
+import { AddFinishedItem, Edit } from "~/components/addFinishedItem";
+import Link from "next/link";
 
 export default async function Dashboard() {
   return (
@@ -52,9 +53,9 @@ export default async function Dashboard() {
         <div className="flex items-center">
           <TabsList className="max-md:hidden">
             <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="bc">DW</TabsTrigger>
-            <TabsTrigger value="c">C Flute</TabsTrigger>
-            <TabsTrigger value="b">B Flute</TabsTrigger>
+            <TabsTrigger value="awpl">AWPL</TabsTrigger>
+            <TabsTrigger value="ck">CK</TabsTrigger>
+            <TabsTrigger value="fvd">FVD</TabsTrigger>
             <TabsTrigger value="other">Other</TabsTrigger>
           </TabsList>
           <div className="ml-auto flex items-center gap-2">
@@ -113,17 +114,25 @@ const FinishedItemResults = async () => {
   const all = await api.finishedItems.getLatest();
   const TabData = ({ tab }: { tab: string }) => {
     const getTabItems = () => {
-      const bc = all.filter((item) => item.flute === "BC");
-      const c = all.filter((item) => item.flute === "C");
-      const b = all.filter((item) => item.flute === "B");
+      const awpl = all.filter((item) =>
+        item.itemNum?.toUpperCase().includes("AWPL"),
+      );
+      const ck = all.filter((item) =>
+        item.itemNum?.toUpperCase().includes("CK"),
+      );
+      const fvd = all.filter((item) =>
+        item.itemNum?.toUpperCase().includes("FVD"),
+      );
       const other = all.filter(
         (item) =>
-          item.flute !== "BC" && item.flute !== "C" && item.flute !== "B",
+          !item.itemNum?.toUpperCase().includes("AWPL") &&
+          !item.itemNum?.toUpperCase().includes("CK") &&
+          !item.itemNum?.toUpperCase().includes("FVD"),
       );
       if (tab === "all") return all;
-      if (tab === "bc") return bc;
-      if (tab === "c") return c;
-      if (tab === "b") return b;
+      if (tab === "awpl") return awpl;
+      if (tab === "ck") return ck;
+      if (tab === "fvd") return fvd;
       if (tab === "other") return other;
       else return all;
     };
@@ -144,7 +153,7 @@ const FinishedItemResults = async () => {
                     <span className="sr-only">Image</span>
                   </TableHead>
                   <TableHead>Name</TableHead>
-                  <TableHead>Flute</TableHead>
+                  <TableHead>Item No.</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead className="hidden md:table-cell">Color</TableHead>
                   <TableHead className="hidden md:table-cell">
@@ -160,13 +169,15 @@ const FinishedItemResults = async () => {
                   ? getTabItems().map((result) => (
                       <TableRow key={result.id}>
                         <TableCell className="hidden sm:table-cell">
-                          <Image
-                            alt="Product image"
-                            className={`aspect-square rounded-md object-cover`}
-                            height="50"
-                            src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}x${result.depth}`}
-                            width="50"
-                          />
+                          <Link href={`/dashboard/finishedItems/${result.id}`}>
+                            <Image
+                              alt="Product image"
+                              className={`aspect-square rounded-md object-cover`}
+                              height="50"
+                              src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}x${result.depth}`}
+                              width="50"
+                            />
+                          </Link>
                         </TableCell>
                         <TableCell className="font-medium">
                           <ViewDetailed
@@ -219,9 +230,7 @@ const FinishedItemResults = async () => {
                           </ViewDetailed>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline">
-                            {result.flute?.toUpperCase()}
-                          </Badge>
+                          <Badge variant="outline">{result.itemNum}</Badge>
                         </TableCell>
                         <TableCell>
                           <EditAmount
@@ -251,7 +260,7 @@ const FinishedItemResults = async () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              {/* <Edit id={result.id} /> */}
+                              <Edit id={result.id} />
                               <DeleteItem id={result.id} type="finishedItem" />
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -264,7 +273,7 @@ const FinishedItemResults = async () => {
           </CardContent>
           <CardFooter>
             <div className="text-xs text-muted-foreground">
-              Showing <strong>{tab.toUpperCase()}</strong> flute stock sheets.
+              Showing <strong>{tab.toUpperCase()}</strong> finished products.
             </div>
           </CardFooter>
         </Card>
@@ -274,9 +283,9 @@ const FinishedItemResults = async () => {
   return (
     <>
       <TabData tab="all" />
-      <TabData tab="bc" />
-      <TabData tab="c" />
-      <TabData tab="b" />
+      <TabData tab="awpl" />
+      <TabData tab="ck" />
+      <TabData tab="fvd" />
       <TabData tab="other" />
     </>
   );

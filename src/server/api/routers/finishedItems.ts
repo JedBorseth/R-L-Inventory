@@ -63,11 +63,29 @@ export const finishedItemsRouter = createTRPCRouter({
       });
     }),
   update: protectedProcedure
-    .input(z.object({}).extend({ id: z.number() }))
+    .input(
+      z
+        .object({
+          length: z.number(),
+          width: z.number(),
+          depth: z.number(),
+          amount: z.number(),
+          itemNum: z.string(),
+          amountPerPallet: z.number(),
+          description: z.string().nullable().optional(),
+          flute: z.enum(["B", "C", "E", "F", "BC", "pt"]),
+          color: z.enum(["kraft", "white"]),
+          strength: z.number(),
+          inventoryThreshold: z.number(),
+          maxInventoryThreshold: z.number(),
+        })
+        .extend({ id: z.number() }),
+    )
     .mutation(async ({ ctx, input }) => {
       await ctx.db
         .update(finishedItems)
         .set({
+          ...input,
           dateModified: new Date().toISOString(),
         })
         .where(eq(finishedItems.id, input.id));

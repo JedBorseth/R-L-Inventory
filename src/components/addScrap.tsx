@@ -350,7 +350,7 @@ export const ScrapForm = () => {
   );
 };
 
-export const Edit = ({ id }: { id: number }) => {
+export const Edit = ({ id, button }: { id: number; button?: boolean }) => {
   const data = api.scrap.getById.useQuery({ id: id });
 
   const FormSchema = z.object({
@@ -433,7 +433,13 @@ export const Edit = ({ id }: { id: number }) => {
 
   return (
     <Dialog>
-      <DialogTrigger className="flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+      <DialogTrigger
+        className={
+          button
+            ? "inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            : "flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+        }
+      >
         Edit
       </DialogTrigger>
       <DialogContent>
