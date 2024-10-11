@@ -13,9 +13,24 @@
       "type": "image/png"
     }
   ],
+
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
   "start_url": "/",
   "display": "standalone",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "url_handlers": [
+    {
+      "origin": "https://inventory.rlpackaging.ca"
+    },
+    {
+      "origin": "https://*.inventory.rlpackaging.ca"
+    },
+    {
+      "origin": "https://inventory.rlpackaging.ca/*/**"
+    },
+    {
+      "origin": "https://*.inventory.rlpackaging.ca/*"
+    }
+  ]
 }
