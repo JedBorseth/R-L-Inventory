@@ -19,12 +19,16 @@ import { createSwapy } from "swapy";
 export default function Dashboard() {
   const res = api.all.getTotals.useQuery();
   useEffect(() => {
+    if (window.innerWidth <= 768) {
+      return;
+      // will not run swapy on mobile
+    }
     const container = document.querySelector("#swapy-container")!;
     const swapy = createSwapy(container);
     // swapy.onSwap(({ data }) => {
     //   localStorage.setItem("slotItem", JSON.stringify(data.object));
     // });
-    // ------ make swappy persistent
+    // ------ TODO: make swappy persistent
   }, []);
   return (
     <main

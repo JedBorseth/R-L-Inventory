@@ -157,7 +157,9 @@ const FinishedItemResults = async () => {
                   <TableHead>Name</TableHead>
                   <TableHead>Item No.</TableHead>
                   <TableHead>Amount</TableHead>
-                  <TableHead className="hidden md:table-cell">Color</TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    Amount in use
+                  </TableHead>
                   <TableHead className="hidden md:table-cell">
                     Last Modified
                   </TableHead>
@@ -242,7 +244,10 @@ const FinishedItemResults = async () => {
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
                           <Badge variant="outline">
-                            {capsFirst(result.color ?? "")}
+                            <EditAmount
+                              result={{ ...result, block: null }}
+                              type="prodFinishedItem"
+                            />
                           </Badge>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
@@ -275,7 +280,7 @@ const FinishedItemResults = async () => {
           </CardContent>
           <CardFooter>
             <div className="text-xs text-muted-foreground">
-              Showing <strong>{tab.toUpperCase()}</strong> finished products.
+              Showing <strong>{getTabItems().length}</strong> finished products.
             </div>
           </CardFooter>
         </Card>

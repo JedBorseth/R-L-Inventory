@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 import {
@@ -16,6 +16,7 @@ export const finishedItemsRouter = createTRPCRouter({
         width: z.number(),
         depth: z.number(),
         amount: z.number(),
+        prodAmount: z.number(),
         itemNum: z.string(),
         amountPerPallet: z.number(),
         description: z.string().nullable().optional(),
@@ -45,12 +46,19 @@ export const finishedItemsRouter = createTRPCRouter({
     });
   }),
   updateAmount: protectedProcedure
-    .input(z.object({ id: z.number(), amount: z.number() }))
+    .input(
+      z.object({
+        id: z.number(),
+        amount: z.number(),
+        prodAmount: z.number().optional(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       await ctx.db
         .update(finishedItems)
         .set({
           amount: input.amount,
+          prodAmount: input.prodAmount,
           dateModified: new Date().toISOString(),
         })
         .where(eq(finishedItems.id, input.id));
@@ -70,6 +78,7 @@ export const finishedItemsRouter = createTRPCRouter({
           width: z.number(),
           depth: z.number(),
           amount: z.number(),
+          prodAmount: z.number(),
           itemNum: z.string(),
           amountPerPallet: z.number(),
           description: z.string().nullable().optional(),

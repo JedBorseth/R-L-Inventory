@@ -73,6 +73,7 @@ export const finishedItems = sqliteTable("finished_items", {
   length: integer("length").notNull(),
   depth: integer("depth").notNull(),
   amount: integer("amount", { mode: "number" }).notNull(),
+  prodAmount: integer("prodAmount", { mode: "number" }).notNull(),
   amountPerPallet: integer("amountPerPallet"),
   description: text("description"),
   itemNum: text("itemNum"),

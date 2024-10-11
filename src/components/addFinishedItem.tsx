@@ -51,6 +51,10 @@ export const AddFinishedItem = () => {
       required_error: "Please specify an amount",
       invalid_type_error: "Please enter a valid number",
     }),
+    prodAmount: z.coerce.number({
+      required_error: "Please specify an amount",
+      invalid_type_error: "Please enter a valid number",
+    }),
     description: z.string().nullable().optional(),
     flute: z.enum(["B", "C", "E", "F", "BC", "pt"]),
     color: z.enum(["kraft", "white"], {
@@ -101,10 +105,10 @@ export const AddFinishedItem = () => {
     console.log(data);
     createFinishedItem.mutate(data);
   }
-  const fieldArr = useFieldArray({
-    control: form.control,
-    name: "CompanyUsedFor" as never,
-  });
+  // const fieldArr = useFieldArray({
+  //   control: form.control,
+  //   name: "CompanyUsedFor" as never,
+  // });
 
   return (
     <Form {...form}>
@@ -278,17 +282,45 @@ export const AddFinishedItem = () => {
         <div className="flex gap-10 max-sm:text-base">
           <FormField
             control={form.control}
-            name="itemNum"
+            name="prodAmount"
             render={({ field }) => (
               <FormItem className="w-1/2">
-                <FormLabel>Item No.</FormLabel>
+                <FormLabel>Amount In Use</FormLabel>
                 <FormControl>
                   <Input
                     onChange={field.onChange}
-                    placeholder="Item Number"
-                    type="text"
+                    placeholder="Prod Amount"
+                    type="number"
+                    inputMode="numeric"
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="color"
+            render={({ field }) => (
+              <FormItem className="w-1/3">
+                <FormLabel>Color</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ""}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder="Kraft or White"
+                        defaultValue={field.value ?? ""}
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="kraft">Kraft</SelectItem>
+                    <SelectItem value="white">White</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -315,27 +347,17 @@ export const AddFinishedItem = () => {
         <div className="flex gap-10 max-sm:text-base">
           <FormField
             control={form.control}
-            name="color"
+            name="itemNum"
             render={({ field }) => (
-              <FormItem className="w-1/3">
-                <FormLabel>Color</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value ?? ""}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder="Kraft or White"
-                        defaultValue={field.value ?? ""}
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="kraft">Kraft</SelectItem>
-                    <SelectItem value="white">White</SelectItem>
-                  </SelectContent>
-                </Select>
+              <FormItem className="w-1/2">
+                <FormLabel>Item No.</FormLabel>
+                <FormControl>
+                  <Input
+                    onChange={field.onChange}
+                    placeholder="Item Number"
+                    type="text"
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -398,6 +420,10 @@ export const Edit = ({ id, button }: { id: number; button?: boolean }) => {
       required_error: "Please specify an amount",
       invalid_type_error: "Please enter a valid number",
     }),
+    prodAmount: z.coerce.number({
+      required_error: "Please specify an amount",
+      invalid_type_error: "Please enter a valid number",
+    }),
     description: z.string().nullable().optional(),
     flute: z.enum(["B", "C", "E", "F", "BC", "pt"]),
     color: z.enum(["kraft", "white"], {
@@ -429,6 +455,7 @@ export const Edit = ({ id, button }: { id: number; button?: boolean }) => {
     resolver: zodResolver(FormSchema),
     values: {
       amount: data.data?.amount ?? 0,
+      prodAmount: data.data?.prodAmount ?? 0,
       inventoryThreshold: data.data?.inventoryThreshold ?? 0,
       maxInventoryThreshold: data.data?.maxInventoryThreshold ?? 0,
       width: data.data?.width ?? 0,
@@ -655,18 +682,47 @@ export const Edit = ({ id, button }: { id: number; button?: boolean }) => {
             <div className="flex gap-10 max-sm:text-base">
               <FormField
                 control={form.control}
-                name="itemNum"
+                name="prodAmount"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel>Item No.</FormLabel>
+                    <FormLabel>Amount In Use</FormLabel>
                     <FormControl>
                       <Input
                         onChange={field.onChange}
-                        placeholder="Item Number"
-                        type="text"
+                        placeholder="Prod Amount"
+                        type="number"
+                        inputMode="numeric"
                         defaultValue={field.value}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="color"
+                render={({ field }) => (
+                  <FormItem className="w-1/3">
+                    <FormLabel>Color</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value ?? ""}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder="Kraft or White"
+                            defaultValue={field.value ?? ""}
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="kraft">Kraft</SelectItem>
+                        <SelectItem value="white">White</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -694,28 +750,18 @@ export const Edit = ({ id, button }: { id: number; button?: boolean }) => {
             <div className="flex gap-10 max-sm:text-base">
               <FormField
                 control={form.control}
-                name="color"
+                name="itemNum"
                 render={({ field }) => (
-                  <FormItem className="w-1/3">
-                    <FormLabel>Color</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value ?? ""}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder="Kraft or White"
-                            defaultValue={field.value ?? ""}
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="kraft">Kraft</SelectItem>
-                        <SelectItem value="white">White</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <FormItem className="w-1/2">
+                    <FormLabel>Item No.</FormLabel>
+                    <FormControl>
+                      <Input
+                        onChange={field.onChange}
+                        placeholder="Item Number"
+                        type="text"
+                        defaultValue={field.value}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

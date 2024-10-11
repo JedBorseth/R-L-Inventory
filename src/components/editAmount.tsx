@@ -37,17 +37,18 @@ const EditAmount = ({
 }: {
   result: {
     amount: number;
+    prodAmount?: number;
     id: number;
     block: boolean | null;
     width: number;
     length: number;
   };
-  type: "pallet" | "scrap" | "stock" | "finishedItem";
+  type: "pallet" | "scrap" | "stock" | "finishedItem" | "prodFinishedItem";
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: result.amount,
+      amount: type === "prodFinishedItem" ? result.prodAmount : result.amount,
     },
   });
   const router = useRouter();
@@ -104,6 +105,19 @@ const EditAmount = ({
       });
     },
   });
+  const mutateProdFinishedItem = api.finishedItems.updateAmount.useMutation({
+    onSuccess: () => {
+      router.refresh();
+      toast.success("Product Amount Updated", {
+        description: `The product amount has been updated from ${result.amount} to ${form.getValues("amount")}`,
+      });
+    },
+    onError: (error) => {
+      toast.error("Error updating product amount", {
+        description: error.message,
+      });
+    },
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (values.amount === 0) {
@@ -132,6 +146,14 @@ const EditAmount = ({
       mutateFinishedItem.mutate({
         id: result.id,
         amount: values.amount,
+        prodAmount: result.prodAmount ?? 0,
+      });
+    }
+    if (type === "prodFinishedItem") {
+      mutateProdFinishedItem.mutate({
+        id: result.id,
+        prodAmount: values.amount ?? 0,
+        amount: result.amount,
       });
     }
   }
@@ -139,7 +161,9 @@ const EditAmount = ({
   return (
     <Dialog>
       <DialogTrigger className="">
-        <span className="">{result.amount}</span>
+        <span className="">
+          {type === "prodFinishedItem" ? result.prodAmount : result.amount}
+        </span>
       </DialogTrigger>
       <DialogContent className="max-md:min-w-full">
         <DialogHeader>
