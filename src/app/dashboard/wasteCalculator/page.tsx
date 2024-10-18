@@ -53,7 +53,8 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { MoreHorizontal, Undo2 } from "lucide-react";
-import { Edit } from "~/components/addScrap";
+import { Edit as EditScrap } from "~/components/addScrap";
+import { Edit as EditStock } from "~/components/addStock";
 import DeleteItem from "~/components/deleteItem";
 import {
   Tooltip,
@@ -361,6 +362,12 @@ export default function WasteCalc() {
                 <CardDescription>
                   Manage scrap material inventory and track usage.
                 </CardDescription>
+                <p className="text-right">
+                  Looking for {form.getValues().amount} Sheets of{" "}
+                  {form.getValues().width}x{form.getValues().length}{" "}
+                  {form.getValues().strength ? form.getValues().strength : ""}
+                  {form.getValues().flute ? form.getValues().flute : ""}{" "}
+                </p>
               </CardHeader>
               <CardContent className="p-0 md:p-6">
                 <Table>
@@ -394,7 +401,7 @@ export default function WasteCalc() {
                                 <TooltipTrigger>
                                   <Image
                                     alt="Product image"
-                                    className={`aspect-square rounded-md object-cover`}
+                                    className={`aspect-square rounded-md object-cover ring ${result.type === "stock" ? "ring-blue-400" : "ring-red-400"}`}
                                     height="50"
                                     src={`https://dummyimage.com/50x50&text=${result.width}x${result.length}`}
                                     width="50"
@@ -460,7 +467,7 @@ export default function WasteCalc() {
                           <TableCell className="px-0 md:px-4">
                             <EditAmount
                               result={{ ...result, block: null }}
-                              type="scrap"
+                              type={result.type === "stock" ? "stock" : "scrap"}
                             />
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
@@ -488,7 +495,12 @@ export default function WasteCalc() {
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <Edit id={result.id} />
+                                {result.type === "stock" ? (
+                                  <EditStock id={result.id} />
+                                ) : (
+                                  <EditScrap id={result.id} />
+                                )}
+
                                 <DeleteItem id={result.id} type="scrap" />
                               </DropdownMenuContent>
                             </DropdownMenu>
