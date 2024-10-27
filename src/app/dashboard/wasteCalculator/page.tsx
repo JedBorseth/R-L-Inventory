@@ -120,8 +120,12 @@ export default function WasteCalc() {
       const wWaste = Math.floor(wOut) * input.width - savedItem.width;
       const lWaste = Math.floor(lOut) * input.length - savedItem.length;
       const sheetsNeeded = Math.ceil(input.amount / (wOut * lOut));
+      let lpercent = (lWaste / input.length) * 100;
+      let wpercent = (wWaste / input.width) * 100;
+      if (lpercent < 0) lpercent = lpercent * -1;
+      if (wpercent < 0) wpercent = wpercent * -1;
+      const percent = (lpercent + wpercent) / 2;
 
-      const percent = ((wWaste * lWaste) / (input.width * input.length)) * 100;
       arr.push({
         ...savedItem,
         waste: {
@@ -147,8 +151,12 @@ export default function WasteCalc() {
       const wWaste = Math.floor(wOut) * input.width - savedItem.width;
       const lWaste = Math.floor(lOut) * input.length - savedItem.length;
       const sheetsNeeded = Math.ceil(input.amount / (wOut * lOut));
+      let lpercent = (lWaste / input.length) * 100;
+      let wpercent = (wWaste / input.width) * 100;
+      if (lpercent < 0) lpercent = lpercent * -1;
+      if (wpercent < 0) wpercent = wpercent * -1;
+      const percent = (lpercent + wpercent) / 2;
 
-      const percent = ((wWaste * lWaste) / (input.width * input.length)) * 100;
       arr.push({
         ...savedItem,
         waste: {
