@@ -107,69 +107,49 @@ export default function WasteCalc() {
 
   function onSubmit(input: z.infer<typeof FormSchema>) {
     const arr: ScrapDataWithWaste = [];
-    scrap.data?.forEach((savedItem) => {
+
+    const processItem = (
+      savedItem: ScrapDataWithWaste[number],
+      type: string,
+    ) => {
       if (input.width > savedItem.width || input.length > savedItem.length)
         return;
       if (input.flute && input.flute !== savedItem.flute) return;
       if (input.strength && input.strength !== (savedItem.strength ?? 0))
         return;
-      if (input.color) if (input.color !== (savedItem.color ?? "")) return;
+      if (input.color && input.color !== (savedItem.color ?? "")) return;
 
-      const wOut = savedItem.width / input.width;
-      const lOut = savedItem.length / input.length;
-      const wWaste = Math.floor(wOut) * input.width - savedItem.width;
-      const lWaste = Math.floor(lOut) * input.length - savedItem.length;
-      const sheetsNeeded = Math.ceil(input.amount / (wOut * lOut));
-      let lpercent = (lWaste / input.length) * 100;
-      let wpercent = (wWaste / input.width) * 100;
-      if (lpercent < 0) lpercent = lpercent * -1;
-      if (wpercent < 0) wpercent = wpercent * -1;
-      const percent = (lpercent + wpercent) / 2;
+      const itemsPerRow = Math.floor(savedItem.width / input.width);
+      const itemsPerColumn = Math.floor(savedItem.length / input.length);
+      const itemsPerSheet = itemsPerRow * itemsPerColumn;
 
-      arr.push({
-        ...savedItem,
-        waste: {
-          percent: percent,
-          materialNeeded: sheetsNeeded,
-          amountOut: Math.floor(wOut) * Math.floor(lOut),
-        },
-        type: "scrap",
-        description: "",
-        inventoryThreshold: 0,
-        maxInventoryThreshold: 0,
-      });
-    });
-    stock.data?.forEach((savedItem) => {
-      if (input.width > savedItem.width || input.length > savedItem.length)
-        return;
-      if (input.flute && input.flute !== savedItem.flute) return;
-      if (input.strength && input.strength !== (savedItem.strength ?? 0))
-        return;
-      if (input.color) if (input.color !== (savedItem.color ?? "")) return;
-      const wOut = savedItem.width / input.width;
-      const lOut = savedItem.length / input.length;
-      const wWaste = Math.floor(wOut) * input.width - savedItem.width;
-      const lWaste = Math.floor(lOut) * input.length - savedItem.length;
-      const sheetsNeeded = Math.ceil(input.amount / (wOut * lOut));
-      let lpercent = (lWaste / input.length) * 100;
-      let wpercent = (wWaste / input.width) * 100;
-      if (lpercent < 0) lpercent = lpercent * -1;
-      if (wpercent < 0) wpercent = wpercent * -1;
-      const percent = (lpercent + wpercent) / 2;
+      if (itemsPerSheet === 0) return; // If no items fit, skip
+
+      const sheetsNeeded = Math.ceil(input.amount / itemsPerSheet);
+
+      const wasteWidth = savedItem.width - itemsPerRow * input.width;
+      const wasteLength = savedItem.length - itemsPerColumn * input.length;
+
+      const wasteArea =
+        wasteWidth * savedItem.length + wasteLength * savedItem.width;
+      const totalArea = savedItem.width * savedItem.length;
+      const wastePercentage = (wasteArea / totalArea) * 100;
 
       arr.push({
         ...savedItem,
         waste: {
-          percent: percent,
+          percent: Math.round(wastePercentage * 100) / 100, // Round to 2 decimal places
           materialNeeded: sheetsNeeded,
-          amountOut: Math.floor(wOut) * Math.floor(lOut),
+          amountOut: itemsPerSheet,
         },
-        type: "stock",
-        scored: null,
-        scoredAt: null,
-        notes: null,
+        type,
       });
-    });
+    };
+    // @ts-expect-error FIX LATER
+    scrap.data?.forEach((savedItem) => processItem(savedItem, "scrap"));
+    // @ts-expect-error FIX LATER
+    stock.data?.forEach((savedItem) => processItem(savedItem, "stock"));
+
     setItems(arr);
     if (arr.length === 0) {
       toast.error("No items found that match the criteria");
