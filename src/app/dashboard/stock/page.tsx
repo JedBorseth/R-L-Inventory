@@ -52,7 +52,9 @@ export default async function Dashboard() {
             <TabsTrigger value="c">C Flute</TabsTrigger>
             <TabsTrigger value="b">B Flute</TabsTrigger>
             <TabsTrigger value="other">Other</TabsTrigger>
+            <TabsTrigger value="rolls">Rolls</TabsTrigger>
           </TabsList>
+
           <div className="ml-auto flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -95,6 +97,7 @@ export default async function Dashboard() {
 
 const StockResults = async () => {
   const all = await api.stock.getLatest();
+
   const TabData = ({ tab }: { tab: string }) => {
     const getTabItems = () => {
       const bc = all.filter((item) => item.flute === "BC");
@@ -104,13 +107,17 @@ const StockResults = async () => {
         (item) =>
           item.flute !== "BC" && item.flute !== "C" && item.flute !== "B",
       );
+      const rolls = all.filter((item) => item.description?.match(/roll/i));
+
       if (tab === "all") return all;
       if (tab === "bc") return bc;
       if (tab === "c") return c;
       if (tab === "b") return b;
       if (tab === "other") return other;
-      else return all;
+      if (tab === "rolls") return rolls;
+      return all;
     };
+
     return (
       <TabsContent value={tab}>
         <Card x-chunk="dashboard-06-chunk-0">
@@ -156,10 +163,16 @@ const StockResults = async () => {
                         </TableCell>
                         <TableCell className="font-medium">
                           <ViewDetailed
-                            title={`${result.width}x${result.length} | ${
-                              result.CompanyUsedFor
-                                ? String(result.CompanyUsedFor).split(",")[0]
-                                : `${result.strength}${result.flute}`
+                            title={`${
+                              result.descriptionAsTitle
+                                ? result.description
+                                : `${result.width}x${result.length} | ${
+                                    result.CompanyUsedFor
+                                      ? String(result.CompanyUsedFor).split(
+                                          ",",
+                                        )[0]
+                                      : `${result.strength}${result.flute}`
+                                  }`
                             }`}
                           >
                             <>
@@ -182,7 +195,7 @@ const StockResults = async () => {
                                 Current:{result.amount}
                               </p>
                               <p className="space-y-2">
-                                Addded:{" "}
+                                Added:{" "}
                                 {new Date(
                                   result.dateAdded ?? "",
                                 ).toDateString()}
@@ -250,6 +263,7 @@ const StockResults = async () => {
       </TabsContent>
     );
   };
+
   return (
     <>
       <TabData tab="all" />
@@ -257,6 +271,7 @@ const StockResults = async () => {
       <TabData tab="c" />
       <TabData tab="b" />
       <TabData tab="other" />
+      <TabData tab="rolls" />
     </>
   );
 };

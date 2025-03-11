@@ -15,6 +15,7 @@ export const stockZod = z.object({
   inventoryThreshold: z.number(),
   maxInventoryThreshold: z.number(),
   description: z.string().optional(),
+  descriptionAsTitle: z.boolean().optional(),
   CompanyUsedFor: z.string().array().optional(),
   color: z.enum(["kraft", "white"]),
   flute: z.enum(["B", "C", "E", "F", "BC", "pt"]),
@@ -35,6 +36,7 @@ export const stockRouter = createTRPCRouter({
         flute: input.flute,
         strength: input.strength,
         description: input.description,
+        descriptionAsTitle: input.descriptionAsTitle,
         dateAdded: new Date().toISOString(),
         dateModified: new Date().toISOString(),
       });
@@ -81,6 +83,7 @@ export const stockRouter = createTRPCRouter({
           strength: input.strength,
           CompanyUsedFor: input.CompanyUsedFor,
           description: input.description,
+          descriptionAsTitle: input.descriptionAsTitle,
           inventoryThreshold: input.inventoryThreshold,
           maxInventoryThreshold: input.maxInventoryThreshold,
           amount: input.amount,

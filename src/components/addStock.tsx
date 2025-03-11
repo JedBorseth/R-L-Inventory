@@ -33,6 +33,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { Checkbox } from "./ui/checkbox";
+import { desc } from "drizzle-orm";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 const AddStock = () => {
   return (
@@ -91,6 +99,7 @@ export const StockForm = () => {
     scored: z.boolean(),
     scoredAt: z.array(z.number()),
     description: z.string().default(""),
+    descriptionAsTitle: z.boolean().default(false),
   });
   const form = useForm<z.infer<typeof FormSchema>>({
     defaultValues: {
@@ -359,6 +368,33 @@ export const StockForm = () => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="descriptionAsTitle"
+            render={({ field }) => (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <FormItem className="flex flex-row items-end space-x-3 space-y-0">
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Description Title</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Checkbox onCheckedChange={field.onChange} />
+                      </FormControl>
+                    </FormItem>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    <p>
+                      Change the title to the description, <br />
+                      useful if the width and length <br />
+                      don&apos;t describe the item well
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          />
         </div>
         {form.formState.isValid ? (
           <DialogClose type="submit" asChild>
@@ -415,6 +451,7 @@ export const Edit = ({ id, button }: { id: number; button?: boolean }) => {
       invalid_type_error: "Please enter a valid number",
     }),
     description: z.string().default(""),
+    descriptionAsTitle: z.boolean().default(false),
   });
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -429,6 +466,7 @@ export const Edit = ({ id, button }: { id: number; button?: boolean }) => {
       flute: data.data?.flute ?? "pt",
       strength: data.data?.strength ?? 0,
       description: data.data?.description ?? "",
+      descriptionAsTitle: data.data?.descriptionAsTitle ?? false,
     },
   });
   const router = useRouter();
@@ -724,6 +762,25 @@ export const Edit = ({ id, button }: { id: number; button?: boolean }) => {
                       />
                     </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="descriptionAsTitle"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-end space-x-3 space-y-0">
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>Use Description As Title</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Checkbox
+                        onCheckedChange={field.onChange}
+                        defaultChecked={
+                          data.data?.descriptionAsTitle ? true : false
+                        }
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />

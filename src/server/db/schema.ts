@@ -1,23 +1,6 @@
 import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
-// export const countries = sqliteTable(
-//   "countries",
-//   {
-//     id: integer("id").primaryKey(),
-//     name: text("name"),
-//   },
-//   (countries) => ({
-//     nameIdx: uniqueIndex("nameIdx").on(countries.name),
-//   }),
-// );
-
-// export const cities = sqliteTable("cities", {
-//   id: integer("id").primaryKey(),
-//   name: text(""),
-//   countryId: integer("country_id").references(() => countries.id),
-// });
-
 export const pallets = sqliteTable("pallets", {
   id: integer("id").primaryKey().notNull().unique(),
   amount: integer("amount").notNull().default(0),
@@ -45,6 +28,9 @@ export const stockSheet = sqliteTable("stock_sheet", {
   flute: text("flute", { enum: ["B", "C", "E", "F", "BC", "pt"] }),
   strength: integer("strength"),
   description: text("description"),
+  descriptionAsTitle: integer("descriptionAsTitle", { mode: "boolean" })
+    .default(sql`0`)
+    .notNull(),
   dateAdded: text("dateAdded").default(sql`(CURRENT_TIMESTAMP)`),
   dateModified: text("dateModified").default(sql`(CURRENT_TIMESTAMP)`),
   sageId: text("sageId"),
