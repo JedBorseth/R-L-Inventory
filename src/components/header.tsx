@@ -21,7 +21,6 @@ import Link from "next/link";
 import Breadcrumbs from "~/components/breadCrumbs";
 
 import { UserButton } from "@clerk/nextjs";
-import { Search } from "~/components/search";
 import "@algolia/autocomplete-theme-classic";
 import { Suspense } from "react";
 
@@ -107,7 +106,7 @@ const Header = async () => {
         <Breadcrumbs />
       </Suspense>
       <div className="relative ml-auto flex-1 text-muted-foreground md:grow-0">
-        <Search />
+        <p>Search</p>
       </div>
       <UserButton />
     </header>
