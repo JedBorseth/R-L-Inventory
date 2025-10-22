@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { File, ListFilter, MoreHorizontal, PlusCircle } from "lucide-react";
+import { ListFilter, MoreHorizontal } from "lucide-react";
 
 import { Badge } from "~/components/ui/badge";
 
@@ -16,7 +16,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -40,6 +39,7 @@ import { formatNum, capsFirst } from "~/lib/utils";
 import ViewDetailed from "~/components/viewDetailed";
 import DownloadCSV from "~/components/downloadCSV";
 import Link from "next/link";
+import SendEmail from "~/components/sendEmail";
 
 export default async function Dashboard() {
   return (
@@ -161,7 +161,7 @@ const StockResults = async () => {
                             />
                           </Link>
                         </TableCell>
-                        <TableCell className="font-medium">
+                        <TableCell className="relative font-medium">
                           <ViewDetailed
                             title={`${
                               result.descriptionAsTitle
@@ -207,8 +207,15 @@ const StockResults = async () => {
                                 ).toDateString()}
                               </p>
                               <p className="space-y-2">{result.description}</p>
+                              <div className="relative my-6 h-10 w-2/3">
+                                Send Email Reorder Request:
+                                <SendEmail item={result} />
+                              </div>
                             </>
                           </ViewDetailed>
+                          {result.inventoryThreshold >= result.amount ? (
+                            <SendEmail item={result} />
+                          ) : null}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline">

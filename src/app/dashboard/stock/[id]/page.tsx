@@ -30,8 +30,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "~/components/ui/input";
 import { toast } from "sonner";
-import { Toast } from "~/components/ui/toast";
-import { useRouter } from "next/navigation";
 
 function SkeletonDemo() {
   return (
