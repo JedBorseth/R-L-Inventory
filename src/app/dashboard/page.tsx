@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
-import Counter from "~/components/animatedNum";
 import { Button } from "~/components/ui/button";
 import {
   Card,
