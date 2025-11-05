@@ -17,7 +17,7 @@ async function getJoke(): Promise<DadJokeResponse> {
     headers: {
       Accept: "application/json",
     },
-    cache: "no-store", // ensure it's always a new joke
+    cache: "no-store",
   });
 
   if (!res.ok) {
@@ -31,10 +31,39 @@ async function getJoke(): Promise<DadJokeResponse> {
 export async function POST(req: Request) {
   type StockItemData =
     inferRouterOutputs<AppRouter>["stock"]["getLatest"][number];
+  type FinishedItemData =
+    inferRouterOutputs<AppRouter>["finishedItems"]["getLatest"][number];
+
   try {
-    const data = (await req.json()) as { item: StockItemData };
+    const data = (await req.json()) as { item: StockItemData | FinishedItemData };
     const user = await currentUser();
     const joke = await getJoke();
+    const item = data.item;
+
+    // Detect if it's a finished item (has a "depth" property)
+    const isFinishedItem = "depth" in item;
+
+    // Build the title
+    const title = isFinishedItem
+      ? `${item.width}x${item.length}x${item.depth} | ${
+          item.companyId
+            ? String(item.companyId).split(",")[0]
+            : `${item.strength}${item.flute}`
+        }`
+      : item.descriptionAsTitle
+      ? item.description
+      : `${item.width}x${item.length} | ${
+          item.CompanyUsedFor
+            ? String(item.CompanyUsedFor).split(",")[0]
+            : `${item.strength}${item.flute}`
+        }`;
+
+    // Dashboard link — depends on item type
+    const dashboardLink = `http://inventory.rlpackaging.ca/dashboard/${
+      isFinishedItem ? "finishedItems" : "stock"
+    }/${item.id}`;
+
+    // Keep your full original email HTML — only data is dynamic
     const html = `<!doctype html>
 <html lang="en">
   <head>
@@ -139,23 +168,16 @@ export async function POST(req: Request) {
               <tr>
                 <td class="wrapper" style="font-family: Helvetica, sans-serif; font-size: 16px; vertical-align: top; box-sizing: border-box; padding: 24px;" valign="top">
                   <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Hello Mike,</p>
-                  <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">Material Request for ${
-                    data.item.descriptionAsTitle
-                      ? data.item.description
-                      : `${data.item.width}x${data.item.length} | ${
-                          data.item.CompanyUsedFor
-                            ? String(data.item.CompanyUsedFor).split(",")[0]
-                            : `${data.item.strength}${data.item.flute}`
-                        }`
-                  } 
-                  <br /> 
-                  Current Stock: ${data.item.amount}
+                  <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">
+                    ${isFinishedItem ? "Finished Item" : "Material"} Request for ${title}
+                    <br /> 
+                    Current Stock: ${item.amount ?? "N/A"}
                     <br />
-                    Min Threshold: ${data.item.inventoryThreshold}
+                    Min Threshold: ${item.inventoryThreshold ?? "N/A"}
                     <br />
-                    Max Threshold: ${data.item.maxInventoryThreshold}
+                    Max Threshold: ${item.maxInventoryThreshold ?? "N/A"}
                     <br />
-                    Last Updated: ${new Date(data.item.dateModified ?? "").toLocaleDateString()}
+                    Last Updated: ${new Date(item.dateModified ?? "").toLocaleDateString()}
                     <br />
                     Requested by User: ${user ? user.firstName : "Unknown User"}
                   </p>
@@ -166,7 +188,9 @@ export async function POST(req: Request) {
                           <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;">
                             <tbody>
                               <tr>
-                                <td style="font-family: Helvetica, sans-serif; font-size: 16px; vertical-align: top; border-radius: 4px; text-align: center; background-color: #0867ec;" valign="top" align="center" bgcolor="#0867ec"> <a href="http://inventory.rlpackaging.ca/dashboard/stock/${data.item.id}" target="_blank" style="border: solid 2px #0867ec; border-radius: 4px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 16px; font-weight: bold; margin: 0; padding: 12px 24px; text-decoration: none; text-transform: capitalize; background-color: #0867ec; border-color: #0867ec; color: #ffffff;">View Item in App</a> </td>
+                                <td style="font-family: Helvetica, sans-serif; font-size: 16px; vertical-align: top; border-radius: 4px; text-align: center; background-color: #0867ec;" valign="top" align="center" bgcolor="#0867ec">
+                                  <a href="${dashboardLink}" target="_blank" style="border: solid 2px #0867ec; border-radius: 4px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 16px; font-weight: bold; margin: 0; padding: 12px 24px; text-decoration: none; text-transform: capitalize; background-color: #0867ec; border-color: #0867ec; color: #ffffff;">View Item in App</a>
+                                </td>
                               </tr>
                             </tbody>
                           </table>
@@ -178,7 +202,6 @@ export async function POST(req: Request) {
                   <p style="font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;">${joke.joke}</p>
                 </td>
               </tr>
-
               <!-- END MAIN CONTENT AREA -->
               </table>
 
@@ -193,21 +216,20 @@ export async function POST(req: Request) {
                 </tr>
                 <tr>
                   <td class="content-block powered-by" style="font-family: Helvetica, sans-serif; vertical-align: top; color: #9a9ea6; font-size: 16px; text-align: center;" valign="top" align="center">
-                    App Created by <a href="http://jedborseth.com" style="color: #9a9ea6; font-size: 16px; text-align: center; text-decoration: none;">Jed Borseth</a>
+                    App Created by <a href="http://jedborseth.com" style="color: #9a9ea6; text-align: center; text-decoration: none;">Jed Borseth</a>
                   </td>
                 </tr>
               </table>
             </div>
-
             <!-- END FOOTER -->
-            
-<!-- END CENTERED WHITE CONTAINER --></div>
+          </div>
         </td>
         <td style="font-family: Helvetica, sans-serif; font-size: 16px; vertical-align: top;" valign="top">&nbsp;</td>
       </tr>
     </table>
   </body>
 </html>`;
+
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -217,8 +239,10 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         from: "R&L Inventory <inventory@jedborseth.com>",
         to: ["mike@rlpackaging.ca"],
-        subject: "Material Inventory Request",
-        html: html,
+        subject: isFinishedItem
+          ? "Finished Item Inventory Request"
+          : "Material Inventory Request",
+        html,
       }),
     });
 
