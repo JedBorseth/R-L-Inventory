@@ -22,7 +22,7 @@ type StockItemData =
 
 
 type FinishedItemData =
-  inferRouterOutputs<AppRouter>["finishedItem"]["getLatest"][number];
+  inferRouterOutputs<AppRouter>["finishedItems"]["getLatest"][number];
 
 const SendEmail = ({ item }: { item: StockItemData | FinishedItemData }) => {
   return (
