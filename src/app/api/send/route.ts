@@ -27,12 +27,12 @@ export async function POST(req: Request) {
   type FinishedItemData =
     inferRouterOutputs<AppRouter>["finishedItems"]["getLatest"][number];
   type PalletItemData =
-    inferRouterOutputs<AppRouter>["pallets"]["getLatest"][number];
+    inferRouterOutputs<AppRouter>["pallet"]["getLatest"][number];
 
   try {
     const data = (await req.json()) as {
       item: StockItemData | FinishedItemData | PalletItemData;
-      type?: "stock" | "finishedItems" | "pallets";
+      type?: "stock" | "finishedItems" | "pallet";
     };
 
     const item = data.item;

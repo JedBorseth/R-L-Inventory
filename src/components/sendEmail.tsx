@@ -1,119 +1,115 @@
-import { currentUser } from "@clerk/nextjs/server";
+"use client";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+import { Button } from "./ui/button";
+import { Send } from "lucide-react";
 import type { inferRouterOutputs } from "@trpc/server";
-import { NextResponse } from "next/server";
-import { env } from "~/env";
 import type { AppRouter } from "~/server/api/root";
+import { toast } from "sonner";
 
-const RESEND_API_KEY = env.RESEND_API_KEY;
+type StockItemData =
+  inferRouterOutputs<AppRouter>["stock"]["getLatest"][number];
 
-type DadJokeResponse = {
-  id: string;
-  joke: string;
-  status: number;
-};
+type FinishedItemData =
+  inferRouterOutputs<AppRouter>["finishedItems"]["getLatest"][number];
 
-async function getJoke(): Promise<DadJokeResponse> {
-  const res = await fetch("https://icanhazdadjoke.com/", {
-    headers: { Accept: "application/json" },
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error(`Failed to fetch joke: ${res.statusText}`);
-  return (await res.json()) as DadJokeResponse;
-}
+type PalletItemData =
+  inferRouterOutputs<AppRouter>["pallet"]["getLatest"][number];
 
-export async function POST(req: Request) {
-  type StockItemData =
-    inferRouterOutputs<AppRouter>["stock"]["getLatest"][number];
-  type FinishedItemData =
-    inferRouterOutputs<AppRouter>["finishedItems"]["getLatest"][number];
-  type PalletItemData =
-    inferRouterOutputs<AppRouter>["pallet"]["getLatest"][number];
+type ItemData = StockItemData | FinishedItemData | PalletItemData;
 
-  try {
-    const data = (await req.json()) as {
-      item: StockItemData | FinishedItemData | PalletItemData;
-      type: "stock" | "finishedItems" | "pallets";
-    };
-
-    const { item, type } = data;
-    const user = await currentUser();
-    const joke = await getJoke();
-
-    // Build the title
-    let title = "";
-    if (type === "finishedItems" && "depth" in item) {
-      title = `${item.width}x${item.length}x${item.depth} | ${
+const SendEmail = ({ item }: { item: ItemData }) => {
+  const getTitle = () => {
+    if ("depth" in item) {
+      // Finished item
+      return `${item.width}x${item.length}x${item.depth} | ${
         item.companyId
           ? String(item.companyId).split(",")[0]
           : `${item.strength}${item.flute}`
       }`;
-    } else if (type === "pallets" && "block" in item) {
-      title = `${item.width}x${item.length} | ${
+    } else if ("block" in item) {
+      // Pallet item
+      return `${item.width}x${item.length} | ${
         item.block ? "Block" : "Stringer"
       } Pallet`;
     } else {
-      title = "descriptionAsTitle" in item && item.descriptionAsTitle
+      // Stock item
+      return item.descriptionAsTitle
         ? item.description
         : `${item.width}x${item.length}`;
     }
+  };
 
-    const dashboardLink = `http://inventory.rlpackaging.ca/dashboard/${type}/${item.id}`;
+  const getItemType = () => {
+    if ("depth" in item) return "finishedItems";
+    if ("block" in item) return "pallet";
+    return "stock";
+  };
 
-    const html = `<!doctype html>
-<html lang="en">
-  <body>
-    <p>Hello Mike,</p>
-    <p>
-      ${type === "finishedItems"
-        ? "Finished Item"
-        : type === "pallets"
-        ? "Pallet"
-        : "Material"} Request for ${title}
-      <br /> 
-      Current Stock: ${item.amount ?? "N/A"}
-      <br />
-      Min Threshold: ${item.inventoryThreshold ?? "N/A"}
-      <br />
-      Max Threshold: ${"maxInventoryThreshold" in item ? item.maxInventoryThreshold ?? "N/A" : "N/A"}
-      <br />
-      Requested by: ${user?.username ?? "Unknown"}
-    </p>
-    <a href="${dashboardLink}">View Item in App</a>
-    <hr/>
-    <p>Joke of the day: ${joke.joke}</p>
-  </body>
-</html>`;
+  return (
+    <div>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button
+            className="absolute bottom-0 right-0 top-0 m-auto h-8 w-8"
+            size="icon"
+          >
+            <Send className="h-4 w-4" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Request More {getTitle()}?</DialogTitle>
+            <DialogDescription>
+              An email will be sent to Mike to notify them that more stock is
+              needed for this item.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2">
+            <DialogClose asChild>
+              <Button
+                type="submit"
+                className="mt-4"
+                onClick={async () => {
+                  try {
+                    const request = await fetch("/api/send", {
+                      method: "POST",
+                      body: JSON.stringify({ item, type: getItemType() }),
+                    });
+                    const res = (await request.json()) as {
+                      message: string;
+                      responseStatus: string;
+                      joke: string;
+                    };
+                    toast.success("Email Sent Successfully!", {
+                      description: res.joke,
+                    });
+                  } catch (error) {
+                    console.error("Error sending email:", error);
+                    toast.error("Failed to send email.");
+                  }
+                }}
+              >
+                Send Email
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button className="mt-4" variant="secondary">
+                Cancel
+              </Button>
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
 
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: "R&L Inventory <inventory@jedborseth.com>",
-        to: ["mike@rlpackaging.ca"],
-        subject:
-          type === "finishedItems"
-            ? "Finished Item Inventory Request"
-            : type === "pallets"
-            ? "Pallet Inventory Request"
-            : "Material Inventory Request",
-        html,
-      }),
-    });
-
-    if (res.ok) {
-      return NextResponse.json({
-        message: "Email sent successfully",
-        responseStatus: res.status,
-        joke: joke.joke,
-      });
-    }
-
-    throw new Error(`Email service responded with ${res.status}`);
-  } catch (error) {
-    console.error("Error sending email:", error);
-    return NextResponse.json({ error: "Failed to send email" }, { status: 400 });
-  }
-}
+export default SendEmail;
