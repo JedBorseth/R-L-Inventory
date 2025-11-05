@@ -184,7 +184,7 @@ const FinishedItemResults = async () => {
                             />
                           </Link>
                         </TableCell>
-                        <TableCell className="font-medium">
+                        <TableCell className="relative font-medium">
                           <ViewDetailed
                             title={`${result.width}x${result.length}x${result.depth} | ${
                               result.companyId
@@ -231,6 +231,10 @@ const FinishedItemResults = async () => {
                                 ).toDateString()}
                               </p>
                               <p className="space-y-2">{result.description}</p>
+                              <div className="relative my-6 h-10 w-2/3">
+                                Send Email Reorder Request:
+                                <SendEmail item={result} />
+                              </div>
                             </>
                           </ViewDetailed>
                           {result.inventoryThreshold >= result.amount ? (
