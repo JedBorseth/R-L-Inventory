@@ -11,5 +11,8 @@ export default clerkMiddleware((auth, req) => {
   return NextResponse.next({ headers });
 });
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    // Run on everything except Next internals, static files, and Clerk routes
+    "/((?!_next|.*\\..*|sign-in|sign-up|api|trpc).*)",
+  ],
 };
