@@ -19,7 +19,12 @@ import { toast } from "sonner";
 
 type StockItemData =
   inferRouterOutputs<AppRouter>["stock"]["getLatest"][number];
-const SendEmail = ({ item }: { item: StockItemData }) => {
+
+
+type FinishedItemData =
+  inferRouterOutputs<AppRouter>["finishedItem"]["getLatest"][number];
+
+const SendEmail = ({ item }: { item: StockItemData | FinishedItemData }) => {
   return (
     <div>
       <Dialog>

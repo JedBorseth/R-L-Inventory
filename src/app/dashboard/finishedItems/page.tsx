@@ -46,6 +46,7 @@ import {
 import { AddFinishedItem, Edit } from "~/components/addFinishedItem";
 import Link from "next/link";
 import DownloadCSV from "~/components/downloadCSV";
+import SendEmail from "~/components/sendEmail";
 
 export default async function Dashboard() {
   return (
@@ -232,6 +233,9 @@ const FinishedItemResults = async () => {
                               <p className="space-y-2">{result.description}</p>
                             </>
                           </ViewDetailed>
+                          {result.inventoryThreshold >= result.amount ? (
+                            <SendEmail item={result} />
+                          ) : null}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline">{result.itemNum}</Badge>
