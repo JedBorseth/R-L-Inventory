@@ -40,9 +40,10 @@ const SendEmail = ({ item }: { item: StockItemData | FinishedItemData }) => {
           <DialogHeader>
             <DialogTitle>
               Request More{" "}
-              {item.descriptionAsTitle
-                ? item.description
-                : String(item.width) + "x" + String(item.length)}
+              {"descriptionAsTitle" in item && item.descriptionAsTitle
+  ? item.description
+  : `${item.width}x${item.length}`}
+
               ?
             </DialogTitle>
             <DialogDescription>
