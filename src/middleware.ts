@@ -16,6 +16,9 @@ export default clerkMiddleware((auth, req) => {
 
 export const config = {
   matcher: [
-    "/((?!_next|.*\\..*|sign-in|sign-up|api/public).*)",
+    // Everything except _next/static, public assets, Clerk auth pages
+    "/((?!_next|.*\\..*|sign-in|sign-up).*)",
+    // Explicitly include API and tRPC routes
+    "/(api|trpc)(.*)",
   ],
 };
