@@ -36,6 +36,7 @@ import { api } from "~/trpc/server";
 import DeleteItem from "~/components/deleteItem";
 import SkeletonTableRow from "~/components/skeletonTableRow";
 import EditAmount from "~/components/editAmount";
+import SendEmail from "~/components/sendEmail";
 
 export default async function Dashboard() {
   return (
@@ -141,8 +142,9 @@ const PalletResults = async () => {
                   width="50"
                 />
               </TableCell>
-              <TableCell className="font-medium">
+              <TableCell className="font-medium relative">
                 {result.width}x{result.length} {result.block ? "Block" : ""}
+                  <SendEmail item={result} />
               </TableCell>
               <TableCell>
                 <Badge variant="outline">{result.used ? "Yes" : "No"}</Badge>
