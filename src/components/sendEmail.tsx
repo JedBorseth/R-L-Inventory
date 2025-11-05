@@ -10,21 +10,34 @@ import {
 } from "~/components/ui/dialog";
 import { Button } from "./ui/button";
 import { Send } from "lucide-react";
-
-import type { UseTRPCQueryResult } from "@trpc/react-query/shared";
 import type { inferRouterOutputs } from "@trpc/server";
-import type { TRPCClientErrorLike } from "@trpc/client";
 import type { AppRouter } from "~/server/api/root";
 import { toast } from "sonner";
 
 type StockItemData =
   inferRouterOutputs<AppRouter>["stock"]["getLatest"][number];
 
-
 type FinishedItemData =
   inferRouterOutputs<AppRouter>["finishedItems"]["getLatest"][number];
 
 const SendEmail = ({ item }: { item: StockItemData | FinishedItemData }) => {
+  // Compute title based on item type
+  const getTitle = () => {
+    // Check if it's a FinishedItem (has `depth`)
+    if ("depth" in item) {
+      return `${item.width}x${item.length}x${item.depth} | ${
+        item.companyId
+          ? String(item.companyId).split(",")[0]
+          : `${item.strength}${item.flute}`
+      }`;
+    }
+
+    // Otherwise it's a StockItem
+    return item.descriptionAsTitle
+      ? item.description
+      : `${item.width}x${item.length}`;
+  };
+
   return (
     <div>
       <Dialog>
@@ -38,17 +51,10 @@ const SendEmail = ({ item }: { item: StockItemData | FinishedItemData }) => {
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              Request More{" "}
-              {"descriptionAsTitle" in item && item.descriptionAsTitle
-  ? item.description
-  : `${item.width}x${item.length}`}
-
-              ?
-            </DialogTitle>
+            <DialogTitle>Request More {getTitle()}?</DialogTitle>
             <DialogDescription>
-              An email will be sent to the Mike to notify them that more stock
-              is needed for this item.
+              An email will be sent to Mike to notify them that more stock is
+              needed for this item.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end gap-2">
@@ -73,6 +79,7 @@ const SendEmail = ({ item }: { item: StockItemData | FinishedItemData }) => {
                     });
                   } catch (error) {
                     console.error("Error sending email:", error);
+                    toast.error("Failed to send email.");
                   }
                 }}
               >
