@@ -84,7 +84,7 @@ export async function POST(req: Request) {
           : ""
       }
       <p style="margin: 8px 0;">Requested by: <strong>${
-        user?.username ?? "Unknown"
+        user?.firstName ?? "Unknown"
       }</strong></p>
       <a href="${dashboardLink}" style="display: inline-block; margin-top: 15px; background: #2563eb; color: white; padding: 10px 16px; border-radius: 6px; text-decoration: none;">View Item in Dashboard</a>
       <hr style="margin: 20px 0;" />
