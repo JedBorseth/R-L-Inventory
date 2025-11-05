@@ -20,22 +20,37 @@ type StockItemData =
 type FinishedItemData =
   inferRouterOutputs<AppRouter>["finishedItems"]["getLatest"][number];
 
-const SendEmail = ({ item }: { item: StockItemData | FinishedItemData }) => {
-  // Compute title based on item type
+type PalletItemData =
+  inferRouterOutputs<AppRouter>["pallets"]["getLatest"][number];
+
+type ItemData = StockItemData | FinishedItemData | PalletItemData;
+
+const SendEmail = ({ item }: { item: ItemData }) => {
   const getTitle = () => {
-    // Check if it's a FinishedItem (has `depth`)
     if ("depth" in item) {
+      // Finished item
       return `${item.width}x${item.length}x${item.depth} | ${
         item.companyId
           ? String(item.companyId).split(",")[0]
           : `${item.strength}${item.flute}`
       }`;
+    } else if ("block" in item) {
+      // Pallet item
+      return `${item.width}x${item.length} | ${
+        item.block ? "Block" : "Stringer"
+      } Pallet`;
+    } else {
+      // Stock item
+      return item.descriptionAsTitle
+        ? item.description
+        : `${item.width}x${item.length}`;
     }
+  };
 
-    // Otherwise it's a StockItem
-    return item.descriptionAsTitle
-      ? item.description
-      : `${item.width}x${item.length}`;
+  const getItemType = () => {
+    if ("depth" in item) return "finishedItems";
+    if ("block" in item) return "pallets";
+    return "stock";
   };
 
   return (
@@ -66,14 +81,13 @@ const SendEmail = ({ item }: { item: StockItemData | FinishedItemData }) => {
                   try {
                     const request = await fetch("/api/send", {
                       method: "POST",
-                      body: JSON.stringify({ item }),
+                      body: JSON.stringify({ item, type: getItemType() }),
                     });
                     const res = (await request.json()) as {
                       message: string;
                       responseStatus: string;
                       joke: string;
                     };
-                    console.log("Email send response:", res);
                     toast.success("Email Sent Successfully!", {
                       description: res.joke,
                     });
