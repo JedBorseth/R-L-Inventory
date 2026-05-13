@@ -120,10 +120,6 @@ const EditAmount = ({
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    if (values.amount === 0) {
-      toast.error("Will add a delete pop up here eventually");
-      return;
-    }
     if (type === "pallet") {
       mutatePallet.mutate({
         id: result.id,
