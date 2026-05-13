@@ -1,128 +1,116 @@
-// "use client";
-// import algoliasearch from "algoliasearch/lite";
-// import {
-//   Hits,
-//   Configure,
-//   useInstantSearch,
-//   useSearchBox,
-//   UseSearchBoxProps,
-// } from "react-instantsearch";
-// import { InstantSearchNext } from "react-instantsearch-nextjs";
+"use client";
 
-// import { Hit } from "./hit";
-// import { Input } from "./ui/input";
-// import { PlaceholdersAndVanishInput } from "./inputAnimation";
-// import React, { useState, useRef } from "react";
-// import { Card, CardContent } from "./ui/card";
-// import { Table, TableBody } from "./ui/table";
-// const searchClient = algoliasearch(
-//   "KH60NZV6Q6",
-//   "2c44fcbda3712ff9731a7d9037c95f32",
-// );
+import { Search as SearchIcon } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
-// function SearchBox(props: UseSearchBoxProps) {
-//   const { query, refine } = useSearchBox(props);
-//   const { status } = useInstantSearch();
-//   const [inputValue, setInputValue] = useState(query);
-//   const inputRef = useRef<HTMLInputElement>(null);
+import { Badge } from "~/components/ui/badge";
+import { Input } from "~/components/ui/input";
+import { api } from "~/trpc/react";
 
-//   const isSearchStalled = status === "stalled";
+const MIN_SEARCH_LENGTH = 2;
 
-//   function setQuery(newQuery: string) {
-//     setInputValue(newQuery);
+const typeLabel = {
+  stock: "Stock",
+  scrap: "Scrap",
+  pallet: "Pallet",
+} as const;
 
-//     refine(newQuery);
-//   }
+export function Search() {
+  const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
-//   return (
-//     <div>
-//       <form
-//         action=""
-//         role="search"
-//         noValidate
-//         onSubmit={(event) => {
-//           event.preventDefault();
-//           event.stopPropagation();
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setDebouncedQuery(query.trim());
+    }, 250);
 
-//           if (inputRef.current) {
-//             inputRef.current.blur();
-//           }
-//         }}
-//         onReset={(event) => {
-//           event.preventDefault();
-//           event.stopPropagation();
+    return () => window.clearTimeout(timeout);
+  }, [query]);
 
-//           setQuery("");
-//           // this is causing several errors in console when navigating from login page
+  const shouldSearch = debouncedQuery.length >= MIN_SEARCH_LENGTH;
+  const results = api.all.search.useQuery(
+    { query: debouncedQuery },
+    {
+      enabled: shouldSearch,
+      staleTime: 60_000,
+    },
+  );
 
-//           if (inputRef.current) {
-//             inputRef.current.focus();
-//           }
-//         }}
-//       >
-//         <Input
-//           ref={inputRef}
-//           autoComplete="off"
-//           autoCorrect="off"
-//           autoCapitalize="off"
-//           placeholder="Search..."
-//           className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-//           spellCheck={false}
-//           maxLength={512}
-//           type="search"
-//           value={inputValue}
-//           onChange={(event) => {
-//             setQuery(event.currentTarget.value);
-//           }}
-//         />
-//         <span hidden={!isSearchStalled}>Searching…</span>
-//       </form>
-//     </div>
-//   );
-// }
-// function EmptyQueryBoundary({
-//   children,
-//   fallback,
-// }: {
-//   children: React.ReactNode;
-//   fallback: React.ReactNode;
-// }) {
-//   const { indexUiState } = useInstantSearch();
+  const showResults = isOpen && query.trim().length >= MIN_SEARCH_LENGTH;
 
-//   if (!indexUiState.query) {
-//     return (
-//       <>
-//         {fallback}
-//         <div hidden>{children}</div>
-//       </>
-//     );
-//   }
+  return (
+    <div className="relative w-full md:w-[320px]">
+      <form
+        role="search"
+        onSubmit={(event) => {
+          event.preventDefault();
+        }}
+      >
+        <SearchIcon className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          aria-label="Search inventory"
+          autoComplete="off"
+          className="w-full rounded-lg bg-background pl-8"
+          maxLength={100}
+          onChange={(event) => {
+            setQuery(event.currentTarget.value);
+            setIsOpen(true);
+          }}
+          onFocus={() => setIsOpen(true)}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") setIsOpen(false);
+          }}
+          placeholder="Search stock, scrap, pallets..."
+          spellCheck={false}
+          type="search"
+          value={query}
+        />
+      </form>
 
-//   return children;
-// }
+      {showResults ? (
+        <div className="absolute right-0 top-12 z-50 w-full overflow-hidden rounded-md border bg-card text-card-foreground shadow-md">
+          {results.isLoading ? (
+            <p className="px-3 py-2 text-sm text-muted-foreground">
+              Searching...
+            </p>
+          ) : null}
 
-// export function Search() {
-//   return (
-//     <InstantSearchNext
-//       indexName="rlinventory"
-//       searchClient={searchClient}
-//       future={{ preserveSharedStateOnUnmount: true }}
-//       insights={true}
-//     >
-//       <div className="relative">
-//         <SearchBox />
-//         <div className="absolute w-full border bg-card">
-//           <EmptyQueryBoundary fallback={null}>
-//             <Hits hitComponent={Hit} />
-//           </EmptyQueryBoundary>
-//         </div>
-//       </div>
+          {results.isError ? (
+            <p className="px-3 py-2 text-sm text-destructive">
+              Search is unavailable.
+            </p>
+          ) : null}
 
-//       <Configure
-//         hitsPerPage={3}
-//         attributesToHighlight={["width", "length"]}
-//         attributesToSnippet={["description"]}
-//       />
-//     </InstantSearchNext>
-//   );
-// }
+          {results.data?.length === 0 ? (
+            <p className="px-3 py-2 text-sm text-muted-foreground">
+              No inventory matches found.
+            </p>
+          ) : null}
+
+          {results.data?.map((result) => (
+            <Link
+              className="block border-b px-3 py-2 text-sm transition-colors last:border-b-0 hover:bg-muted"
+              href={result.href}
+              key={`${result.type}-${result.id}`}
+              onClick={() => setIsOpen(false)}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-medium leading-none">{result.label}</p>
+                  {result.description ? (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {result.description}
+                    </p>
+                  ) : null}
+                </div>
+                <Badge variant="outline">{typeLabel[result.type]}</Badge>
+              </div>
+            </Link>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
