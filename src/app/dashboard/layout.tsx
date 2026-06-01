@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import Sidebar from "~/components/sidebar";
 import Header from "~/components/header";
+import { IdleScreensaver } from "~/components/dvd-screensaver";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { Toaster } from "~/components/ui/sonner";

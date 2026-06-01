@@ -21,6 +21,9 @@ const withPWA = withPWAInit({
 /** @type {import("next").NextConfig} */
 const config = withPWA({
   reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_VERCEL_ENV: process.env.VERCEL_ENV,
+  },
 
   /**
    * If you are using `appDir` then you must comment the below `i18n` config out.
