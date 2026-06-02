@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import Sidebar from "~/components/sidebar";
 import Header from "~/components/header";
+import { IdleScreensaver } from "~/components/dvd-screensaver";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { Toaster } from "~/components/ui/sonner";
@@ -22,6 +23,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
   }
   return (
     <>
+      <IdleScreensaver />
       <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <Sidebar />
         <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
