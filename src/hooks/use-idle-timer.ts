@@ -16,7 +16,7 @@ const ACTIVITY_EVENTS = [
   "pointerdown",
 ] as const;
 
-const TEN_MINUTES_MS = 10 * 60 * 1000;
+const TWENTY_MINUTES_MS = 20 * 60 * 1000;
 const THIRTY_SECONDS_MS = 30 * 1000;
 
 export function getIdleTimeoutMs(): number {
@@ -30,7 +30,7 @@ export function getIdleTimeoutMs(): number {
     process.env.NODE_ENV === "development" ||
     process.env.NEXT_PUBLIC_VERCEL_ENV === "preview";
 
-  return isDevOrPreview ? THIRTY_SECONDS_MS : TEN_MINUTES_MS;
+  return isDevOrPreview ? THIRTY_SECONDS_MS : TWENTY_MINUTES_MS;
 }
 
 export function useIdleTimer() {
