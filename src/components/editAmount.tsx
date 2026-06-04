@@ -45,13 +45,20 @@ const EditAmount = ({
   };
   type: "pallet" | "scrap" | "stock" | "finishedItem" | "prodFinishedItem";
 }) => {
+  const currentAmount =
+    type === "prodFinishedItem" ? (result.prodAmount ?? 0) : result.amount;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: type === "prodFinishedItem" ? result.prodAmount : result.amount,
+      amount: currentAmount,
     },
   });
   const router = useRouter();
+  const { reset } = form;
+
+  React.useEffect(() => {
+    reset({ amount: currentAmount });
+  }, [currentAmount, reset, result.id, type]);
 
   const mutatePallet = api.pallet.updateAmount.useMutation({
     onSuccess: () => {
@@ -157,9 +164,7 @@ const EditAmount = ({
   return (
     <Dialog>
       <DialogTrigger className="">
-        <span className="">
-          {type === "prodFinishedItem" ? result.prodAmount : result.amount}
-        </span>
+        <span className="">{currentAmount}</span>
       </DialogTrigger>
       <DialogContent className="max-md:min-w-full">
         <DialogHeader>
