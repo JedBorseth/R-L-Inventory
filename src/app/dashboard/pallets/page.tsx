@@ -142,9 +142,11 @@ const PalletResults = async () => {
                   width="50"
                 />
               </TableCell>
-              <TableCell className="font-medium relative">
+              <TableCell className="relative font-medium">
                 {result.width}x{result.length} {result.block ? "Block" : ""}
+                <span className="hidden md:contents">
                   <SendEmail item={result} />
+                </span>
               </TableCell>
               <TableCell>
                 <Badge variant="outline">{result.used ? "Yes" : "No"}</Badge>
@@ -170,6 +172,9 @@ const PalletResults = async () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <div className="md:hidden">
+                      <SendEmail item={result} variant="menu" />
+                    </div>
                     <Edit id={result.id} />
                     <DeleteItem id={result.id} type="pallet" />
                   </DropdownMenuContent>
