@@ -25,7 +25,16 @@ type PalletItemData =
 
 type ItemData = StockItemData | FinishedItemData | PalletItemData;
 
-const SendEmail = ({ item }: { item: ItemData }) => {
+const menuItemClassName =
+  "flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50";
+
+const SendEmail = ({
+  item,
+  variant = "icon",
+}: {
+  item: ItemData;
+  variant?: "icon" | "menu";
+}) => {
   const getTitle = () => {
     if ("depth" in item) {
       // Finished item
@@ -54,8 +63,10 @@ const SendEmail = ({ item }: { item: ItemData }) => {
   };
 
   return (
-    <div>
-      <Dialog>
+    <Dialog>
+      {variant === "menu" ? (
+        <DialogTrigger className={menuItemClassName}>Send Email</DialogTrigger>
+      ) : (
         <DialogTrigger asChild>
           <Button
             className="absolute bottom-0 right-0 top-0 m-auto h-8 w-8"
@@ -64,6 +75,7 @@ const SendEmail = ({ item }: { item: ItemData }) => {
             <Send className="h-4 w-4" />
           </Button>
         </DialogTrigger>
+      )}
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Request More {getTitle()}?</DialogTitle>
@@ -107,8 +119,7 @@ const SendEmail = ({ item }: { item: ItemData }) => {
             </DialogClose>
           </div>
         </DialogContent>
-      </Dialog>
-    </div>
+    </Dialog>
   );
 };
 

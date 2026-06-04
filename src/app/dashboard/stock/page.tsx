@@ -214,7 +214,9 @@ const StockResults = async () => {
                             </>
                           </ViewDetailed>
                           {result.inventoryThreshold >= result.amount ? (
-                            <SendEmail item={result} />
+                            <span className="hidden md:contents">
+                              <SendEmail item={result} />
+                            </span>
                           ) : null}
                         </TableCell>
                         <TableCell>
@@ -250,6 +252,11 @@ const StockResults = async () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              {result.inventoryThreshold >= result.amount ? (
+                                <div className="md:hidden">
+                                  <SendEmail item={result} variant="menu" />
+                                </div>
+                              ) : null}
                               <Edit id={result.id} />
                               <DeleteItem id={result.id} type="stock" />
                             </DropdownMenuContent>
